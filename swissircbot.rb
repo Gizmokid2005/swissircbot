@@ -7,6 +7,8 @@ require 'sqlite3'
 
 #Plugins
 require_relative 'plugins/worldweather'
+require_relative 'plugins/misc'
+require_relative 'plugins/google'
 
 config = YAML::load(open('irc.yml'))
 p config
@@ -24,7 +26,7 @@ bot = Cinch::Bot.new do
     c.server    = SERVER
     c.nick      = NICK
     c.channels  = CHANNELS
-    c.plugins.plugins = [Cinch::WorldWeather]
+    c.plugins.plugins = [WorldWeather,Misc,Google]
 
   end
 
@@ -44,7 +46,7 @@ bot = Cinch::Bot.new do
     if is_admin?(m.user)
       bot.nick = nick
     else
-      m.reply NOTADMIN
+      m.reply "#{m.user.nick}: #{NOTADMIN}"
     end
   end
 
@@ -52,7 +54,7 @@ bot = Cinch::Bot.new do
     if is_admin?(m.user)
       m.channel.topic = topic
     else
-      m.reply NOTADMIN
+      m.reply "#{m.user.nick}: #{NOTADMIN}"
     end
   end
 
@@ -68,7 +70,7 @@ bot = Cinch::Bot.new do
     if is_admin?(m.user)
       bot.join(channel)
     else
-      m.reply NOTADMIN
+      m.reply "#{m.user.nick}: #{NOTADMIN}"
     end
   end
 
@@ -78,7 +80,7 @@ bot = Cinch::Bot.new do
       if is_admin?(m.user)
         bot.part(channel)
       else
-        m.reply NOTADMIN
+        m.reply "#{m.user.nick}: #{NOTADMIN}"
       end
     end
   end
@@ -89,7 +91,7 @@ bot = Cinch::Bot.new do
       m.reply("Goodbye everyone, #{m.user.name} has told me to leave.")
       bot.quit("I have left you at the behest of #{m.user.name}. Adios!")
     else
-      m.reply NOTADMIN
+      m.reply "#{m.user.nick}: #{NOTADMIN}"
     end
   end
 

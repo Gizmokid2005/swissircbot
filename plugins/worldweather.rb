@@ -1,7 +1,7 @@
 require 'net/http'
 require 'json'
 
-class Cinch::WorldWeather
+class WorldWeather
   include Cinch::Plugin
 
   match /weather (.+)$/
