@@ -8,7 +8,7 @@ class Google
     res = Nokogiri.parse(open(url.to_s).read).at("h3.r")
 
     title = res.text
-    link = res.at('a')[:href]
+    link = res.at('a')[:href].gsub("/url?q=","")
     desc = res.at("./following::div").children.first.text
     CGI.unescape_html "#{title} - #{desc} (#{link})"
 
