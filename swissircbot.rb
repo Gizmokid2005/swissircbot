@@ -10,16 +10,18 @@ require_relative 'plugins/worldweather'
 require_relative 'plugins/misc'
 require_relative 'plugins/google'
 require_relative 'plugins/wunderground'
+require_relative 'plugins/shorten'
 
 config = YAML::load(open('irc.yml'))
 p config
+$admin    = config['admin']
 SERVER    = config['server']
 NICK      = config['nick']
 CHANNELS  = config['channels']
 NOTADMIN  = config['notadmin']
-APIKEY    = config['apikey']
 LOGFILE   = config['logfile']
-$admin    = config['admin']
+WEATHERAPIKEY    = config['weatherapikey']
+GOOGLEAPIKEY     = config['googleapikey']
 
 bot = Cinch::Bot.new do
   configure do |c|
@@ -27,7 +29,7 @@ bot = Cinch::Bot.new do
     c.server    = SERVER
     c.nick      = NICK
     c.channels  = CHANNELS
-    c.plugins.plugins = [Wunderground,WorldWeather,Misc,Google]
+    c.plugins.plugins = [Wunderground,WorldWeather,Misc,Google,Shorten]
 
   end
 

@@ -24,7 +24,7 @@ class Wunderground
 
     end
     # http://api.wunderground.com/api/APIKEY/features/settings/q/query.format
-    uri = URI.parse("http://api.wunderground.com/api/#{APIKEY}/conditions/q/#{@latlong.gsub(" ",",")}.json")
+    uri = URI.parse("http://api.wunderground.com/api/#{WEATHERAPIKEY}/conditions/q/#{@latlong.gsub(" ",",")}.json")
     Net::HTTP.start(uri.host, uri.port) do |http|
 
       resp         = Net::HTTP.get_response(uri)

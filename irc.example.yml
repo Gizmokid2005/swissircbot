@@ -8,4 +8,5 @@ notadmin: You don't have permissions to do that. Stop it. #Non-Admin deny reply 
 logfile: /path/to/log.log
 
 #Weather API key
-apikey: APIKEYHERE
+weatherapikey: APIKEYHERE
+googleapikey: APIKEYHERE
