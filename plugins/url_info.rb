@@ -9,12 +9,14 @@ class UrlInfo
   def execute(m, url)
     # Blacklist support??
 
+    return if m.message.to_s.start_with?(PREFIX)
+
     agent = Mechanize.new
-    agent.user_agent_alias = 'Mac Safari'
+    agent.user_agent_alias = 'Linux Firefox'
 
     if title = agent.get(url).title
 
-      m.reply "#{m.user.nick}: #{title} - #{url}"
+      m.reply "Title: #{title} - #{url} - posted by \"#{m.user.nick}\""
 
     else
 
