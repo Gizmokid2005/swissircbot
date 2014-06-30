@@ -11,17 +11,8 @@ class Google
 
     url = "http://www.google.com/search?q=#{CGI.escape(query)}"
 
-    res = Nokogiri.parse(open(url.to_s).read).at("h3.r")
-    if res.text
-      title = res.text
-    else
-      title = "Unable to find title"
-    end
-    if res.at('a')[:href]
-      link = res.at('a')[:href].split("/url?q=").last.split("&").first
-    else
-      link = "Unable to parse link"
-    end
+    @res = Nokogiri.parse(open(url.to_s).read).at("h3.r")
+
     CGI.unescape_html "#{title} - #{link}"
 
   end
@@ -30,4 +21,14 @@ class Google
     m.reply "#{m.user.nick}: #{search(query)}"
   end
 
+  def title
+    @res.text || "Unable to find title"
+  end
+
+  def link
+    @link ||= begin
+                href = @res.at('a')[:href] || "Unable to parse link"
+                href.split("/url?q=").last.split("&").first
+              end
+  end
 end
