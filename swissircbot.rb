@@ -1,7 +1,4 @@
 require 'cinch'
-require 'open-uri'
-require 'nokogiri'
-require 'cgi'
 require 'yaml'
 require 'sqlite3'
 
@@ -11,6 +8,10 @@ require_relative 'plugins/misc'
 require_relative 'plugins/google'
 require_relative 'plugins/wunderground'
 require_relative 'plugins/shorten'
+require_relative 'plugins/url_info'
+require 'open-uri'
+require 'nokogiri'
+require 'cgi'
 
 config = YAML::load(open('irc.yml'))
 p config
@@ -29,7 +30,7 @@ bot = Cinch::Bot.new do
     c.server    = SERVER
     c.nick      = NICK
     c.channels  = CHANNELS
-    c.plugins.plugins = [Wunderground,WorldWeather,Misc,Google,Shorten]
+    c.plugins.plugins = [Wunderground,WorldWeather,Misc,Google,Shorten,UrlInfo]
 
   end
 
