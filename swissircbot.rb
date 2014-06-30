@@ -21,6 +21,7 @@ NICK      = config['nick']
 CHANNELS  = config['channels']
 NOTADMIN  = config['notadmin']
 LOGFILE   = config['logfile']
+PREFIX    = config['commandprefix']
 WEATHERAPIKEY    = config['weatherapikey']
 GOOGLEAPIKEY     = config['googleapikey']
 
@@ -30,6 +31,7 @@ bot = Cinch::Bot.new do
     c.server    = SERVER
     c.nick      = NICK
     c.channels  = CHANNELS
+    c.plugins.prefix = PREFIX
     c.plugins.plugins = [Wunderground,WorldWeather,Misc,Google,Shorten,UrlInfo]
 
   end
@@ -46,7 +48,7 @@ bot = Cinch::Bot.new do
     m.reply "Hello, #{m.user.nick}!"
   end
 
-  on :message, /^!nick (.+)$/i do |m, nick|
+  on :message, /^#{PREFIX}nick (.+)$/i do |m, nick|
     if is_admin?(m.user)
       bot.nick = nick
     else
@@ -54,7 +56,7 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^!topic (.+)$/i do |m, topic|
+  on :message, /^#{PREFIX}topic (.+)$/i do |m, topic|
     if is_admin?(m.user)
       m.channel.topic = topic
     else
@@ -62,15 +64,15 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^!msg (.+?) (.+)/i do |m, who, text|
+  on :message, /^#{PREFIX}msg (.+?) (.+)/i do |m, who, text|
     User(who).send text
   end
 
-  on :message, /^!echo (.+)/i do |m, text|
+  on :message, /^#{PREFIX}echo (.+)/i do |m, text|
     m.reply text
   end
 
-  on :message, /^!join (.+)/i do |m, channel|
+  on :message, /^#{PREFIX}join (.+)/i do |m, channel|
     if is_admin?(m.user)
       bot.join(channel)
     else
@@ -78,7 +80,7 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^!part(?: (.+))?/i do |m, channel|
+  on :message, /^#{PREFIX}part(?: (.+))?/i do |m, channel|
     channel = channel || m.channel
     if channel
       if is_admin?(m.user)
@@ -89,7 +91,7 @@ bot = Cinch::Bot.new do
     end
   end
 
-  on :message, /^!quit/i do |m|
+  on :message, /^#{PREFIX}quit/i do |m|
     if is_admin?(m.user)
       bot.info("Received quit command from #{m.user.name}.")
       m.reply("Goodbye everyone, #{m.user.name} has told me to leave.")
