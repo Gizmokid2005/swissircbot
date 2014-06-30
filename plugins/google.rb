@@ -1,3 +1,7 @@
+require 'nokogiri'
+require 'cgi'
+require 'open-uri'
+
 class Google
   include Cinch::Plugin
 
