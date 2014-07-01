@@ -9,6 +9,7 @@ require_relative 'plugins/google'
 require_relative 'plugins/wunderground'
 require_relative 'plugins/shorten'
 require_relative 'plugins/url_info'
+require_relative 'plugins/downup'
 require 'open-uri'
 require 'nokogiri'
 require 'cgi'
@@ -32,7 +33,7 @@ bot = Cinch::Bot.new do
     c.nick      = NICK
     c.channels  = CHANNELS
     c.plugins.prefix = PREFIX
-    c.plugins.plugins = [Wunderground,WorldWeather,Misc,Google,Shorten,UrlInfo]
+    c.plugins.plugins = [Wunderground,WorldWeather,Misc,Google,Shorten,UrlInfo,DownUp]
 
   end
 
