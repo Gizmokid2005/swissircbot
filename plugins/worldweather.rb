@@ -14,7 +14,7 @@ class WorldWeather
 
   def weather(location)
     # api.worldweatheronline.com/free/v1/weather.ashx?q=<location>&format=JSON&extra=<extraopts>&fx=<yes/no>&includelocation=<yes/no>&key=<apikey>
-    uri = URI.parse("https://api.worldweatheronline.com/free/v1/weather.ashx?q=#{URI.encode(location)}&format=JSON&extra=localObsTime&fx=no&includelocation=yes&key=#{WEATHERAPIKEY}")
+    uri = URI.parse("https://api.worldweatheronline.com/free/v1/weather.ashx?q=#{URI.encode(location)}&format=JSON&extra=localObsTime&fx=no&includelocation=yes&key=#{WWEATHERAPIKEY}")
     Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
 
       resp        = Net::HTTP.get_response(uri)

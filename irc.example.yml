@@ -14,7 +14,9 @@ notopbot: I don't have power to do that stuipd. #Same as above except for bot's 
 logfile: /path/to/log.log
 commandprefix: !
 
-#Weather API key
-weatherapikey: APIKEYHERE
+#World Weather API key
+wweatherapikey: APIKEYHERE
+#Wunderground API key
+wuweatherapikey: APIKEYHERE
 #Google API key
 googleapikey: APIKEYHERE

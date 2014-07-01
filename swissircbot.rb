@@ -1,19 +1,23 @@
 require 'cinch'
 require 'yaml'
 require 'sqlite3'
+require_relative 'customhelpers'
+include CustomHelpers
 
 #Plugins
-require_relative 'plugins/worldweather'
-require_relative 'plugins/misc'
-require_relative 'plugins/google'
-require_relative 'plugins/wunderground'
-require_relative 'plugins/shorten'
-require_relative 'plugins/url_info'
 require_relative 'plugins/downup'
+require_relative 'plugins/google'
+require_relative 'plugins/misc'
+require_relative 'plugins/shorten'
+require_relative 'plugins/tools'
+require_relative 'plugins/url_info'
+require_relative 'plugins/worldweather'
+require_relative 'plugins/wunderground'
 require 'open-uri'
 require 'nokogiri'
 require 'cgi'
 
+#Config
 config = YAML::load(open('irc.yml'))
 p config
 $alladmins       = config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
@@ -26,7 +30,8 @@ NOTADMIN         = config['notadmin']
 NOTOPBOT         = config['notopbot']
 LOGFILE          = config['logfile']
 PREFIX           = config['commandprefix']
-WEATHERAPIKEY    = config['weatherapikey']
+WWEATHERAPIKEY   = config['wweatherapikey']
+WUWEATHERAPIKEY  = config['wuweatherapikey']
 GOOGLEAPIKEY     = config['googleapikey']
 
 bot = Cinch::Bot.new do
@@ -37,23 +42,7 @@ bot = Cinch::Bot.new do
     c.password  = PASSWORD
     c.channels  = CHANNELS
     c.plugins.prefix = PREFIX
-    c.plugins.plugins = [Wunderground,WorldWeather,Misc,Google,Shorten,UrlInfo,DownUp]
-
-  end
-
-  helpers do
-
-    def is_admin?(user)
-      $alladmins.include?(user.authname.to_s) && user.authed? == true
-    end
-
-    def is_chanadmin?(channel, user)
-      $adminhash[channel].include?(user.authname.to_s) && user.authed? == true
-    end
-
-    def is_botpowerful?(channel)
-      channel.opped?(bot)
-    end
+    c.plugins.plugins = [DownUp,Google,Misc,Shorten,Tools,UrlInfo,Wunderground,WorldWeather]
 
   end
 
