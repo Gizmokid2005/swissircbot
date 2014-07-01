@@ -40,15 +40,17 @@ bot = Cinch::Bot.new do
   helpers do
 
     def is_admin?(user)
-      true if $admin.include?(user.to_s)
+      true if $admin.include?(user.authname.to_s)
     end
 
   end
 
+  # Simple Hello Reply
   on :message, /hello #{NICK}/i do |m|
     m.reply "Hello, #{m.user.nick}!"
   end
 
+  # Change the bot's nick
   on :message, /^#{PREFIX}nick (.+)$/i do |m, nick|
     if is_admin?(m.user)
       bot.nick = nick
@@ -57,22 +59,30 @@ bot = Cinch::Bot.new do
     end
   end
 
+  # Change the topic of the current channel
   on :message, /^#{PREFIX}topic (.+)$/i do |m, topic|
-    if is_admin?(m.user)
-      m.channel.topic = topic
+    if m.channel.nil?
+      m.reply "Silly #{m.user.nick}: This isn't a channel!"
     else
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      if is_admin?(m.user)
+        m.channel.topic = topic
+      else
+        m.reply "#{m.user.nick}: #{NOTADMIN}"
+      end
     end
   end
 
+  # Message the given thing (person or channel)
   on :message, /^#{PREFIX}msg (.+?) (.+)/i do |m, who, text|
     User(who).send text
   end
 
+  # Repeat the message that was given
   on :message, /^#{PREFIX}echo (.+)/i do |m, text|
     m.reply text
   end
 
+  # Join the specified channel
   on :message, /^#{PREFIX}join (.+)/i do |m, channel|
     if is_admin?(m.user)
       bot.join(channel)
@@ -81,6 +91,7 @@ bot = Cinch::Bot.new do
     end
   end
 
+  # Part the specified channel
   on :message, /^#{PREFIX}part(?: (.+))?/i do |m, channel|
     channel = channel || m.channel
     if channel
@@ -92,6 +103,7 @@ bot = Cinch::Bot.new do
     end
   end
 
+  # Quit IRC
   on :message, /^#{PREFIX}quit/i do |m|
     if is_admin?(m.user)
       bot.info("Received quit command from #{m.user.name}.")
