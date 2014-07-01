@@ -1,13 +1,20 @@
 server: irc.freenode.net
 nick: BOTNICKHERE
+password: PASSWORDHERE
 admin:
-- 'ADMINNICKHERE'
+  channel:
+    '#CHANNELHERE':
+    - 'ADMINNICKHERE'
+    '#CHANNEL2HERE':
+    - 'OTHERADMINNICKHERE'
 channels:
 - '#cinch-bots'
 notadmin: You don't have permissions to do that. Stop it. #Non-Admin deny reply can be modified.
+notopbot: I don't have power to do that stuipd. #Same as above except for bot's lack of power.
 logfile: /path/to/log.log
 commandprefix: !
 
 #Weather API key
 weatherapikey: APIKEYHERE
+#Google API key
 googleapikey: APIKEYHERE
