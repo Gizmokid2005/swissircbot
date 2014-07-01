@@ -16,13 +16,14 @@ require 'cgi'
 
 config = YAML::load(open('irc.yml'))
 p config
-$admin    = config['admin']
-SERVER    = config['server']
-NICK      = config['nick']
-CHANNELS  = config['channels']
-NOTADMIN  = config['notadmin']
-LOGFILE   = config['logfile']
-PREFIX    = config['commandprefix']
+$alladmins       = config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
+$adminhash       = config['admin']['channel']
+SERVER           = config['server']
+NICK             = config['nick']
+CHANNELS         = config['channels']
+NOTADMIN         = config['notadmin']
+LOGFILE          = config['logfile']
+PREFIX           = config['commandprefix']
 WEATHERAPIKEY    = config['weatherapikey']
 GOOGLEAPIKEY     = config['googleapikey']
 
@@ -40,7 +41,11 @@ bot = Cinch::Bot.new do
   helpers do
 
     def is_admin?(user)
-      true if $admin.include?(user.authname.to_s)
+      true if $alladmins.include?(user.to_s)
+    end
+
+    def is_chanadmin?(channel, user)
+      true if $adminhash[channel].include?(user.to_s)
     end
 
   end
@@ -51,8 +56,8 @@ bot = Cinch::Bot.new do
   end
 
   # Change the bot's nick
-  on :message, /^#{PREFIX}nick (.+)$/i do |m, nick|
-    if is_admin?(m.user)
+  on :message, /^[#{PREFIX}]nick (.+)$/i do |m, nick|
+    if is_admin?(m.user.authname)
       bot.nick = nick
     else
       m.reply "#{m.user.nick}: #{NOTADMIN}"
@@ -60,11 +65,11 @@ bot = Cinch::Bot.new do
   end
 
   # Change the topic of the current channel
-  on :message, /^#{PREFIX}topic (.+)$/i do |m, topic|
+  on :message, /^[#{PREFIX}]topic (.+)$/i do |m, topic|
     if m.channel.nil?
       m.reply "Silly #{m.user.nick}: This isn't a channel!"
     else
-      if is_admin?(m.user)
+      if is_admin?(m.user.authname)
         m.channel.topic = topic
       else
         m.reply "#{m.user.nick}: #{NOTADMIN}"
@@ -73,18 +78,18 @@ bot = Cinch::Bot.new do
   end
 
   # Message the given thing (person or channel)
-  on :message, /^#{PREFIX}msg (.+?) (.+)/i do |m, who, text|
+  on :message, /^[#{PREFIX}]msg (.+?) (.+)/i do |m, who, text|
     User(who).send text
   end
 
   # Repeat the message that was given
-  on :message, /^#{PREFIX}echo (.+)/i do |m, text|
+  on :message, /^[#{PREFIX}]echo (.+)/i do |m, text|
     m.reply text
   end
 
   # Join the specified channel
-  on :message, /^#{PREFIX}join (.+)/i do |m, channel|
-    if is_admin?(m.user)
+  on :message, /^[#{PREFIX}]join (.+)/i do |m, channel|
+    if is_admin?(m.user.authname)
       bot.join(channel)
     else
       m.reply "#{m.user.nick}: #{NOTADMIN}"
@@ -92,10 +97,10 @@ bot = Cinch::Bot.new do
   end
 
   # Part the specified channel
-  on :message, /^#{PREFIX}part(?: (.+))?/i do |m, channel|
+  on :message, /^[#{PREFIX}]part(?: (.+))?/i do |m, channel|
     channel = channel || m.channel
     if channel
-      if is_admin?(m.user)
+      if is_admin?(m.user.authname)
         bot.part(channel)
       else
         m.reply "#{m.user.nick}: #{NOTADMIN}"
@@ -104,8 +109,8 @@ bot = Cinch::Bot.new do
   end
 
   # Quit IRC
-  on :message, /^#{PREFIX}quit/i do |m|
-    if is_admin?(m.user)
+  on :message, /^[#{PREFIX}]quit/i do |m|
+    if is_admin?(m.user.authname)
       bot.info("Received quit command from #{m.user.name}.")
       m.reply("Goodbye everyone, #{m.user.name} has told me to leave.")
       bot.quit("I have left you at the behest of #{m.user.name}. Adios!")
