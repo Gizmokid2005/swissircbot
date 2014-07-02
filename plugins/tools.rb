@@ -6,7 +6,8 @@ class Tools
   match /r (.+?)/i, method: :crem
   match /ban (\S+)(?: (.+))?/i, method: :cban
   match /unban (.+)/i, method: :cunban
-  match /mute (\S+)(?: (.+))?/i, method: :cmute
+  match /mute (.+)/i, method: :cmute
+  match /unmute (.+)/i, method: :cunmute
 
   def ckick(m, nick, reason)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
@@ -51,8 +52,14 @@ class Tools
     end
   end
 
-  def cmute(m, nick, reason)
-    m.reply "Mute isn't a thing yet." #This doesn't work
+  def cmute(m, nick)
+    nick = User(nick)
+    User('ChanServ').send("quiet #{m.channel} #{nick}")
+  end
+
+  def cunmute(m, nick)
+    nick = User(nick)
+    User('ChanServ').send("unquiet #{m.channel} #{nick}")
   end
 
 end
