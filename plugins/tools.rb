@@ -12,7 +12,7 @@ class Tools
   def ckick(m, nick, reason)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       m.channel.kick(nick, reason)
-    elsif !is_chanadmin?(m.channel,m.user)
+    elsif !is_chanadmin?(m.channel, m.user)
       m.reply "#{m.user.nick}: #{NOTADMIN}"
     elsif !is_botpowerful?(m.channel)
       m.reply "#{m.user.nick}: #{NOTOPBOT}"
@@ -34,7 +34,7 @@ class Tools
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       m.channel.ban(nick.mask)
       m.channel.kick(nick, reason)
-    elsif !is_chanadmin?(m.channel,m.user)
+    elsif !is_chanadmin?(m.channel, m.user)
       m.reply "#{m.user.nick}: #{NOTADMIN}"
     elsif !is_botpowerful?(m.channel)
       m.reply "#{m.user.nick}: #{NOTOPBOT}"
@@ -45,7 +45,7 @@ class Tools
     nick = User(nick)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       m.channel.unban(nick.mask)
-    elsif !is_chanadmin?(m.channel,m.user)
+    elsif !is_chanadmin?(m.channel, m.user)
       m.reply "#{m.user.nick}: #{NOTADMIN}"
     elsif !is_botpowerful?(m.channel)
       m.reply "#{m.user.nick}: #{NOTOPBOT}"
