@@ -77,7 +77,11 @@ bot = Cinch::Bot.new do
 
   # Message the given thing (person or channel)
   on :message, /^[#{PREFIX}]msg (.+?) (.+)/i do |m, who, text|
-    User(who).send text
+    if is_admin?(m.user)
+      User(who).send text
+    else
+      m.reply "#{m.user.nick}: #{NOTADMIN}"
+    end
   end
 
   # Repeat the message that was given

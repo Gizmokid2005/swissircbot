@@ -77,8 +77,8 @@ class Tools
   end
 
   def caddadmin(m, nick, channel)
-    if is_admin?(m.user)
-      channel = m.channel if channel.nil?
+    channel = m.channel if channel.nil?
+    if is_chanadmin?(channel, m.user)
       $adminhash[channel] << nick
       $config['admin']['channel'] = $adminhash
       File.open('irctest.yml', 'wb') { |f| f.write $config.to_yaml }
@@ -89,8 +89,8 @@ class Tools
   end
 
   def cremadmin(m, nick, channel)
-    if is_admin?(m.user)
-      channel = m.channel if channel.nil?
+    channel = m.channel if channel.nil?
+    if is_chanadmin?(channel, m.user)
       $adminhash[channel].delete nick
       $config['admin']['channel'] = $adminhash
       File.open('irctest.yml', 'wb') { |f| f.write $config.to_yaml }
