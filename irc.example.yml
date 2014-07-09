@@ -10,7 +10,7 @@ admin:
 channels:
 - '#cinch-bots'
 notadmin: You don't have permissions to do that. Stop it. #Non-Admin deny reply can be modified.
-notopbot: I don't have power to do that stuipd. #Same as above except for bot's lack of power.
+notopbot: I don't have power to do that stupid. #Same as above except for bot's lack of power.
 logfile: /path/to/log.log
 commandprefix: !
 
