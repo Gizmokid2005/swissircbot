@@ -18,7 +18,7 @@ require 'nokogiri'
 require 'cgi'
 
 #Config
-config = YAML::load(open('irc.yml'))
+config = YAML.load_file('irc.yml')
 p config
 $alladmins       = config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
 $adminhash       = config['admin']['channel']

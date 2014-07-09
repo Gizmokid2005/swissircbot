@@ -8,6 +8,8 @@ class Tools
   match /unban (.+)/i, method: :cunban
   match /mute (.+)/i, method: :cmute
   match /unmute (.+)/i, method: :cunmute
+  match /addadmin (\S+)(?: (.+))?/i, method: :caddadmin
+  match /remadmin (\S+)(?: (.+))?/i, method: :cremadmin
 
   def ckick(m, nick, reason)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
@@ -54,12 +56,45 @@ class Tools
 
   def cmute(m, nick)
     nick = User(nick)
-    User('ChanServ').send("quiet #{m.channel} #{nick}")
+    if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
+      User('ChanServ').send("quiet #{m.channel} #{nick}")
+    elsif !is_chanadmin?(m.channel, m.user)
+      m.reply "#{m.user.nick}: #{NOTADMIN}"
+    elsif !is_botpowerful?(m.channel)
+      m.reply "#{m.user.nick}: #{NOTOPBOT}"
+    end
   end
 
   def cunmute(m, nick)
     nick = User(nick)
-    User('ChanServ').send("unquiet #{m.channel} #{nick}")
+    if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
+      User('ChanServ').send("unquiet #{m.channel} #{nick}")
+    elsif !is_chanadmin?(m.channel, m.user)
+      m.reply "#{m.user.nick}: #{NOTADMIN}"
+    elsif !is_botpowerful?(m.channel)
+      m.reply "#{m.user.nick}: #{NOTOPBOT}"
+    end
+  end
+
+  def caddadmin(m, nick, channel)
+    channel = m.channel if channel.nil?
+    $adminhash[channel] << nick
+    m.reply $adminhash
+    config = YAML.load_file('irc.yml')
+    p config
+    config['admin']['channel'] = $adminhash
+    File.open('irctest.yml', 'wb') { |f| f.write config.to_yaml }
+  end
+
+  def cremadmin(m, nick, channel)
+    channel = m.channel if channel.nil?
+    $adminhash[channel].delete nick
+    m.reply $adminhash
+    config = YAML.load_file('irc.yml')
+    p config
+    config['admin']['channel'] = $adminhash
+    File.open('irctest.yml', 'wb') { |f| f.write config.to_yaml }
+
   end
 
 end
