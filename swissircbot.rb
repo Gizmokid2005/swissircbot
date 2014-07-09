@@ -18,21 +18,21 @@ require 'nokogiri'
 require 'cgi'
 
 #Config
-config = YAML.load_file('irc.yml')
-p config
-$alladmins       = config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
-$adminhash       = config['admin']['channel']
-SERVER           = config['server']
-NICK             = config['nick']
-PASSWORD         = config['password']
-CHANNELS         = config['channels']
-NOTADMIN         = config['notadmin']
-NOTOPBOT         = config['notopbot']
-LOGFILE          = config['logfile']
-PREFIX           = config['commandprefix']
-WWEATHERAPIKEY   = config['wweatherapikey']
-WUWEATHERAPIKEY  = config['wuweatherapikey']
-GOOGLEAPIKEY     = config['googleapikey']
+$config = YAML.load_file('irc.yml')
+p $config
+$alladmins       = $config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
+$adminhash       = $config['admin']['channel']
+SERVER           = $config['server']
+NICK             = $config['nick']
+PASSWORD         = $config['password']
+CHANNELS         = $config['channels']
+NOTADMIN         = $config['notadmin']
+NOTOPBOT         = $config['notopbot']
+LOGFILE          = $config['logfile']
+PREFIX           = $config['commandprefix']
+WWEATHERAPIKEY   = $config['wweatherapikey']
+WUWEATHERAPIKEY  = $config['wuweatherapikey']
+GOOGLEAPIKEY     = $config['googleapikey']
 
 bot = Cinch::Bot.new do
   configure do |c|
