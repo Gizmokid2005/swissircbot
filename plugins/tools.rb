@@ -77,24 +77,31 @@ class Tools
   end
 
   def caddadmin(m, nick, channel)
-    channel = m.channel if channel.nil?
-    $adminhash[channel] << nick
-    m.reply $adminhash
-    config = YAML.load_file('irc.yml')
-    p config
-    config['admin']['channel'] = $adminhash
-    File.open('irctest.yml', 'wb') { |f| f.write config.to_yaml }
+    if is_admin?(m.user)
+      channel = m.channel if channel.nil?
+      $adminhash[channel] << nick
+      m.reply $adminhash
+      config = YAML.load_file('irc.yml')
+      p config
+      config['admin']['channel'] = $adminhash
+      File.open('irctest.yml', 'wb') { |f| f.write config.to_yaml }
+    else
+      m.reply "#{m.user.nick}: #{NOTADMIN}"
+    end
   end
 
   def cremadmin(m, nick, channel)
-    channel = m.channel if channel.nil?
-    $adminhash[channel].delete nick
-    m.reply $adminhash
-    config = YAML.load_file('irc.yml')
-    p config
-    config['admin']['channel'] = $adminhash
-    File.open('irctest.yml', 'wb') { |f| f.write config.to_yaml }
-
+    if is_admin?(m.user)
+      channel = m.channel if channel.nil?
+      $adminhash[channel].delete nick
+      m.reply $adminhash
+      config = YAML.load_file('irc.yml')
+      p config
+      config['admin']['channel'] = $adminhash
+      File.open('irctest.yml', 'wb') { |f| f.write config.to_yaml }
+    else
+      m.reply "#{m.user.nick}: #{NOTADMIN}"
+    end
   end
 
 end
