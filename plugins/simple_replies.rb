@@ -4,7 +4,7 @@ class SimpleReplies
 
   set :prefix, ''
 
-  match lambda { |m| /hello #{m.bot.nick}/ }, method: :hello
+  match lambda { |m| /(?:hello|hey|hi) #{m.bot.nick}/ }, method: :hello
   match lambda { |m| /(?:thanks|thank you) #{m.bot.nick}/ }, method: :thanks
 
   def hello(m)

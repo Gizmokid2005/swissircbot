@@ -24,6 +24,7 @@ $config = YAML.load_file('irc.yml')
 p $config
 $alladmins       = $config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
 $adminhash       = $config['admin']['channel']
+$superadmins     = $config['superadmin']
 SERVER           = $config['server']
 NICK             = $config['nick']
 PASSWORD         = $config['password']
@@ -50,7 +51,7 @@ bot = Cinch::Bot.new do
 
   # Change the bot's nick
   on :message, /^[#{PREFIX}]nick (.+)$/i do |m, nick|
-    if is_admin?(m.user)
+    if is_supadmin?(m.user)
       bot.nick = nick
     else
       m.reply "#{m.user.nick}: #{NOTADMIN}"
@@ -88,7 +89,7 @@ bot = Cinch::Bot.new do
 
   # Join the specified channel
   on :message, /^[#{PREFIX}]join (.+)/i do |m, channel|
-    if is_admin?(m.user)
+    if is_supadmin?(m.user)
       bot.join(channel)
     else
       m.reply "#{m.user.nick}: #{NOTADMIN}"
@@ -99,7 +100,7 @@ bot = Cinch::Bot.new do
   on :message, /^[#{PREFIX}]part(?: (.+))?/i do |m, channel|
     channel = channel || m.channel
     if channel
-      if is_admin?(m.user)
+      if is_supadmin?(m.user)
         bot.part(channel)
       else
         m.reply "#{m.user.nick}: #{NOTADMIN}"
@@ -109,7 +110,7 @@ bot = Cinch::Bot.new do
 
   # Quit IRC
   on :message, /^[#{PREFIX}]quit/i do |m|
-    if is_admin?(m.user)
+    if is_supadmin?(m.user)
       bot.info("Received quit command from #{m.user.name}.")
       m.reply("Goodbye everyone, #{m.user.name} has told me to leave.")
       bot.quit("I have left you at the behest of #{m.user.name}. Adios!")
