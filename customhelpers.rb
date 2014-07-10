@@ -12,4 +12,8 @@ module CustomHelpers
     channel.opped?(bot)
   end
 
+  def bot_nick
+    bot.nick
+  end
+
 end

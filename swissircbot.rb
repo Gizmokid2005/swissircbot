@@ -47,8 +47,13 @@ bot = Cinch::Bot.new do
   end
 
   # Simple Hello Reply
-  on :message, /hello #{NICK}/i do |m|
+  on :message, /hello #{bot_nick}/i do |m|
     m.reply "Hello, #{m.user.nick}!"
+  end
+
+  # Thank you reply
+  on :message, /thanks #{bot_nick}/i do |m|
+    m.reply "You're Welcome, #{m.user.nick}!"
   end
 
   # Change the bot's nick
