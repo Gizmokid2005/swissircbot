@@ -9,7 +9,9 @@ require_relative 'plugins/downup'
 require_relative 'plugins/google'
 require_relative 'plugins/misc'
 require_relative 'plugins/shorten'
+require_relative 'plugins/simple_replies'
 require_relative 'plugins/tools'
+require_relative 'plugins/urban_dictionary'
 require_relative 'plugins/url_info'
 require_relative 'plugins/worldweather'
 require_relative 'plugins/wunderground'
@@ -42,18 +44,8 @@ bot = Cinch::Bot.new do
     c.password  = PASSWORD
     c.channels  = CHANNELS
     c.plugins.prefix = PREFIX
-    c.plugins.plugins = [DownUp,Google,Misc,Shorten,Tools,UrlInfo,Wunderground,WorldWeather]
+    c.plugins.plugins = [DownUp,Google,Misc,Shorten,SimpleReplies,Tools,UrbanDictionary,UrlInfo,Wunderground,WorldWeather]
 
-  end
-
-  # Simple Hello Reply
-  on :message, /hello #{bot_nick}/i do |m|
-    m.reply "Hello, #{m.user.nick}!"
-  end
-
-  # Thank you reply
-  on :message, /thanks #{bot_nick}/i do |m|
-    m.reply "You're Welcome, #{m.user.nick}!"
   end
 
   # Change the bot's nick
