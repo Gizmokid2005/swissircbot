@@ -1,6 +1,7 @@
 require 'cinch'
 require 'yaml'
 require 'sqlite3'
+require 'optparse'
 require_relative 'customhelpers'
 include CustomHelpers
 
@@ -20,7 +21,42 @@ require 'nokogiri'
 require 'cgi'
 
 #Config
-$config = YAML.load_file('irc.yml')
+options = {}
+optparse = OptionParser.new do |opt|
+
+  opt.banner = "Usage: swissircbot.rb [options]"
+  options[:config] = nil
+
+  opt.on("-c", "--config CONFIG", "Read config from CONFIG") do |conf|
+    if conf.nil?
+      puts "You must specify a file when using the config option."
+    else
+      options[:config] = conf
+    end
+  end
+
+  opt.on("-h", "--help", "Display this help") do
+    puts opt
+    exit
+  end
+
+end
+
+begin
+  optparse.parse!
+rescue OptionParser::MissingArgument
+  puts $!.to_s
+  puts optparse
+  exit
+end
+
+if options[:config]
+  $conffile = options[:config]
+else
+  $conffile = "irc.yml"
+end
+
+$config = YAML.load_file($conffile)
 p $config
 $alladmins       = $config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
 $adminhash       = $config['admin']['channel']
