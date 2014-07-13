@@ -25,10 +25,10 @@ class Google
   end
 
   def link
-    @link ||= begin
-                href = @res.at('a')[:href] || "Unable to parse link"
-                href.split("/url?q=").last.split("&").first
-              end
+    @link = begin
+              href = @res.at('a')[:href] || "Unable to parse link"
+              href.split("/url?q=").last.split("&").first
+            end
   end
 
 end
