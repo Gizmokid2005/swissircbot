@@ -16,7 +16,7 @@ class Google
     url = "http://www.google.com/search?q=#{CGI.escape(query)}"
     @res = Nokogiri.parse(open(url.to_s).read).at("h3.r")
     return "Google is stumped: #{url}" if @res.nil?
-    CGI.unescape_html "#{title} - #{link}"
+    CGI.unescape_html "#{title} - #{URI.unescape(link)}"
 
   end
 
