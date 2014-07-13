@@ -14,7 +14,7 @@ class UrlInfo
     agent = Mechanize.new
     agent.user_agent_alias = 'Linux Firefox'
 
-    if title = agent.get(url).title
+    if title = agent.get(url).title.gsub(/(\n)+/, ' ').lstrip
 
       m.reply "Title: #{title} - #{url} - posted by \"#{m.user.nick}\""
 
