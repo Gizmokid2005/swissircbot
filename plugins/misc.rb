@@ -6,7 +6,7 @@ class Misc
 
   def c4d3d3d3(m, nick) #OhGodWhy
     if nick.nil?
-      m.reply "#{m.user.nick}: https://www.youtube.com/watch?v=XWX4GUYGQXQ"
+      m.reply "https://www.youtube.com/watch?v=XWX4GUYGQXQ", true
     else
       m.reply "#{nick}: #{m.user.nick} points you to https://www.youtube.com/watch?v=XWX4GUYGQXQ"
     end
@@ -14,7 +14,7 @@ class Misc
 
   def cyo(m, nick) #Sigh...the things I do for you people.
     if nick.nil?
-      m.reply "#{m.user.nick}: Yo!"
+      m.reply "Yo!", true
     else
       m.reply "#{nick}: #{m.user.nick} says Yo!"
     end

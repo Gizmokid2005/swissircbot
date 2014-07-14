@@ -7,7 +7,7 @@ class Wunderground
   match /wu (.+)$/
 
   def execute(m, location)
-    m.reply "#{m.user.nick}: #{weather(location)}"
+    m.reply weather(location), true
   end
 
   private

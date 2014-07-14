@@ -15,9 +15,9 @@ class Tools
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       m.channel.kick(nick, reason)
     elsif !is_chanadmin?(m.channel, m.user)
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     elsif !is_botpowerful?(m.channel)
-      m.reply "#{m.user.nick}: #{NOTOPBOT}"
+      m.reply NOTOPBOT, true
     end
   end
 
@@ -25,9 +25,9 @@ class Tools
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       m.channel.remove(nick, reason)
     elsif !is_chanadmin?(m.channel,m.user)
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     elsif !is_botpowerful?(m.channel)
-      m.reply "#{m.user.nick}: #{NOTOPBOT}"
+      m.reply NOTOPBOT, true
     end
   end
 
@@ -37,9 +37,9 @@ class Tools
       m.channel.ban(nick.mask)
       m.channel.kick(nick, reason)
     elsif !is_chanadmin?(m.channel, m.user)
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     elsif !is_botpowerful?(m.channel)
-      m.reply "#{m.user.nick}: #{NOTOPBOT}"
+      m.reply NOTOPBOT, true
     end
   end
 
@@ -48,9 +48,9 @@ class Tools
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       m.channel.unban(nick.mask)
     elsif !is_chanadmin?(m.channel, m.user)
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     elsif !is_botpowerful?(m.channel)
-      m.reply "#{m.user.nick}: #{NOTOPBOT}"
+      m.reply NOTOPBOT, true
     end
   end
 
@@ -59,9 +59,9 @@ class Tools
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       User('ChanServ').send("quiet #{m.channel} #{nick}")
     elsif !is_chanadmin?(m.channel, m.user)
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     elsif !is_botpowerful?(m.channel)
-      m.reply "#{m.user.nick}: #{NOTOPBOT}"
+      m.reply NOTOPBOT, true
     end
   end
 
@@ -70,9 +70,9 @@ class Tools
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       User('ChanServ').send("unquiet #{m.channel} #{nick}")
     elsif !is_chanadmin?(m.channel, m.user)
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     elsif !is_botpowerful?(m.channel)
-      m.reply "#{m.user.nick}: #{NOTOPBOT}"
+      m.reply NOTOPBOT, true
     end
   end
 
@@ -82,9 +82,9 @@ class Tools
       $adminhash[channel] << nick
       $config['admin']['channel'] = $adminhash
       File.open('irctest.yml', 'wb') { |f| f.write $config.to_yaml }
-      m.reply "#{m.user.nick}: #{nick} has been added as an admin for #{channel}."
+      m.reply "#{nick} has been added as an admin for #{channel}.", true
     else
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     end
   end
 
@@ -94,9 +94,9 @@ class Tools
       $adminhash[channel].delete nick
       $config['admin']['channel'] = $adminhash
       File.open('irctest.yml', 'wb') { |f| f.write $config.to_yaml }
-      m.reply "#{m.user.nick}: #{nick} has been removed as an admin for #{channel}."
+      m.reply "#{nick} has been removed as an admin for #{channel}.", true
     else
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     end
   end
 

@@ -20,7 +20,7 @@ class UrlInfo
 
     else
 
-      m.reply "#{m.user.nick}: I don't know what to do with this."
+      m.reply "I don't know what to do with this.", true
 
     end
 

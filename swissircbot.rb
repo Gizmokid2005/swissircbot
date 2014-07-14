@@ -92,7 +92,7 @@ bot = Cinch::Bot.new do
     if is_supadmin?(m.user)
       bot.nick = nick
     else
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     end
   end
 
@@ -104,9 +104,9 @@ bot = Cinch::Bot.new do
       if is_chanadmin?(m.channel,m.user) && is_botpowerful?(m.channel)
         m.channel.topic = topic
       elsif !is_chanadmin?(m.channel,m.user)
-        m.reply "#{m.user.nick}: #{NOTADMIN}"
+        m.reply NOTADMIN, true
       elsif !is_botpowerful?(m.channel)
-        m.reply "#{m.user.nick}: #{NOTOPBOT}"
+        m.reply NOTOPBOT, true
       end
     end
   end
@@ -116,7 +116,7 @@ bot = Cinch::Bot.new do
     if is_admin?(m.user)
       User(who).send text
     else
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     end
   end
 
@@ -130,7 +130,7 @@ bot = Cinch::Bot.new do
     if is_supadmin?(m.user)
       bot.join(channel)
     else
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     end
   end
 
@@ -141,7 +141,7 @@ bot = Cinch::Bot.new do
       if is_supadmin?(m.user)
         bot.part(channel)
       else
-        m.reply "#{m.user.nick}: #{NOTADMIN}"
+        m.reply NOTADMIN, true
       end
     end
   end
@@ -153,7 +153,7 @@ bot = Cinch::Bot.new do
       m.reply("Goodbye everyone, #{m.user.name} has told me to leave.")
       bot.quit("I have left you at the behest of #{m.user.name}. Adios!")
     else
-      m.reply "#{m.user.nick}: #{NOTADMIN}"
+      m.reply NOTADMIN, true
     end
   end
 

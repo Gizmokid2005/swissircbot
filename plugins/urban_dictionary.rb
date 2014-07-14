@@ -8,7 +8,7 @@ class UrbanDictionary
   match(/urban (.*)/)
 
   def execute(m, query)
-    m.reply "#{m.user.nick}: #{query} - #{search(query)}"
+    m.reply "#{query} - #{search(query)}", true
   end
 
   private

@@ -7,7 +7,7 @@ class Shorten
   match /shorten (.+)/
 
   def execute(m,url)
-    m.reply "#{m.user.nick}: #{shorten(url)}"
+    m.reply shorten(url), true
   end
 
   private

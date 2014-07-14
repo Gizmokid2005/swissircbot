@@ -8,7 +8,7 @@ class Google
   match /google (.+)/i
 
   def execute(m,query)
-    m.reply "#{m.user.nick}: #{search(query)}"
+    m.reply search(query), true
   end
 
   def search(query)

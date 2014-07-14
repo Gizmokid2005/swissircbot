@@ -3,10 +3,10 @@ require 'mechanize'
 class DownUp
   include Cinch::Plugin
 
-  match /(?:down|up) (.+)/
+  match /(?:down|up) (.+)/i
 
   def execute(m,url)
-    m.reply "#{m.user.nick}: Looks like #{url} is #{check(url)}."
+    m.reply "Looks like #{url} is #{check(url)}.", true
   end
 
   def check(url)
