@@ -52,8 +52,10 @@ end
 
 if options[:config]
   $conffile = options[:config]
+  $confdir = File.dirname($conffile)
 else
   $conffile = "irc.yml"
+  $confdir = Dir.pwd
 end
 
 $config = YAML.load_file($conffile)
