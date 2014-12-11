@@ -3,11 +3,14 @@ require 'yaml'
 require 'sqlite3'
 require 'optparse'
 require_relative 'customhelpers'
+require_relative 'dbhelpers'
 include CustomHelpers
+include DBHelpers
 
 #Plugins
 require_relative 'plugins/downup'
 require_relative 'plugins/google'
+require_relative 'plugins/memos'
 require_relative 'plugins/misc'
 require_relative 'plugins/shorten'
 require_relative 'plugins/simple_replies'
@@ -83,7 +86,7 @@ bot = Cinch::Bot.new do
     c.password  = PASSWORD
     c.channels  = CHANNELS
     c.plugins.prefix = PREFIX
-    c.plugins.plugins = [DownUp,Google,Misc,Shorten,SimpleReplies,Tools,UrbanDictionary,UrlInfo,Wunderground,WorldWeather]
+    c.plugins.plugins = [DownUp,Google,Memos,Misc,Shorten,SimpleReplies,Tools,UrbanDictionary,UrlInfo,Wunderground,WorldWeather]
 
   end
 
