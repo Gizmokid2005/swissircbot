@@ -58,9 +58,13 @@ You can start the bot by running `ruby swissircbot.rb` which will launch the bot
 You can alternatively run the bot with an "auto-restart" feature by creating a file called `keep-alive` and running `while [ -f keep-alive ]; do ruby swissircbot.rb; sleep 3;done` which will keep the bot alive as long as the `keep-alive` file is present. You can prevent auto-restart by deleting or renaming this file.
 
 Examples:
+
 `ruby swissircbot.rb` -- Will launch SwissIRCBot loading the default config file of irc.yml
+
 `while [-f keep-alive ]; do ruby swissircbot.rb; sleep 3; done` -- Will launch SwissIRCBot loading the default config file of irc.yml while also protecting the bot by auto-restarting as long as the `keep-alive` file exists alongside swissircbot.rb
+
 `ruby swissircbot.rb -c freenode.yml` -- Will launch SwissIRCBot loading the config file `freenode.yml` that resides alongside swissircbot.rb
+
 `while [ -f keep-alive ]; do ruby swissircbot.rb -c freenode.yml; sleep 3; done` -- Will launch SwissIRCBot loading the config file `freenode.yml` that resides alongside swissircbot.rb while also protecting the bot by auto-restarting as long as the `keep-alive` file exists alongside swissircbot.rb
 
 NOTE: SwissIRCBot has a .ruby-version file to work with rbenv to specify the required version of Ruby to use.
