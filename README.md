@@ -43,6 +43,27 @@ channels:
 
 `googleapikey` -- The API key for Google for URL shortening (not required).
 
+Options
+-------
+You can run `swissircbot.rb` with the following options:
+
+`-c --config <path/to/config>` -- Allows you to specify a config file to load at runtime. If not specified we will look for irc.yml in the same directory as `swissircbot.rb`
+
+`-h --help` -- Will show the help output that lists all possible command options and associated help
+
+Running
+-------
+You can start the bot by running `ruby swissircbot.rb` which will launch the bot in the current shell window.
+
+You can alternatively run the bot with an "auto-restart" feature by creating a file called `keep-alive` and running `while [ -f keep-alive ]; do ruby swissircbot.rb; sleep 3;done` which will keep the bot alive as long as the `keep-alive` file is present. You can prevent auto-restart by deleting or renaming this file.
+
+Examples:
+`ruby swissircbot.rb` -- Will launch SwissIRCBot loading the default config file of irc.yml
+`while [-f keep-alive ]; do ruby swissircbot.rb; sleep 3; done` -- Will launch SwissIRCBot loading the default config file of irc.yml while also protecting the bot by auto-restarting as long as the `keep-alive` file exists alongside swissircbot.rb
+`ruby swissircbot.rb -c freenode.yml` -- Will launch SwissIRCBot loading the config file `freenode.yml` that resides alongside swissircbot.rb
+`while [ -f keep-alive ]; do ruby swissircbot.rb -c freenode.yml; sleep 3; done` -- Will launch SwissIRCBot loading the config file `freenode.yml` that resides alongside swissircbot.rb while also protecting the bot by auto-restarting as long as the `keep-alive` file exists alongside swissircbot.rb
+
+NOTE: SwissIRCBot has a .ruby-version file to work with rbenv to specify the required version of Ruby to use.
 
 Contributing
 ------------
