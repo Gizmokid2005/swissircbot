@@ -23,3 +23,4 @@ doc/
 *.iml
 *.iws
 irc.yml
+swissircbot.sqlite3
