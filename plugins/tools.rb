@@ -8,9 +8,13 @@ class Tools
   match /unban (.+)/i, method: :cunban
   match /mute (.+)/i, method: :cmute
   match /unmute (.+)/i, method: :cunmute
+  match /op (.+)/i, method: :cop
+  match /deop (.+)/i, method: :cdeop
   match /addadmin (\S+)(?: (.+))?/i, method: :caddadmin
   match /remadmin (\S+)(?: (.+))?/i, method: :cremadmin
+  match /topic (.+)$/i, method: :ctopic
 
+  # Kick a user from a channel for a specific reason (or no reason)
   def ckick(m, nick, reason)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       m.channel.kick(nick, reason)
@@ -21,6 +25,7 @@ class Tools
     end
   end
 
+  # Remove a user from a channel, similar to kick, but silent
   def crem(m, nick)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
       m.channel.remove(nick, reason)
@@ -31,6 +36,7 @@ class Tools
     end
   end
 
+  # Ban a user from a channel for a reason
   def cban(m, nick, reason)
     nick = User(nick)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
@@ -43,6 +49,7 @@ class Tools
     end
   end
 
+  # Unban a user from a channel
   def cunban(m, nick)
     nick = User(nick)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
@@ -54,6 +61,7 @@ class Tools
     end
   end
 
+  # Mute a user in a channel
   def cmute(m, nick)
     nick = User(nick)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
@@ -65,6 +73,7 @@ class Tools
     end
   end
 
+  # UnMute a user in a channel
   def cunmute(m, nick)
     nick = User(nick)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
@@ -76,6 +85,31 @@ class Tools
     end
   end
 
+  # Op a user in a channel
+  def cop(m, nick)
+    nick = User(nick)
+    if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
+      m.channel.op(m.channel, nick)
+    elsif !is_chanadmin?(m.channel, m.user)
+      m.reply NOTADMIN, true
+    elsif !is_botpowerful?(m.channel)
+      m.reply NOTOPBOT, true
+    end
+  end
+
+  # DeOp a user in a channel
+  def cdeop(m, nick)
+    nick = User(nick)
+    if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
+      m.channel.deop(m.channel, nick)
+    elsif !is_chanadmin?(m.channel, m.user)
+      m.reply NOTADMIN, true
+    elsif !is_botpowerful?(m.channel)
+      m.reply NOTOPBOT, true
+    end
+  end
+
+  # Add a user as an admin of the bot for a specific channel
   def caddadmin(m, nick, channel)
     channel = m.channel if channel.nil?
     if is_chanadmin?(channel, m.user)
@@ -88,6 +122,7 @@ class Tools
     end
   end
 
+  # Remove a user as an admin of the bot for the specific channel
   def cremadmin(m, nick, channel)
     channel = m.channel if channel.nil?
     if is_chanadmin?(channel, m.user)
@@ -97,6 +132,21 @@ class Tools
       m.reply "#{nick} has been removed as an admin for #{channel}.", true
     else
       m.reply NOTADMIN, true
+    end
+  end
+
+  # Change the topic of the current channel
+  def ctopic(m, topic)
+    if m.channel.nil?
+      m.reply "Silly #{m.user.nick}: This isn't a channel!"
+    else
+      if is_chanadmin?(m.channel,m.user) && is_botpowerful?(m.channel)
+        m.channel.topic = topic
+      elsif !is_chanadmin?(m.channel,m.user)
+        m.reply NOTADMIN, true
+      elsif !is_botpowerful?(m.channel)
+        m.reply NOTOPBOT, true
+      end
     end
   end
 

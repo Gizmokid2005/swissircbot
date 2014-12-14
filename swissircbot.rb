@@ -2,26 +2,16 @@ require 'cinch'
 require 'yaml'
 require 'sqlite3'
 require 'optparse'
-require_relative 'helpers/customhelpers'
-require_relative 'helpers/dbhelpers'
-include CustomHelpers
-include DBHelpers
-
-#Plugins
-require_relative 'plugins/downup'
-require_relative 'plugins/google'
-require_relative 'plugins/memos'
-require_relative 'plugins/misc'
-require_relative 'plugins/shorten'
-require_relative 'plugins/simple_replies'
-require_relative 'plugins/tools'
-require_relative 'plugins/urban_dictionary'
-require_relative 'plugins/url_info'
-require_relative 'plugins/worldweather'
-require_relative 'plugins/wunderground'
 require 'open-uri'
 require 'nokogiri'
 require 'cgi'
+
+#Helpers
+Dir["helpers/*.rb"].each {|file| require_relative file }
+Dir["helpers/*.rb"].each { |file| IO.foreach(file) { |p| eval("include " + p.split('module ').last.strip) unless !p.match(/^module/) }}
+
+#Plugins
+Dir["plugins/*.rb"].each {|file| require_relative file }
 
 #Config
 options = {}
@@ -108,21 +98,6 @@ bot = Cinch::Bot.new do
       bot.nick = nick
     else
       m.reply NOTADMIN, true
-    end
-  end
-
-  # Change the topic of the current channel
-  on :message, /^[#{PREFIX}]topic (.+)$/i do |m, topic|
-    if m.channel.nil?
-      m.reply "Silly #{m.user.nick}: This isn't a channel!"
-    else
-      if is_chanadmin?(m.channel,m.user) && is_botpowerful?(m.channel)
-        m.channel.topic = topic
-      elsif !is_chanadmin?(m.channel,m.user)
-        m.reply NOTADMIN, true
-      elsif !is_botpowerful?(m.channel)
-        m.reply NOTOPBOT, true
-      end
     end
   end
 
