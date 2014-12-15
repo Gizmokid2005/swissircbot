@@ -52,7 +52,7 @@ class Wunderground
           pressuremb  = weather['pressure_mb']
           link        = weather['ob_url']
 
-          return Format(:bold,"Current Weather") + " in #{location} (As of #{time}) - " + Format(:underline,"#{wxdesc}") + ", #{temp}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph), " + Format(:bold,"Visbility:") + " #{visimi}mi (#{visikm}km), " + Format(:bold,"Pressure:") +" #{pressurein}inHg (#{pressuremb}mbar). #{link}"
+          return Format(:bold,"Current Weather") + " in #{location} (As of #{time}) - " + Format(:bold,"#{wxdesc}") + ", #{temp}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph), " + Format(:bold,"Visbility:") + " #{visimi}mi (#{visikm}km), " + Format(:bold,"Pressure:") +" #{pressurein}inHg (#{pressuremb}mbar). #{link}"
 
         elsif data.include?('response')
 
