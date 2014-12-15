@@ -109,7 +109,7 @@ class Tools
     end
   end
 
-  # Add a user as an admin of the bot for a specific channel
+  # Add a user as an admin of the bot for a specific channel (or current channel if none specified)
   def caddadmin(m, nick, channel)
     channel = m.channel if channel.nil?
     if is_chanadmin?(channel, m.user)
@@ -122,7 +122,7 @@ class Tools
     end
   end
 
-  # Remove a user as an admin of the bot for the specific channel
+  # Remove a user as an admin of the bot for the specific channel (or current channel if none specified)
   def cremadmin(m, nick, channel)
     channel = m.channel if channel.nil?
     if is_chanadmin?(channel, m.user)
