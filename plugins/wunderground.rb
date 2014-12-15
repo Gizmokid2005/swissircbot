@@ -39,7 +39,7 @@ class Wunderground
 
           weather     = data['current_observation']
           location    = weather['display_location']['full']
-          time        = weather['observation_time']
+          time        = weather['observation_time'].partition(", ").last
           wxdesc      = weather['weather']
           temp        = weather['temperature_string']
           humidity    = weather['relative_humidity']
@@ -52,7 +52,7 @@ class Wunderground
           pressuremb  = weather['pressure_mb']
           link        = weather['ob_url']
 
-          return "Current Weather in #{location} (#{time}) - #{wxdesc}, #{temp}, humidity: #{humidity}, wind: #{winddir} #{windmph}mph (#{windkph}kph), visbility: #{visimi}mi (#{visikm}km), pressure: #{pressurein}inHg (#{pressuremb}mbar). #{link}"
+          return Format(:bold,"Current Weather") + " in #{location} (As of #{time}) - " + Format(:underline,"#{wxdesc}") + ", #{temp}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph), " + Format(:bold,"Visbility:") + " #{visimi}mi (#{visikm}km), " + Format(:bold,"Pressure:") +" #{pressurein}inHg (#{pressuremb}mbar). #{link}"
 
         elsif data.include?('response')
 
