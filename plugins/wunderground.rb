@@ -60,7 +60,7 @@ class Wunderground
           details     = error['description']
           type        = error['type']
 
-          return "Sorry, the API returned error type: '#{type}' with a desciption of: '#{details}'."
+          return "Sorry, the API returned error type: '#{type}' with a description of: '#{details}'."
 
         else
 
