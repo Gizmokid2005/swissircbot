@@ -24,7 +24,7 @@ class WorldWeather
       if weather.include?('current_condition')
         curcond     = weather['current_condition'][0]
         location    = weather['nearest_area'][0]['areaName'][0]['value']
-        time        = curcond['localObsDateTime']
+        time        = DateTime.parse(curcond['localObsDateTime']).strftime("%X")
         wxdesc      = curcond['weatherDesc'][0]['value']
         tempf       = curcond['temp_F']
         tempc       = curcond['temp_C']
@@ -34,7 +34,7 @@ class WorldWeather
         windkph     = curcond['windspeedKmph']
         visibility  = curcond['visibility']
         pressure    = curcond['pressure']
-        return "Current Weather in #{location} as of #{time} - #{wxdesc}, #{tempf}F (#{tempc}C), humidity: #{humidity}%, wind: #{winddir} #{windmph}mph (#{windkph}kph), visibility: #{(visibility.to_i * 0.621371).round(2)}mi (#{visibility}km), pressure: #{(pressure.to_i * 0.02953).round(2)}inHg (#{pressure}mbar)."
+        return Format(:bold,"Current Weather") + " in #{location} as of #{time} - " + Format(:bold,"#{wxdesc}") + ", #{tempf}F (#{tempc}C), " + Format(:bold,"humidity:") + " #{humidity}%, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph), " + Format(:bold,"Visibility:") + " #{(visibility.to_i * 0.621371).round(2)}mi (#{visibility}km), " + Format(:bold,"Pressure:") + " #{(pressure.to_i * 0.02953).round(2)}inHg (#{pressure}mbar)."
       else
         error = weather['error'][0]['msg']
         if error.include? "matching weather location"
