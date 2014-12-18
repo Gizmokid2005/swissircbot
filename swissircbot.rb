@@ -5,6 +5,7 @@ require 'optparse'
 require 'open-uri'
 require 'nokogiri'
 require 'cgi'
+require 'active_support/all'
 
 #Helpers
 Dir["helpers/*.rb"].each {|file| require_relative file }
@@ -76,6 +77,7 @@ bot = Cinch::Bot.new do
     c.password  = PASSWORD
     c.channels  = CHANNELS
     c.plugins.prefix = PREFIX
+    # c.plugins.plugins = Dir["plugins/*.rb"].each { |file| (File.basename(file, '.rb')).camelize.constantize }
     c.plugins.plugins = [
         DownUp,
         Google,
