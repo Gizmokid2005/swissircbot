@@ -3,7 +3,7 @@ class Memos
 
   listen_to :message
 
-  match /(msg|tell|ask) (.+?) (.+)/i, method: :memo
+  match /(tell|ask) (.+?) (.+)/i, method: :memo
 
   def memo(m, mtype, who, text)
     if who == m.user.nick
@@ -11,7 +11,7 @@ class Memos
     elsif who == m.bot.nick
       m.reply "I'm not interested.", true
     elsif
-      location = if m.channel then m.channel.to_s else 'private 'end
+      location = if m.channel then m.channel.to_s else 'private ' end
       save_memo(who, m.user.nick, location, mtype, text, DateTime.now)
       m.reply "#{m.user.nick}: I'll let #{who} know when I see them."
     end
