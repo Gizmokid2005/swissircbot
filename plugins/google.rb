@@ -13,10 +13,10 @@ class Google
 
   def search(query)
 
-    url = "http://www.google.com/search?q=#{CGI.escape(query)}"
+    url = "http://www.google.com/search?q=#{CGI.escape(query)}&ie=utf-8&oe=utf-8"
     @res = Nokogiri.parse(open(url.to_s).read).at("h3.r")
     return "Google is stumped: #{url}" if @res.nil?
-    CGI.unescape_html "#{title} - #{URI.unescape(link)}"
+    CGI.unescape_html "#{title} - #{URI.unescape(link)} from: #{url}"
 
   end
 
