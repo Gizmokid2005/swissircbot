@@ -7,11 +7,11 @@ require 'nokogiri'
 require 'cgi'
 require 'active_support/all'
 
-#Helpers
+#Dynamically load and require any Helpers
 Dir["helpers/*.rb"].each {|file| require_relative file }
 Dir["helpers/*.rb"].each { |file| IO.foreach(file) { |p| eval("include " + p.split('module ').last.strip) unless !p.match(/^module/) }}
 
-#Plugins
+#Dynamically require all Plugins
 Dir["plugins/*.rb"].each {|file| require_relative file }
 
 #Config
@@ -77,20 +77,7 @@ bot = Cinch::Bot.new do
     c.password  = PASSWORD
     c.channels  = CHANNELS
     c.plugins.prefix = PREFIX
-    # c.plugins.plugins = Dir["plugins/*.rb"].each { |file| (File.basename(file, '.rb')).camelize.constantize }
-    c.plugins.plugins = [
-        DownUp,
-        Google,
-        Memos,
-        Misc,
-        Shorten,
-        SimpleReplies,
-        Tools,
-        UrbanDictionary,
-        UrlInfo,
-        Wunderground,
-        WorldWeather
-    ]
+    c.plugins.plugins = Dir["plugins/*.rb"].map { |file| (File.basename(file, '.rb')).camelize.constantize }
 
   end
 

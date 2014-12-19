@@ -35,4 +35,21 @@ module DBHelpers
     return result
   end
 
+  def i_see(nick, location, time)
+    db = open_create_db
+    if db
+      db.execute("INSERT OR REPLACE INTO seen(id, nick, location, time) VALUES((SELECT id FROM seen WHERE nick = ?),?,?,?);", nick, nick, location, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
+    end
+    db.close
+  end
+
+  def seen_who(nick)
+    db = open_create_db
+    if db
+      result = db.execute("SELECT location, time FROM seen WHERE nick = ?", nick)
+    end
+    db.close
+    return result
+  end
+
 end

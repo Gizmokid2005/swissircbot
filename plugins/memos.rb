@@ -18,7 +18,6 @@ class Memos
   end
 
   def listen(m)
-    #This is stuff.
     memos = get_memos(m.user.nick)
     if memos.any?
       memos.each do |mem|
