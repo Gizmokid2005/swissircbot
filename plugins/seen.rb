@@ -5,7 +5,7 @@ class Seen
 
   match /seen (.+)/i, method: :seen
 
-  def seen(m, who)
+  def seen(m,who)
     if who == bot.nick
       m.reply "I'm right here.", true
     elsif who == m.user.nick

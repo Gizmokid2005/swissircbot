@@ -5,7 +5,7 @@ class Memos
 
   match /(tell|ask) (.+?) (.+)/i, method: :memo
 
-  def memo(m, mtype, who, text)
+  def memo(m,mtype,who,text)
     if who == m.user.nick
       m.reply "tell that to yourself...", true
     elsif who == m.bot.nick
