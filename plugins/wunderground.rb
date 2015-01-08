@@ -29,7 +29,7 @@ class Wunderground
       @latlong = @loc['RESULTS'][0]['ll']
 
       # http://api.wunderground.com/api/APIKEY/features/settings/q/query.format
-      uri = URI.parse("http://api.wunderground.com/api/#{WUWEATHERAPIKEY}/conditions/q/#{@latlong.gsub(" ",",")}.json")
+      uri = URI.parse("http://api.wunderground.com/api/#{WUWEATHERAPIKEY}/conditions/forecast/q/#{@latlong.gsub(" ",",")}.json")
       Net::HTTP.start(uri.host, uri.port) do |http|
 
         resp        = Net::HTTP.get_response(uri)
@@ -38,21 +38,29 @@ class Wunderground
         if data.include?('current_observation')
 
           weather     = data['current_observation']
+          forecast    = data['forecast']
           location    = weather['display_location']['full']
           time        = weather['observation_time'].partition(", ").last
           wxdesc      = weather['weather']
           temp        = weather['temperature_string']
+          feelslike   = weather['feelslike_string']
           humidity    = weather['relative_humidity']
           winddir     = weather['wind_dir']
           windmph     = weather['wind_mph']
           windkph     = weather['wind_kph']
-          visimi      = weather['visibility_mi']
-          visikm      = weather['visibility_km']
-          pressurein  = weather['pressure_in']
-          pressuremb  = weather['pressure_mb']
           link        = weather['ob_url']
+          fcday1      = forecast['txt_forecast']['forecastday'][0]['title']
+          fcday1txt   = forecast['txt_forecast']['forecastday'][0]['fcttext']
+          fcday2      = forecast['txt_forecast']['forecastday'][1]['title']
+          fcday2txt   = forecast['txt_forecast']['forecastday'][1]['fcttext']
+          fcday1f     = forecast['simpleforecast']['forecastday'][0]['high']['fahrenheit']
+          fcday1c     = forecast['simpleforecast']['forecastday'][0]['high']['celsius']
+          fcday2f     = forecast['simpleforecast']['forecastday'][0]['low']['fahrenheit']
+          fcday2c     = forecast['simpleforecast']['forecastday'][0]['low']['celsius']
+          fcday1txt = fcday1txt.gsub(fcday1f + "F", fcday1f + "F (" + fcday1c + "C)")
+          fcday2txt = fcday2txt.gsub(fcday2f + "F", fcday2f + "F (" + fcday2c + "C)")
 
-          return Format(:bold,"Current Weather") + " in #{location} (As of #{time}) - " + Format(:bold,"#{wxdesc}") + ", #{temp}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph), " + Format(:bold,"Visbility:") + " #{visimi}mi (#{visikm}km), " + Format(:bold,"Pressure:") +" #{pressurein}inHg (#{pressuremb}mbar). #{link}"
+          return Format(:bold,"Current:: #{location}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) | " + Format(:bold,"#{fcday1}") + ": #{fcday1txt} " + Format(:bold,"#{fcday2}") + ": #{fcday2txt} - #{link}"
 
         elsif data.include?('response')
 
