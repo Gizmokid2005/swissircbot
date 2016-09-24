@@ -13,7 +13,7 @@ class Memos
     elsif
       location = if m.channel then m.channel.to_s else 'private ' end
       save_memo(who, m.user.nick, location, mtype, text, DateTime.now)
-      m.reply "#{m.user.nick}: I'll let #{who} know when I see them."
+      m.reply "I'll let #{who} know when I see them.", true
     end
   end
 
