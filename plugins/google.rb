@@ -7,7 +7,7 @@ class Google
 
   match /google (.+)/i
 
-  def execute(m,query)
+  def execute(m, query)
     m.reply search(query), true
   end
 

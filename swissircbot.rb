@@ -57,6 +57,7 @@ p $config
 $alladmins       = $config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
 $adminhash       = $config['admin']['channel']
 $superadmins     = $config['superadmin']
+$moderators      = $config['moderator']
 SERVER           = $config['server']
 NICK             = $config['nick']
 PASSWORD         = $config['password']

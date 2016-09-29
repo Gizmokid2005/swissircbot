@@ -12,6 +12,8 @@ class Tools
   match /deop (.+)/i, method: :cdeop
   match /addadmin (\S+)(?: (.+))?/i, method: :caddadmin
   match /remadmin (\S+)(?: (.+))?/i, method: :cremadmin
+  match /addmod (\S+)(?: (.+))?/i, method: :caddmod
+  match /remmod (\S+)(?: (.+))?/i, method: :cremmod
   match /topic (.+)$/i, method: :ctopic
 
   # Kick a user from a channel for a specific reason (or no reason)
@@ -115,7 +117,7 @@ class Tools
     if is_chanadmin?(channel, m.user)
       $adminhash[channel] << nick
       $config['admin']['channel'] = $adminhash
-      File.open('irctest.yml', 'wb') { |f| f.write $config.to_yaml }
+      File.open($conffile, 'wb') { |f| f.write $config.to_yaml }
       m.reply "#{nick} has been added as an admin for #{channel}.", true
     else
       m.reply NOTADMIN, true
@@ -128,8 +130,32 @@ class Tools
     if is_chanadmin?(channel, m.user)
       $adminhash[channel].delete nick
       $config['admin']['channel'] = $adminhash
-      File.open('irctest.yml', 'wb') { |f| f.write $config.to_yaml }
+      File.open($conffile, 'wb') { |f| f.write $config.to_yaml }
       m.reply "#{nick} has been removed as an admin for #{channel}.", true
+    else
+      m.reply NOTADMIN, true
+    end
+  end
+
+  # Add a user as a moderator of this bot
+  def caddmod(m, nick)
+    if is_supadmin?(m.user)
+      $moderators << nick
+      $config['moderator'] = $moderators
+      File.open($conffile, 'wb') { |f| f.write $config.to_yaml }
+      m.reply "#{nick} has been added as a moderator.", true
+    else
+      m.reply NOTADMIN, true
+    end
+  end
+
+  # Remove a user as a moderator of this bot
+  def cremmod(m, nick)
+    if is_supadmin?(m.user)
+      $moderators.delete nick
+      $config['moderator'] = $moderators
+      File.open($conffile, 'wb') { |f| f.write $config.to_yaml }
+      m.reply "#{nick} has been removed as a moderator.", true
     else
       m.reply NOTADMIN, true
     end

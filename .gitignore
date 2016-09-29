@@ -24,3 +24,5 @@ doc/
 *.iws
 irc.yml
 swissircbot.sqlite3
+Gemfile.lock
+keep-alive

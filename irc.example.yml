@@ -1,12 +1,16 @@
 server: irc.freenode.net
 nick: BOTNICKHERE
 password: PASSWORDHERE
+superadmin:
+- 'Gizmokid2005'
 admin:
   channel:
     '#CHANNELHERE':
     - 'ADMINNICKHERE'
     '#CHANNEL2HERE':
     - 'OTHERADMINNICKHERE'
+moderator:
+- 'MODNICKHERE'
 channels:
 - '#cinch-bots'
 superadmin:
