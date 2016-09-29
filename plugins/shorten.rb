@@ -6,7 +6,7 @@ class Shorten
 
   match /shorten (.+)/
 
-  def execute(m,url)
+  def execute(m, url)
     m.reply shorten(url), true
   end
 
