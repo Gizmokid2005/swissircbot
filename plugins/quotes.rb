@@ -8,7 +8,7 @@ class Quotes
   match /randquote/i, method: :findquote
 
   def addquote(m, quote)
-    sq = add_quote(quote, DateTime.now)
+    sq = add_quote(m.user.nick, quote, DateTime.now)
     m.reply "Quote #{sq[0][0]} saved", true
   end
 

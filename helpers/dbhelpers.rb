@@ -15,7 +15,7 @@ module DBHelpers
       db.execute("CREATE TABLE IF NOT EXISTS memos(id INTEGER PRIMARY KEY, nick VARCHAR(50), origin VARCHAR(50)
                   , location VARCHAR(10), mtype VARCHAR(5), message TEXT, time VARCHAR(50));")
       db.execute("CREATE TABLE IF NOT EXISTS seen(id INTEGER PRIMARY KEY, nick VARCHAR(50), location VARCHAR(10), time VARCHAR(50));")
-      db.execute("CREATE TABLE IF NOT EXISTS quotes(id INTEGER PRIMARY KEY, quote VARCHAR(800), time VARCHAR(50));")
+      db.execute("CREATE TABLE IF NOT EXISTS quotes(id INTEGER PRIMARY KEY, quote VARCHAR(800), user VARCHAR(50), time VARCHAR(50));")
     end
     return db
   end
@@ -55,10 +55,10 @@ module DBHelpers
     return result
   end
 
-  def add_quote(quote, time)
+  def add_quote(nick, quote, time)
     db = open_create_db
     if db
-      db.execute("INSERT INTO quotes(quote, time) VALUES(?,?);", quote, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
+      db.execute("INSERT INTO quotes(quote, user, time) VALUES(?,?,?);", quote, nick, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
     end
     result = db.execute("SELECT id FROM quotes WHERE time = ?", time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
     db.close
