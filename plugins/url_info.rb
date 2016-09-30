@@ -14,8 +14,8 @@ class UrlInfo
     agent = Mechanize.new
     agent.user_agent_alias = 'Linux Firefox'
 
-    if title = agent.get(url).title.gsub(/(\r)?(\n)+/, ' ').lstrip.first(400)
-      m.reply "Title: #{title} - #{url}"
+    if title = agent.get(url).title.gsub(/(\r)?(\n)+/, ' ').lstrip.first(200)
+      m.reply "Title: #{title}"
     else
       #m.reply "I don't know what to do with this.", true #Do we really need a reply?
     end

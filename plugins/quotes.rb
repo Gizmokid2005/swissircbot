@@ -3,7 +3,7 @@ class Quotes
 
   match /addquote (.+)/i, method: :addquote
   match /getquote (.+)/i, method: :getquote
-  match /deletequote (.+)/i, method: :delquote
+  match /(?:deletequote|delquote|rmquote) (.+)/i, method: :delquote
   match /findquote(?: (.+))?/i, method: :findquote
   match /randquote/i, method: :findquote
 
