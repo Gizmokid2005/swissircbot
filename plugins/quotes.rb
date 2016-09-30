@@ -46,7 +46,7 @@ class Quotes
     else
       quote = find_quote(text)
       if quote.any?
-        m.reply "ID: #{quote[0][0]}: #{quote[0][1]}", true
+        m.reply "[#{quote[0][0]}] #{quote[0][1]}", true
       else
         m.reply "Sorry, couldn't find a quote matching that.", true
       end
