@@ -114,7 +114,7 @@ class Tools
   # Add a user as an admin of the bot for a specific channel (or current channel if none specified)
   def caddadmin(m, nick, channel)
     channel = m.channel if channel.nil?
-    if is_chanadmin?(channel, m.user)
+    if is_chanadmin?(channel, m.user) || is_supadmin?(m.user)
       $adminhash[channel] << nick
       $config['admin']['channel'] = $adminhash
       File.open($conffile, 'wb') { |f| f.write $config.to_yaml }
@@ -127,7 +127,7 @@ class Tools
   # Remove a user as an admin of the bot for the specific channel (or current channel if none specified)
   def cremadmin(m, nick, channel)
     channel = m.channel if channel.nil?
-    if is_chanadmin?(channel, m.user)
+    if is_chanadmin?(channel, m.user) || is_supadmin?(m.user)
       $adminhash[channel].delete nick
       $config['admin']['channel'] = $adminhash
       File.open($conffile, 'wb') { |f| f.write $config.to_yaml }
