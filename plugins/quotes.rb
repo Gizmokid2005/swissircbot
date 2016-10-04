@@ -5,7 +5,7 @@ class Quotes
   match /getquote (.+)/i, method: :getquote
   match /(?:deletequote|delquote|rmquote) (.+)/i, method: :delquote
   match /findquote(?: (.+))?/i, method: :findquote
-  match /randquote/i, method: :findquote
+  match /(?:randquote|quote)/i, method: :findquote
 
   def addquote(m, quote)
     sq = add_quote(m.user.nick, quote, DateTime.now)
@@ -39,7 +39,7 @@ class Quotes
     if text.nil?
       quote = rand_quote()
       if quote.any?
-        m.reply "ID: #{quote[0][0]}: #{quote[0][1]}", true
+        m.reply "[#{quote[0][0]}] #{quote[0][1]}", true
       else
         m.reply "Sorry, there are no quotes to find.", true
       end
@@ -50,6 +50,15 @@ class Quotes
       else
         m.reply "Sorry, couldn't find a quote matching that.", true
       end
+    end
+  end
+
+  def randquote(m)
+    quote = rand_quote()
+    if quote.any?
+      m.reply "[#{quote[0][0]}] #{quote[0][1]}", true
+    else
+      m.reply "Sorry, there are no quotes to find.", true
     end
   end
 
