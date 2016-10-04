@@ -5,7 +5,7 @@ class Quotes
   match /getquote (.+)/i, method: :getquote
   match /(?:deletequote|delquote|rmquote) (.+)/i, method: :delquote
   match /findquote(?: (.+))?/i, method: :findquote
-  match /(?:randquote|quote)/i, method: :findquote
+  match /(?:randquote|quote)/i, method: :randquote
 
   def addquote(m, quote)
     sq = add_quote(m.user.nick, quote, DateTime.now)
