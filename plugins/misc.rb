@@ -1,8 +1,9 @@
 class Misc
   include Cinch::Plugin
 
-  match /4d3d3d3(?: (.+))?/, method: :c4d3d3d3
-  match /yo(?: (.+))?/, method: :cyo
+  match /4d3d3d3(?: (.+))?/i, method: :c4d3d3d3
+  match /yo(?: (.+))?/i, method: :cyo
+  match /numa(?: (.+))?/i, method: :cnuma
 
   def c4d3d3d3(m, nick) #OhGodWhy
     if nick.nil?
@@ -17,6 +18,14 @@ class Misc
       m.reply "Yo!", true
     else
       m.reply "#{nick}: #{m.user.nick} says Yo!"
+    end
+  end
+
+  def cnuma(m, nick) #AgeOldAwesome!
+    if nick.nil?
+      m.reply "https://www.youtube.com/watch?v=KmtzQCSh6xk", true
+    else
+      m.reply "#{nick}: #{m.user.nick} points you to https://www.youtube.com/watch?v=KmtzQCSh6xk"
     end
   end
 

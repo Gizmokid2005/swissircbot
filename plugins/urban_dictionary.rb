@@ -5,7 +5,7 @@ require 'open-uri'
 class UrbanDictionary
   include Cinch::Plugin
 
-  match /(?:urban|ud) (.*)/
+  match /(?:urban|ud) (.*)/i
 
   def execute(m, query)
     m.reply "#{query} - #{search(query)}", true

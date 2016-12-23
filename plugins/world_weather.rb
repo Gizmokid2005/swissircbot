@@ -4,7 +4,7 @@ require 'json'
 class WorldWeather
   include Cinch::Plugin
 
-  match /weather (.+)$/
+  match /weather (.+)$/i
 
   def execute(m, location)
     m.reply weather(location), true

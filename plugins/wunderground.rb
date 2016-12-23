@@ -4,7 +4,7 @@ require 'json'
 class Wunderground
   include Cinch::Plugin
 
-  match /wu (.+)$/
+  match /wu (.+)$/i
 
   def execute(m, location)
     m.reply weather(location), true
