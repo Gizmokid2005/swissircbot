@@ -10,7 +10,7 @@ class UrlInfo
   def execute(m, url)
     # Blacklist support??
 
-    return if m.message.to_s.start_with?(PREFIX)
+    #return if m.message.to_s.start_with?(PREFIX)
 
     agent = Mechanize.new
     agent.user_agent_alias = 'Linux Firefox'
