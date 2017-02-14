@@ -127,7 +127,7 @@ bot = Cinch::Bot.new do
   end
 
   # Quit IRC
-  on :message, /^[#{PREFIX}]quit/i do |m|
+  on :message, /^[#{PREFIX}]quit$/i do |m|
     if is_supadmin?(m.user)
       if m.channel.nil?
         # Don't reply to a PM.
