@@ -101,6 +101,7 @@ class Help
 
   listen_to :connect, :method => :on_connect
   match /help(.*)/i, :prefix => lambda{|msg| Regexp.compile("^#{Regexp.escape(msg.bot.nick)}:?\s*")}, :react_on => :channel
+  match /help(.*)/i, :react_on => :channel
   match /help(.*)/i, :use_prefix => false, :react_on => :private
 
   set :help, <<-EOF
