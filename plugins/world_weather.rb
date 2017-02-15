@@ -4,6 +4,11 @@ require 'json'
 class WorldWeather
   include Cinch::Plugin
 
+  set :help, <<-HELP
+weather <location>
+  This will return weather results for location from WorldWeather.
+  HELP
+
   match /weather (.+)$/i
 
   def execute(m, location)

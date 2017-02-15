@@ -4,6 +4,11 @@ require 'json'
 class Wunderground
   include Cinch::Plugin
 
+  set :help, <<-HELP
+wu <location>
+  This will return the weather for location from WeatherUnderground.
+  HELP
+
   match /wu (.+)$/i
 
   def execute(m, location)

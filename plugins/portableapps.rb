@@ -1,6 +1,10 @@
 class Portableapps
   include Cinch::Plugin
 
+  set :help, <<-HELP
+this plugin implements no commands
+  HELP
+
   set :prefix, ''
 
   match /(help!|help)/i, method: :pahelp

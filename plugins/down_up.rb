@@ -3,6 +3,13 @@ require 'mechanize'
 class DownUp
   include Cinch::Plugin
 
+  set :help, <<-HELP
+down <url>
+  This will check if url is up.
+up <url>
+  This will check if url is up.
+  HELP
+
   match /(?:down|up) (.+)/i
 
   def execute(m,url)

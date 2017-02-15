@@ -1,6 +1,11 @@
 class Seen
   include Cinch::Plugin
 
+  set :help, <<-HELP
+seen <user>
+  This returns the last time I saw user speak.
+  HELP
+
   listen_to :message, method: :i_spy
 
   match /seen (.+)/i, method: :seen

@@ -13,6 +13,7 @@ Dir["helpers/*.rb"].each { |file| IO.foreach(file) { |p| eval("include " + p.spl
 
 #Dynamically require all Plugins
 Dir["plugins/*.rb"].each {|file| require_relative file }
+# require_relative "plugins/help"
 
 #Config
 options = {}
@@ -79,6 +80,9 @@ bot = Cinch::Bot.new do
     c.channels  = CHANNELS
     c.plugins.prefix = PREFIX
     c.plugins.plugins = Dir["plugins/*.rb"].map { |file| (File.basename(file, '.rb')).camelize.constantize }
+    c.plugins.options[Help] = {
+      :intro => "%s at your service."
+    }
 
   end
 

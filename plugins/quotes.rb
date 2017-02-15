@@ -1,6 +1,19 @@
 class Quotes
   include Cinch::Plugin
 
+  set :help, <<-HELP
+addquote <quote>
+  This will save quote.
+deletequote/delquote/rmquote <id>
+  This will remove the quote matching the given id.
+findquote/quote [optionalsearch]
+  This will return a random quote unless optionalsearch is specified, which will return a quote matching that term.
+getquote <id>
+  This will return the quote with the given id.
+randquote
+  This will return a random quote.
+  HELP
+
   match /addquote (.+)/i, method: :addquote
   match /getquote (.+)/i, method: :getquote
   match /(?:deletequote|delquote|rmquote) (.+)/i, method: :delquote

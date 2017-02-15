@@ -1,6 +1,13 @@
 class Memos
   include Cinch::Plugin
 
+  set :help, <<-HELP
+tell <user> <message>
+  This will send user the message the next time they speak.
+ask <user> <message>
+  This will send user the message the next time they speak.
+  HELP
+
   listen_to :message
 
   match /(tell|ask) (.+?) (.+)/i, method: :memo

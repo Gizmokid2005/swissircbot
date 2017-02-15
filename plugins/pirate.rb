@@ -4,6 +4,11 @@ require 'json'
 class Pirate
   include Cinch::Plugin
 
+  set :help, <<-HELP
+pirate <text>
+  This will translate the text into pirate speak.
+  HELP
+
   match /pirate (.+)/i
 
   def execute(m, text)

@@ -5,6 +5,11 @@ require 'open-uri'
 class UrbanDictionary
   include Cinch::Plugin
 
+  set :help, <<-HELP
+urban/ud <word>
+  This will return the definion of word from urbandictionary.
+  HELP
+
   match /(?:urban|ud) (.*)/i
 
   def execute(m, query)
