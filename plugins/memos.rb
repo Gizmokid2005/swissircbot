@@ -2,9 +2,7 @@ class Memos
   include Cinch::Plugin
 
   set :help, <<-HELP
-tell <user> <message>
-  This will send user the message the next time they speak.
-ask <user> <message>
+tell/ask <user> <message>
   This will send user the message the next time they speak.
   HELP
 

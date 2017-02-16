@@ -105,13 +105,12 @@ class Help
   match /help(.*)/i, :use_prefix => false, :react_on => :private
 
   set :help, <<-EOF
-[/msg] cinch help
-  Post a short introduction and list available plugins.
-[/msg] cinch help <plugin>
-  List all commands available in a plugin.
-[/msg] cinch help search <query>
-  Search all plugin’s commands and list all commands containing
-  <query>.
+help
+  Post a short introduction and list available plugins (works in PM as well).
+help <plugin>
+  List all commands available in a plugin (works in PM as well).
+help search <query>
+  Search all plugin’s commands and list all commands containing <query> (works in PM as well).
   EOF
 
   def execute(msg, query)

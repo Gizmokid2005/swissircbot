@@ -1,6 +1,11 @@
 class SimpleReplies
   include Cinch::Plugin
   include CustomHelpers
+  
+  set :help, <<-HELP
+n/a
+  This plugin implements no commands.
+  HELP
 
   set :prefix, ''
 

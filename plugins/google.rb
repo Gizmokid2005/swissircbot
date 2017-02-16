@@ -5,6 +5,11 @@ require 'open-uri'
 class Google
   include Cinch::Plugin
 
+  set :help, <<-HELP
+google <term>
+  This will return the first google result for term.
+  HELP
+
   match /google (.+)/i
 
   def execute(m, query)

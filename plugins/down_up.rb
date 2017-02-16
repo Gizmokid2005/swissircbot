@@ -4,9 +4,7 @@ class DownUp
   include Cinch::Plugin
 
   set :help, <<-HELP
-down <url>
-  This will check if url is up.
-up <url>
+down/up <url>
   This will check if url is up.
   HELP
 

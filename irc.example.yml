@@ -1,6 +1,9 @@
 server: irc.freenode.net
 nick: BOTNICKHERE
 password: PASSWORDHERE
+commandprefix: !
+logfile: /path/to/log.log
+dictfile: /path/to/dict.txt
 superadmin:
 - 'Gizmokid2005'
 admin:
@@ -17,8 +20,6 @@ superadmin:
 - 'SUPERADMINNICKHERE'
 notadmin: You don't have permissions to do that. Stop it. #Non-Admin deny reply can be modified.
 notopbot: I don't have power to do that stupid. #Same as above except for bot's lack of power.
-logfile: /path/to/log.log
-commandprefix: !
 
 #World Weather API key
 wweatherapikey: APIKEYHERE

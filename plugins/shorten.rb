@@ -4,6 +4,11 @@ require 'json'
 class Shorten
   include Cinch::Plugin
 
+  set :help, <<-HELP
+shorten <url>
+  This will return a short url for the given url.
+  HELP
+
   match /shorten (.+)/
 
   def execute(m, url)
