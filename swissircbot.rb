@@ -54,7 +54,6 @@ else
 end
 
 $config = YAML.load_file($conffile)
-p $config
 $alladmins       = $config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
 $adminhash       = $config['admin']['channel']
 $superadmins     = $config['superadmin']
@@ -66,6 +65,7 @@ CHANNELS         = $config['channels']
 NOTADMIN         = $config['notadmin']
 NOTOPBOT         = $config['notopbot']
 LOGFILE          = $config['logfile']
+DICTFILE         = $config['dictfile']
 PREFIX           = $config['commandprefix']
 WWEATHERAPIKEY   = $config['wweatherapikey']
 WUWEATHERAPIKEY  = $config['wuweatherapikey']
@@ -79,7 +79,7 @@ bot = Cinch::Bot.new do
     c.password  = PASSWORD
     c.channels  = CHANNELS
     c.plugins.prefix = PREFIX
-    c.plugins.plugins = Dir["plugins/*.rb"].map { |file| (File.basename(file, '.rb')).camelize.constantize }
+    c.plugins.plugins = Dir["plugins/*.rb"].sort.map { |file| (File.basename(file, '.rb')).camelize.constantize }
     c.plugins.options[Help] = {
       :intro => "%s at your service."
     }
