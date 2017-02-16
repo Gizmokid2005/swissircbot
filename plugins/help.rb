@@ -101,7 +101,7 @@ class Help
 
   listen_to :connect, :method => :on_connect
   match /help(.*)/i, :prefix => lambda{|msg| Regexp.compile("^#{Regexp.escape(msg.bot.nick)}:?\s*")}, :react_on => :channel
-  match /help(.*)/i, :react_on => :channel
+  match /help$/i, method: :generic
   match /help(.*)/i, :use_prefix => false, :react_on => :private
 
   set :help, <<-EOF
@@ -120,8 +120,7 @@ class Help
 
     # Act depending on the subcommand.
     if query.empty?
-      response << @intro_message.strip << "\n"
-      response << "Available plugins:\n"
+      response << @intro_message.strip << " Available plugins:\n"
       response << bot.config.plugins.plugins.map{|plugin| format_plugin_name(plugin)}.join(", ")
       response << "\n'help <plugin>' for help on a specific plugin."
 
@@ -150,6 +149,17 @@ class Help
 
     response << "Sorry, nothing found." if response.empty?
     msg.reply(response)
+  end
+
+  def generic(m)
+    # Help with no query using prefix.
+    response = ""
+
+    response << @intro_message.strip << " Available plugins:\n"
+    response << bot.config.plugins.plugins.map{|plugin| format_plugin_name(plugin)}.join(", ")
+    response << "\n'help <plugin>' for help on a specific plugin."
+
+    m.reply(response)
   end
 
   # Called on startup. This method iterates the list of registered plugins
