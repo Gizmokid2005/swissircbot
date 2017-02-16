@@ -2,6 +2,35 @@ class Tools
   include Cinch::Plugin
   include CustomHelpers
 
+  set :help, <<-HELP
+kick <user> [optreason]
+  This kicks user, with optreason if given.
+r <user>
+  This /removes the user.
+ban <user> [optreason]
+  This bans user, with optreason if given.
+unban <user>
+  This unbans user.
+mute <user>
+  This mutes user.
+unmute <user>
+  This unmutes user.
+op <user>
+  This ops user.
+deop <user>
+  This deops user.
+addadmin <user> [optchannel]
+  This adds user as an admin of this bot in this channel or in optchannel if given.
+remadmin <user> [optchannel]
+  This removes user as an admin of this bot in this channel or in optchannel if given.
+addmod <user> [optchannel]
+  This adds user as a mod of this bot in this channel or in optchannel if given.
+remmod <user> [optchannel]
+  This removes user as a mod of this bot in this channel or in optchannel if given.
+topic <topic>
+  This sets the topic for this channel.
+  HELP
+
   match /kick (\S+)(?: (.+))?/i, method: :ckick
   match /r (.+?)/i, method: :crem
   match /ban (\S+)(?: (.+))?/i, method: :cban

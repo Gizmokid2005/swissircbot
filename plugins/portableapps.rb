@@ -7,7 +7,7 @@ this plugin implements no commands
 
   set :prefix, ''
 
-  match /(help!|help)/i, method: :pahelp
+  match /(help!|help)/i, react_on: :channel, method: :pahelp
 
   def pahelp(m)
     if m.channel.name == "#portableapps"
