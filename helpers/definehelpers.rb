@@ -9,7 +9,7 @@ module DefineHelpers
   end
 
   def db
-    YAML.load_file(db_file)
+    YAML.load_file(db_file) || {}
   end
 
   def write_db(definitions)
