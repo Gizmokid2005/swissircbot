@@ -3,7 +3,7 @@ require 'sqlite3'
 module DBHelpers
 
   def open_create_db
-    db_file = File.join($confdir, "swissircbot.sqlite3")
+    db_file = File.join($confdir, "#{SERVER}_#{NICK}_db.sqlite3")
 
     if File.exists?(db_file)
       db = SQLite3::Database.open(db_file)
