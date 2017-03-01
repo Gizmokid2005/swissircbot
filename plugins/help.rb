@@ -100,9 +100,9 @@ class Help
   include Cinch::Plugin
 
   listen_to :connect, :method => :on_connect
-  match /help$/i, method: :allhelp, :prefix => lambda{|msg| Regexp.compile("^#{Regexp.escape(msg.bot.nick)}:?\s*")}
-  match /help$/i, method: :allhelp
-  match /help$/i, method: :allhelp, use_prefix: :false, react_on: :private
+  match /help$/i, method: :allhelp, :prefix => lambda{|msg| Regexp.compile("^#{Regexp.escape(msg.bot.nick)}:?\s*")}, react_on: :channel
+  match /help$/i, method: :allhelp, react_on: :channel
+  match /help$/i, method: :allhelp, :use_prefix => false, react_on: :private
 
   set :help, <<-EOF
 help
