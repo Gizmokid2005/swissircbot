@@ -17,7 +17,7 @@
 # None.
 #
 # == Configuration
-# Add the following to your bot’s configure.do stanza:
+# Add the following to your bots configure.do stanza:
 #
 #   config.plugins.options[Cinch::Help] = {
 #     :intro => "%s at your service."
@@ -25,7 +25,7 @@
 #
 # [intro]
 #   First message posted when the user issues 'help' to the bot
-#   without any parameters. %s is replaced with Cinch’s current
+#   without any parameters. %s is replaced with Cinchs current
 #   nickname.
 #
 # == Writing help messages
@@ -53,7 +53,7 @@
 # resulting in the help messages being cut. Instead, provide a web link or
 # something similar for full-blown descriptions.
 #
-# The command itself may be in any form you want (as long as it’s a single
+# The command itself may be in any form you want (as long as its a single
 # line), but I recommend the following conventions so users know how to
 # talk to the bot:
 #
@@ -76,11 +76,11 @@
 # the actual nickname of your bot.
 #
 # == Author
-# Marvin Gülker (Quintus)
+# Marvin Glker (Quintus)
 #
 # == License
 # A help plugin for Cinch.
-# Copyright © 2012 Marvin Gülker
+# Copyright  2012 Marvin Glker
 #
 # This program is free software: you can redistribute it and/or modify
 # it under the terms of the GNU Lesser General Public License as published by
@@ -100,9 +100,9 @@ class Help
   include Cinch::Plugin
 
   listen_to :connect, :method => :on_connect
-  match /help(.*)/i, :prefix => lambda{|msg| Regexp.compile("^#{Regexp.escape(msg.bot.nick)}:?\s*")}, :react_on => :channel
-  match /help$/i, method: :generic
-  match /help(.*)/i, :use_prefix => false, :react_on => :private
+  match /help$/i, method: :allhelp, :prefix => lambda{|msg| Regexp.compile("^#{Regexp.escape(msg.bot.nick)}:?\s*")}
+  match /help$/i, method: :allhelp
+  match /help$/i, method: :allhelp, use_prefix: :false, react_on: :private
 
   set :help, <<-EOF
 help
@@ -110,55 +110,15 @@ help
 help <plugin>
   List all commands available in a plugin (works in PM as well).
 help search <query>
-  Search all plugin’s commands and list all commands containing <query> (works in PM as well).
+  Search all plugins commands and list all commands containing <query> (works in PM as well).
   EOF
 
-  def execute(msg, query)
-    query = query.strip.downcase
+  def allhelp(m)
     response = ""
+    response << @intro_message.strip << " Available plugins: "
+    response << bot.config.plugins.plugins.map{ |p| format_plugin_name(p) }.join(", ")
 
-    # Act depending on the subcommand.
-    if query.empty?
-      response << @intro_message.strip << " Available plugins:\n"
-      response << bot.config.plugins.plugins.map{|plugin| format_plugin_name(plugin)}.join(", ")
-      response << "\n'help <plugin>' for help on a specific plugin."
-
-    # Help for a specific plugin
-    elsif plugin = @help.keys.find{|plugin| format_plugin_name(plugin) == query}
-      @help[plugin].keys.sort.each do |command|
-        response << format_command(command, @help[plugin][command], plugin)
-      end
-
-    # help search <...>
-    elsif query =~ /^search (.*)$/i
-      query2 = $1.strip
-      @help.each_pair do |plugin, hsh|
-        hsh.each_pair do |command, explanation|
-          response << format_command(command, explanation, plugin) if command.include?(query2)
-        end
-      end
-
-      # For plugins without help
-      response << "Sorry, no help available for the #{format_plugin_name(plugin)} plugin." if response.empty?
-
-    # Something we don't know what do do with
-    else
-      response << "Sorry, I cannot find '#{query}'."
-    end
-
-    response << "Sorry, nothing found." if response.empty?
-    msg.reply(response)
-  end
-
-  def generic(m)
-    # Help with no query using prefix.
-    response = ""
-
-    response << @intro_message.strip << " Available plugins:\n"
-    response << bot.config.plugins.plugins.map{|plugin| format_plugin_name(plugin)}.join(", ")
-    response << "\n'help <plugin>' for help on a specific plugin."
-
-    m.reply(response)
+    m.reply response, true
   end
 
   # Called on startup. This method iterates the list of registered plugins
@@ -167,7 +127,7 @@ help search <query>
   #
   #   {Plugin => {"command" => "explanation"}}
   #
-  # where +Plugin+ is the plugin’s class object. It also parses configuration
+  # where +Plugin+ is the plugins class object. It also parses configuration
   # options.
   def on_connect(msg)
     @help = {}
@@ -199,9 +159,9 @@ help search <query>
   def format_command(command, explanation, plugin)
     result = ""
 
-    result << "┌─ " << command << " ─── Plugin: " << format_plugin_name(plugin) << " ─" << "\n"
+    result << " " << command << "  Plugin: " << format_plugin_name(plugin) << " " << "\n"
     result << explanation.lines.map(&:strip).join(" ").chars.each_slice(80).map(&:join).join("\n")
-    result << "\n" << "└ ─ ─ ─ ─ ─ ─ ─ ─\n"
+    result << "\n" << "        \n"
 
     result
   end
@@ -214,3 +174,4 @@ help search <query>
   end
 
 end
+
