@@ -18,7 +18,13 @@ tell/ask <user> <message>
     elsif
       location = if m.channel then m.channel.to_s else 'private ' end
       save_memo(who, m.user.nick, location, mtype, text, DateTime.now)
-      m.reply "I'll let #{who} know when I see them.", true
+      if mtype == "tell"
+        m.reply "I'll let #{who} know when I see them.", true
+      elsif mtype == "ask"
+        m.reply "I'll ask #{who} that when I see them.", true
+      else
+        m.reply "I'll pass that along to #{who} when I see them.", true
+      end
     end
   end
 
