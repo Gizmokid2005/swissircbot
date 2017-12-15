@@ -23,10 +23,16 @@ addadmin <user> [optchannel]
   This adds user as an admin of this bot in this channel or in optchannel if given.
 remadmin <user> [optchannel]
   This removes user as an admin of this bot in this channel or in optchannel if given.
+listadmin/listadmins [optchannel]
+  This lists all the admins of this bot in this channel or in optchannel if given.
+listalladmin/listalladmins
+  This lists all the admins of this bot.
 addmod <user> [optchannel]
   This adds user as a mod of this bot in this channel or in optchannel if given.
 remmod <user> [optchannel]
   This removes user as a mod of this bot in this channel or in optchannel if given.
+listmod/listmods
+  This lists the mods of this bot.
 topic <topic>
   This sets the topic for this channel.
 whoami
@@ -42,9 +48,12 @@ whoami
   match /op (.+)/i, method: :cop
   match /deop (.+)/i, method: :cdeop
   match /addadmin (\S+)(?: (.+))?/i, method: :caddadmin
-  match /remadmin (\S+)(?: (.+))?/i, method: :cremadmin
+  match /(?:remadmin|rmadmin) (\S+)(?: (.+))?/i, method: :cremadmin
+  match /(?:listadmin|listadmins)(?: (.+))?/i, method: :clistadmins
+  match /(?:listalladmin|listalladmins)/i, method: :clistalladmins
   match /addmod (\S+)(?: (.+))?/i, method: :caddmod
-  match /remmod (\S+)(?: (.+))?/i, method: :cremmod
+  match /(?:remmod|rmmod) (\S+)(?: (.+))?/i, method: :cremmod
+  match /(?:listmod|listmods)/i, method: :clistmods
   match /topic (.+)$/i, method: :ctopic
   match /whoami/i, method: :cwhoami
   match /whois (.+)/i, method: :cwhois
@@ -170,6 +179,25 @@ whoami
     end
   end
 
+  # List the admins for the bot for the specific channel (or current if none specified)
+  def clistadmins(m, channel)
+    channel = m.channel if channel.nil?
+    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.user)
+      m.reply "The current admins are #{$adminhash[channel]}.", true
+    else
+      m.reply NOTADMIN, true
+    end
+  end
+
+  # List the admins for the bot for all channels
+  def clistalladmins(m)
+    if is_supadmin?(m.user) || is_admin?(m.user)
+      m.reply "The current admins are #{$adminhash}.", true
+    else
+      m.reply NOTADMIN, true
+    end
+  end
+
   # Add a user as a moderator of this bot
   def caddmod(m, nick)
     if is_supadmin?(m.user)
@@ -189,6 +217,15 @@ whoami
       $config['moderator'] = $moderators
       File.open($conffile, 'wb') { |f| f.write $config.to_yaml }
       m.reply "#{nick} has been removed as a moderator.", true
+    else
+      m.reply NOTADMIN, true
+    end
+  end
+
+  # List all of the mods for the channel
+  def clistmods(m, nick)
+    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.user) || is_mod?(m.user)
+      m.reply "The current mods are #{$moderators}", true
     else
       m.reply NOTADMIN, true
     end
