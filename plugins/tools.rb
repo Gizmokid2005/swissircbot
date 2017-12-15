@@ -29,6 +29,8 @@ remmod <user> [optchannel]
   This removes user as a mod of this bot in this channel or in optchannel if given.
 topic <topic>
   This sets the topic for this channel.
+whoami
+  This returns who the bot sees you as with all of your roles given to the bot.
   HELP
 
   match /kick (\S+)(?: (.+))?/i, method: :ckick
@@ -44,6 +46,7 @@ topic <topic>
   match /addmod (\S+)(?: (.+))?/i, method: :caddmod
   match /remmod (\S+)(?: (.+))?/i, method: :cremmod
   match /topic (.+)$/i, method: :ctopic
+  match /whoami/i, method: :cwhoami
 
   # Kick a user from a channel for a specific reason (or no reason)
   def ckick(m, nick, reason)
@@ -202,6 +205,15 @@ topic <topic>
       elsif !is_botpowerful?(m.channel)
         m.reply NOTOPBOT, true
       end
+    end
+  end
+
+  # Tell a user what I know about them
+  def cwhoami(m)
+    if userroles(m.channel,m.user).empty?
+      m.reply "You're #{m.user.nick}, with no roles."
+    else
+      m.reply "You're #{m.user.nick}, with the following roles #{userroles(m.channel,m.user)}.", true
     end
   end
 

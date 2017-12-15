@@ -20,6 +20,24 @@ module CustomHelpers
     $adminhash[channel].include?(user.authname.to_s) && user.authed? == true
   end
 
+  # What are the users roles?
+  def userroles(channel, user)
+    roles = Array.new()
+    if is_supadmin?(user)
+      roles << 'Super Admin'
+    end
+    if is_admin?(user)
+      roles << 'Admin'
+    end
+    if is_chanadmin?(channel,user)
+      roles << 'ChanAdmin'
+    end
+    if is_mod?(user)
+      roles << 'Mod'
+    end
+    return roles
+  end
+
   # Is the bot powerful (opped)?
   def is_botpowerful?(channel)
     channel.opped?(bot)
