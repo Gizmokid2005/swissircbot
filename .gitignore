@@ -23,6 +23,6 @@ doc/
 *.iml
 *.iws
 irc.yml
-swissircbot.sqlite3
+*.sqlite3
 Gemfile.lock
 keep-alive
