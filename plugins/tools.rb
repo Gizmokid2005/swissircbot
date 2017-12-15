@@ -47,6 +47,7 @@ whoami
   match /remmod (\S+)(?: (.+))?/i, method: :cremmod
   match /topic (.+)$/i, method: :ctopic
   match /whoami/i, method: :cwhoami
+  match /whois (.+)/i, method: :cwhois
 
   # Kick a user from a channel for a specific reason (or no reason)
   def ckick(m, nick, reason)
@@ -214,6 +215,16 @@ whoami
       m.reply "You're #{m.user.nick}, with no roles."
     else
       m.reply "You're #{m.user.nick}, with the following roles #{userroles(m.channel,m.user)}.", true
+    end
+  end
+
+  # Tell a user what I know about them
+  def cwhois(m, nick)
+    nick = User(nick)
+    if userroles(m.channel,nick).empty?
+      m.reply "That's #{nick}, with no roles."
+    else
+      m.reply "That's #{nick}, with the following roles #{userroles(m.channel,nick)}.", true
     end
   end
 
