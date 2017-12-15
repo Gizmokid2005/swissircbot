@@ -222,8 +222,8 @@ whoami
     end
   end
 
-  # List all of the mods for the channel
-  def clistmods(m, nick)
+  # List all of the mods
+  def clistmods(m)
     if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.user) || is_mod?(m.user)
       m.reply "The current mods are #{$moderators}", true
     else
