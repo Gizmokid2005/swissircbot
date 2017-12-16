@@ -72,7 +72,7 @@ whoami
   # Remove a user from a channel, similar to kick, but silent
   def crem(m, nick)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
-      m.channel.remove(nick, reason)
+      m.channel.remove(nick)
     elsif !is_chanadmin?(m.channel,m.user)
       m.reply NOTADMIN, true
     elsif !is_botpowerful?(m.channel)
