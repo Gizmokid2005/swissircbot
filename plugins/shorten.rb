@@ -20,10 +20,10 @@ shorten <url>
 
     uri = URI.parse("https://www.googleapis.com/urlshortener/v1/url?key=#{GOOGLEAPIKEY}")
     data = {longUrl: "#{url}"}
-    req = Net::HTTP::Post.new(uri.path)
-    req.body = data.to_json
-    req['Content-Type'] = 'application/json'
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+    res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+      req = Net::HTTP::Post.new(uri)
+      req['Content-Type'] = 'application/json'
+      req.body = data.to_json
       http.request(req)
     end
 
