@@ -59,6 +59,8 @@ $adminhash       = $config['admin']['channel']
 $superadmins     = $config['superadmin']
 $moderators      = $config['moderator']
 SERVER           = $config['server']
+PORT             = $config['port']
+SSL              = $config['ssl']
 NICK             = $config['nick']
 PASSWORD         = $config['password']
 CHANNELS         = $config['channels']
@@ -75,6 +77,8 @@ bot = Cinch::Bot.new do
   configure do |c|
 
     c.server    = SERVER
+    c.port      = PORT
+    c.ssl.use   = SSL
     c.nick      = NICK
     c.password  = PASSWORD
     c.channels  = CHANNELS
