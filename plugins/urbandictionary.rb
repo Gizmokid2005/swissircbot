@@ -2,7 +2,7 @@ require 'cgi'
 require 'json'
 require 'open-uri'
 
-class UrbanDictionary
+class Urbandictionary
   include Cinch::Plugin
 
   set :help, <<-HELP

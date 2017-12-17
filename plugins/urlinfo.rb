@@ -1,7 +1,7 @@
 require 'open-uri'
 require 'mechanize'
 
-class UrlInfo
+class Urlinfo
   include Cinch::Plugin
 
   set :help, <<-HELP

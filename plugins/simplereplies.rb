@@ -1,4 +1,4 @@
-class SimpleReplies
+class Simplereplies
   include Cinch::Plugin
   include CustomHelpers
   

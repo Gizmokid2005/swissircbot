@@ -1,7 +1,7 @@
 require 'net/http'
 require 'json'
 
-class WorldWeather
+class Worldweather
   include Cinch::Plugin
 
   set :help, <<-HELP
