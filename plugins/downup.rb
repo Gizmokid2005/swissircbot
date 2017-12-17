@@ -3,7 +3,6 @@ require 'mechanize'
 class Downup
   include Cinch::Plugin
 
-  # set :plugin_name, 'down_up'
   set :help, <<-HELP
 down/up <url>
   This will check if url is up.
