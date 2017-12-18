@@ -137,11 +137,7 @@ bot = Cinch::Bot.new do
   # Quit IRC
   on :message, /^[#{PREFIX}]quit$/i do |m|
     if is_supadmin?(m.user)
-      if m.channel.nil?
-        # Don't reply to a PM.
-      else
-        m.reply("Goodbye everyone, #{m.user.name} has told me to leave.")
-      end
+      m.reply("Goodbye everyone, #{m.user.name} has told me to leave.") unless m.channel.nil?
       bot.info("Received quit command from #{m.user.name}.")
       bot.quit("I have left you at the behest of #{m.user.name}. Adios!")
     else
