@@ -31,6 +31,6 @@ urban/ud <word>
     end
   rescue => e
     exception(e)
-    "An exception occured"
+    "An exception occurred"
   end
 end
