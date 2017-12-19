@@ -38,6 +38,11 @@ module CustomHelpers
     return roles
   end
 
+  # Is the user blacklisted?
+  def is_blacklisted?(channel, user)
+    $blhash[channel].include?(user)
+  end
+
   # Is the bot powerful (opped)?
   def is_botpowerful?(channel)
     channel.opped?(bot)

@@ -3,6 +3,7 @@ require 'json'
 
 class Pirate
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 pirate <text>
@@ -12,14 +13,17 @@ pirate <text>
   match /pirate (.+)/i
 
   def execute(m, text)
-    uri = URI.parse("http://isithackday.com/arrpi.php?text=#{CGI.escape(text)}&format=json")
-    Net::HTTP.start(uri.host, uri.port) do |h|
-      resp = Net::HTTP.get_response(uri)
-      @pirate = JSON.parse(resp.body)
+    if !is_blacklisted(m.channel, m.user.nick)
+      uri = URI.parse("http://isithackday.com/arrpi.php?text=#{CGI.escape(text)}&format=json")
+      Net::HTTP.start(uri.host, uri.port) do |h|
+        resp = Net::HTTP.get_response(uri)
+        @pirate = JSON.parse(resp.body)
+      end
+
+      m.reply @pirate["translation"]["pirate"]
+    else
+      m.user.send BLMSG
     end
-
-    m.reply @pirate["translation"]["pirate"]
-
   end
 
 end

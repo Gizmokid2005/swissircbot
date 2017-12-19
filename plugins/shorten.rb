@@ -3,6 +3,7 @@ require 'json'
 
 class Shorten
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 shorten <url>
@@ -12,7 +13,11 @@ shorten <url>
   match /shorten (.+)/
 
   def execute(m, url)
-    m.reply shorten(url), true
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply shorten(url), true
+    else
+      m.user.send BLMSG
+    end
   end
 
   private

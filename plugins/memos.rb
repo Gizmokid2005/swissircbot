@@ -1,5 +1,6 @@
 class Memos
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 tell/ask <user> <message>
@@ -11,14 +12,18 @@ tell/ask <user> <message>
   match /(tell|ask) (.+?) (.+)/i, method: :memo
 
   def memo(m, mtype, who, text)
-    if who == m.user.nick
-      m.reply "tell that to yourself...", true
-    elsif who == m.bot.nick
-      m.reply "I'm not interested.", true
-    elsif
+    if !is_blacklisted?(m.channel, m.user.nick)
+      if who == m.user.nick
+        m.reply "tell that to yourself...", true
+      elsif who == m.bot.nick
+        m.reply "I'm not interested.", true
+      elsif
       location = if m.channel then m.channel.to_s else 'private ' end
-      save_memo(who, m.user.nick, location, mtype, text, DateTime.now)
-      m.reply "I'll let #{who} know when I see them.", true
+        save_memo(who, m.user.nick, location, mtype, text, DateTime.now)
+        m.reply "I'll let #{who} know when I see them.", true
+      end
+    else
+      m.user.send BLMSG
     end
   end
 

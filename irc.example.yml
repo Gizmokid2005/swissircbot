@@ -20,8 +20,15 @@ channels:
 - '#cinch-bots'
 superadmin:
 - 'SUPERADMINNICKHERE'
+blacklist:
+  channel:
+    '#CHANNELHERE':
+    - 'NICKHERE'
+    '#CHANNEL2HERE':
+    - 'OTHERNICKHERE'
 notadmin: You don't have permissions to do that. Stop it. #Non-Admin deny reply can be modified.
 notopbot: I don't have power to do that stupid. #Same as above except for bot's lack of power.
+blacklistmsg: You have been blacklisted. #PM to users who try to use commands when they're blacklisted.
 
 #World Weather API key (Requires the WorldWeather plugin)
 wweatherapikey: APIKEYHERE

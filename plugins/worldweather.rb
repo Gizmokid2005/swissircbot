@@ -3,6 +3,7 @@ require 'json'
 
 class Worldweather
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 weather <location>
@@ -12,7 +13,11 @@ weather <location>
   match /weather (.+)$/i
 
   def execute(m, location)
-    m.reply weather(location), true
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply weather(location), true
+    else
+      m.user.send BLMSG
+    end
   end
 
   private

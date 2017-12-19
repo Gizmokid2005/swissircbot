@@ -182,7 +182,7 @@ whoami
   # List the admins for the bot for the specific channel (or current if none specified)
   def clistadmins(m, channel)
     channel = m.channel if channel.nil?
-    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.user)
+    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(channel, m.user)
       m.reply "The current admins are #{$adminhash[channel]}.", true
     else
       m.reply NOTADMIN, true
@@ -224,7 +224,7 @@ whoami
 
   # List all of the mods
   def clistmods(m)
-    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.user) || is_mod?(m.user)
+    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.channel, m.user) || is_mod?(m.user)
       m.reply "The current mods are #{$moderators}", true
     else
       m.reply NOTADMIN, true
@@ -255,13 +255,17 @@ whoami
     end
   end
 
-  # Tell a user what I know about them
+  # Tell a user what I know about another user
   def cwhois(m, nick)
     nick = User(nick)
-    if userroles(m.channel,nick).empty?
-      m.reply "That's #{nick}, with no roles."
+    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.channel, m.user) || is_mod?(m.user)
+      if userroles(m.channel,nick).empty?
+        m.reply "That's #{nick}, with no roles."
+      else
+        m.reply "That's #{nick}, with the following roles #{userroles(m.channel,nick)}.", true
+      end
     else
-      m.reply "That's #{nick}, with the following roles #{userroles(m.channel,nick)}.", true
+      m.reply NOTADMIN, true
     end
   end
 

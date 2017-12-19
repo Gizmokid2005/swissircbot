@@ -3,6 +3,7 @@ require 'json'
 
 class Wunderground
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 wu <location>
@@ -12,7 +13,11 @@ wu <location>
   match /wu (.+)$/i
 
   def execute(m, location)
-    m.reply weather(location), true
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply weather(location), true
+    else
+      m.user.send BLMSG
+    end
   end
 
   private

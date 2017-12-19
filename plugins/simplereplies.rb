@@ -14,19 +14,35 @@ n/a
   match /ping/i, method: :pong
 
   def hello(m)
-    m.reply "Hello, #{m.user.nick}!"
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply "Hello, #{m.user.nick}!"
+    else
+      m.user.send BLMSG
+    end
   end
 
   def thanks(m)
-    m.reply "You're welcome, #{m.user.nick}!"
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply "You're welcome, #{m.user.nick}!"
+    else
+      m.user.send BLMSG
+    end
   end
 
   def exclaim(m)
-    m.reply "!", true
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply "!", true
+    else
+      m.user.send BLMSG
+    end
   end
 
   def pong(m)
-    m.reply "Pong!", true
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply "Pong!", true
+    else
+      m.user.send BLMSG
+    end
   end
 
 end

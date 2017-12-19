@@ -56,6 +56,7 @@ end
 $config = YAML.load_file($conffile)
 $alladmins       = $config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
 $adminhash       = $config['admin']['channel']
+$blhash          = $config['blacklist']['channel']
 $superadmins     = $config['superadmin']
 $moderators      = $config['moderator']
 SERVER           = $config['server']
@@ -66,6 +67,7 @@ PASSWORD         = $config['password']
 CHANNELS         = $config['channels']
 NOTADMIN         = $config['notadmin']
 NOTOPBOT         = $config['notopbot']
+BLMSG            = $config['blacklistmsg']
 LOGFILE          = $config['logfile']
 DICTFILE         = $config['dictfile']
 PREFIX           = $config['commandprefix']
