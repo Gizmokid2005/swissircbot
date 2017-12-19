@@ -107,7 +107,7 @@ class Pluginmanagement
   def list_plugins( m )
     return unless is_supadmin?(m.user)
 
-    plugins = @bot.plugins.map { |p| p.class.plugin_name }
+    plugins = @bot.plugins.map { |p| p.class.plugin_name }.sort!
 
     m.reply "Configured plugins: #{plugins.join(', ')}"
     m.reply "Use #{PREFIX}help <plugin> for more information (may not be available for all plugins)"
