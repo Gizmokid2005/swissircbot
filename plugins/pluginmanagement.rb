@@ -1,8 +1,20 @@
 class Pluginmanagement
   include Cinch::Plugin
 
-  set :plugin_name, 'plugins'
-  set :help, "Usage: !plugin [load|unload|reload|set|list]"
+  # set :plugin_name, 'plugins'
+  # set :help, "Usage: !plugin [load|unload|reload|set|list]"
+  set :help, <<-HELP
+plugin load <name>
+  This will load the given plugin.
+plugin unload <name>
+  This will unload the given plugin.
+plugin reload <name>
+  This will unload and then load the given plugin.
+plugin list
+  This will list all the plugins.
+plugin set <name> <option> <value>
+  This will set the plugin's option's value.
+  HELP
 
   match /plugin load (\S+)(?: (\S+))?/   , method: :load_plugin
   match /plugin unload (\S+)/            , method: :unload_plugin
