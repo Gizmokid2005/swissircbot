@@ -1,8 +1,9 @@
 require 'open-uri'
 require 'mechanize'
 
-class UrlInfo
+class Urlinfo
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 title <fullurl>
@@ -13,19 +14,22 @@ title <fullurl>
   match /title (.+)/i
 
   def execute(m, url)
-    # Blacklist support??
+    if !is_blacklisted?(m.channel, m.user.nick)
 
-    #return if m.message.to_s.start_with?(PREFIX)
+      #return if m.message.to_s.start_with?(PREFIX)
 
-    agent = Mechanize.new
-    agent.user_agent_alias = 'Linux Firefox'
+      agent = Mechanize.new
+      agent.user_agent_alias = 'Linux Firefox'
 
-    if title = agent.get(url).title.gsub(/(\r)?(\n)+/, ' ').lstrip.first(200)
-      m.reply "Title: #{title}"
+      if title = agent.get(url).title.gsub(/(\r)?(\n)+/, ' ').lstrip.first(200)
+        m.reply "Title: #{title}"
+      else
+        #m.reply "I don't know what to do with this.", true #Do we really need a reply?
+      end
+
     else
-      #m.reply "I don't know what to do with this.", true #Do we really need a reply?
+      m.user.send BLMSG
     end
-
   end
 
 end

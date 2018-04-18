@@ -3,6 +3,7 @@ require 'json'
 
 class Shorten
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 shorten <url>
@@ -12,7 +13,11 @@ shorten <url>
   match /shorten (.+)/
 
   def execute(m, url)
-    m.reply shorten(url), true
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply shorten(url), true
+    else
+      m.user.send BLMSG
+    end
   end
 
   private
@@ -20,10 +25,10 @@ shorten <url>
 
     uri = URI.parse("https://www.googleapis.com/urlshortener/v1/url?key=#{GOOGLEAPIKEY}")
     data = {longUrl: "#{url}"}
-    req = Net::HTTP::Post.new(uri.path)
-    req.body = data.to_json
-    req['Content-Type'] = 'application/json'
-    res = Net::HTTP.start(uri.hostname, uri.port, use_ssl: true) do |http|
+    res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+      req = Net::HTTP::Post.new(uri)
+      req['Content-Type'] = 'application/json'
+      req.body = data.to_json
       http.request(req)
     end
 

@@ -56,14 +56,18 @@ end
 $config = YAML.load_file($conffile)
 $alladmins       = $config['admin']['channel'].map{ |chan,user| user}.flatten.uniq
 $adminhash       = $config['admin']['channel']
+$blhash          = $config['blacklist']['channel']
 $superadmins     = $config['superadmin']
 $moderators      = $config['moderator']
 SERVER           = $config['server']
+PORT             = $config['port']
+SSL              = $config['ssl']
 NICK             = $config['nick']
 PASSWORD         = $config['password']
 CHANNELS         = $config['channels']
 NOTADMIN         = $config['notadmin']
 NOTOPBOT         = $config['notopbot']
+BLMSG            = $config['blacklistmsg']
 LOGFILE          = $config['logfile']
 DICTFILE         = $config['dictfile']
 PREFIX           = $config['commandprefix']
@@ -75,6 +79,8 @@ bot = Cinch::Bot.new do
   configure do |c|
 
     c.server    = SERVER
+    c.port      = PORT
+    c.ssl.use   = SSL
     c.nick      = NICK
     c.password  = PASSWORD
     c.channels  = CHANNELS
@@ -133,11 +139,7 @@ bot = Cinch::Bot.new do
   # Quit IRC
   on :message, /^[#{PREFIX}]quit$/i do |m|
     if is_supadmin?(m.user)
-      if m.channel.nil?
-        # Don't reply to a PM.
-      else
-        m.reply("Goodbye everyone, #{m.user.name} has told me to leave.")
-      end
+      m.reply("Goodbye everyone, #{m.user.name} has told me to leave.") unless m.channel.nil?
       bot.info("Received quit command from #{m.user.name}.")
       bot.quit("I have left you at the behest of #{m.user.name}. Adios!")
     else

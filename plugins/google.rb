@@ -4,6 +4,7 @@ require 'open-uri'
 
 class Google
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 google <term>
@@ -13,7 +14,11 @@ google <term>
   match /google (.+)/i
 
   def execute(m, query)
-    m.reply search(query), true
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply search(query), true
+    else
+      m.user.send BLMSG
+    end
   end
 
   def search(query)

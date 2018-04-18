@@ -2,8 +2,9 @@ require 'cgi'
 require 'json'
 require 'open-uri'
 
-class UrbanDictionary
+class Urbandictionary
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 urban/ud <word>
@@ -13,7 +14,11 @@ urban/ud <word>
   match /(?:urban|ud) (.*)/i
 
   def execute(m, query)
-    m.reply "#{query} - #{search(query)}", true
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply "#{query} - #{search(query)}", true
+    else
+      m.user.send BLMSG
+    end
   end
 
   private
@@ -31,6 +36,6 @@ urban/ud <word>
     end
   rescue => e
     exception(e)
-    "An exception occured"
+    "An exception occurred"
   end
 end

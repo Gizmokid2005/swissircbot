@@ -1,3 +1,5 @@
+require 'yaml'
+
 module CustomHelpers
 
   # Is the user a super-admin for the bot?
@@ -20,6 +22,30 @@ module CustomHelpers
     $adminhash[channel].include?(user.authname.to_s) && user.authed? == true
   end
 
+  # What are the users roles?
+  def userroles(channel, user)
+    roles = Array.new()
+    if is_supadmin?(user)
+      roles << 'Super Admin'
+    end
+    if is_admin?(user)
+      roles << 'Admin'
+    end
+    if is_chanadmin?(channel,user)
+      roles << 'ChanAdmin'
+    end
+    if is_mod?(user)
+      roles << 'Mod'
+    end
+    return roles
+  end
+
+  # Is the user blacklisted?
+  def is_blacklisted?(channel, user)
+    reload_blacklist
+    $blhash[channel].include?(user) unless $blhash[channel].nil?
+  end
+
   # Is the bot powerful (opped)?
   def is_botpowerful?(channel)
     channel.opped?(bot)
@@ -27,6 +53,12 @@ module CustomHelpers
 
   def bot_nick
     bot.nick
+  end
+
+  # Reload the blacklist
+  def reload_blacklist
+    $config = YAML.load_file($conffile)
+    $blhash = $config['blacklist']['channel']
   end
 
 end

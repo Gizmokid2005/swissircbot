@@ -23,12 +23,20 @@ addadmin <user> [optchannel]
   This adds user as an admin of this bot in this channel or in optchannel if given.
 remadmin <user> [optchannel]
   This removes user as an admin of this bot in this channel or in optchannel if given.
+listadmin/listadmins [optchannel]
+  This lists all the admins of this bot in this channel or in optchannel if given.
+listalladmin/listalladmins
+  This lists all the admins of this bot.
 addmod <user> [optchannel]
   This adds user as a mod of this bot in this channel or in optchannel if given.
 remmod <user> [optchannel]
   This removes user as a mod of this bot in this channel or in optchannel if given.
+listmod/listmods
+  This lists the mods of this bot.
 topic <topic>
   This sets the topic for this channel.
+whoami
+  This returns who the bot sees you as with all of your roles given to the bot.
   HELP
 
   match /kick (\S+)(?: (.+))?/i, method: :ckick
@@ -40,10 +48,15 @@ topic <topic>
   match /op (.+)/i, method: :cop
   match /deop (.+)/i, method: :cdeop
   match /addadmin (\S+)(?: (.+))?/i, method: :caddadmin
-  match /remadmin (\S+)(?: (.+))?/i, method: :cremadmin
+  match /(?:remadmin|rmadmin) (\S+)(?: (.+))?/i, method: :cremadmin
+  match /(?:listadmin|listadmins)(?: (.+))?/i, method: :clistadmins
+  match /(?:listalladmin|listalladmins)/i, method: :clistalladmins
   match /addmod (\S+)(?: (.+))?/i, method: :caddmod
-  match /remmod (\S+)(?: (.+))?/i, method: :cremmod
+  match /(?:remmod|rmmod) (\S+)(?: (.+))?/i, method: :cremmod
+  match /(?:listmod|listmods)/i, method: :clistmods
   match /topic (.+)$/i, method: :ctopic
+  match /whoami/i, method: :cwhoami
+  match /whois (.+)/i, method: :cwhois
 
   # Kick a user from a channel for a specific reason (or no reason)
   def ckick(m, nick, reason)
@@ -59,7 +72,7 @@ topic <topic>
   # Remove a user from a channel, similar to kick, but silent
   def crem(m, nick)
     if is_chanadmin?(m.channel, m.user) && is_botpowerful?(m.channel)
-      m.channel.remove(nick, reason)
+      m.channel.remove(nick)
     elsif !is_chanadmin?(m.channel,m.user)
       m.reply NOTADMIN, true
     elsif !is_botpowerful?(m.channel)
@@ -166,6 +179,25 @@ topic <topic>
     end
   end
 
+  # List the admins for the bot for the specific channel (or current if none specified)
+  def clistadmins(m, channel)
+    channel = m.channel if channel.nil?
+    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(channel, m.user)
+      m.reply "The current admins are #{$adminhash[channel]}.", true
+    else
+      m.reply NOTADMIN, true
+    end
+  end
+
+  # List the admins for the bot for all channels
+  def clistalladmins(m)
+    if is_supadmin?(m.user) || is_admin?(m.user)
+      m.reply "The current admins are #{$adminhash}.", true
+    else
+      m.reply NOTADMIN, true
+    end
+  end
+
   # Add a user as a moderator of this bot
   def caddmod(m, nick)
     if is_supadmin?(m.user)
@@ -190,6 +222,15 @@ topic <topic>
     end
   end
 
+  # List all of the mods
+  def clistmods(m)
+    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.channel, m.user) || is_mod?(m.user)
+      m.reply "The current mods are #{$moderators}", true
+    else
+      m.reply NOTADMIN, true
+    end
+  end
+
   # Change the topic of the current channel
   def ctopic(m, topic)
     if m.channel.nil?
@@ -202,6 +243,29 @@ topic <topic>
       elsif !is_botpowerful?(m.channel)
         m.reply NOTOPBOT, true
       end
+    end
+  end
+
+  # Tell a user what I know about them
+  def cwhoami(m)
+    if userroles(m.channel,m.user).empty?
+      m.reply "You're #{m.user.nick}, with no roles."
+    else
+      m.reply "You're #{m.user.nick}, with the following roles #{userroles(m.channel,m.user)}.", true
+    end
+  end
+
+  # Tell a user what I know about another user
+  def cwhois(m, nick)
+    nick = User(nick)
+    if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.channel, m.user) || is_mod?(m.user)
+      if userroles(m.channel,nick).empty?
+        m.reply "That's #{nick}, with no roles."
+      else
+        m.reply "That's #{nick}, with the following roles #{userroles(m.channel,nick)}.", true
+      end
+    else
+      m.reply NOTADMIN, true
     end
   end
 

@@ -1,7 +1,8 @@
 require 'mechanize'
 
-class DownUp
+class Downup
   include Cinch::Plugin
+  include CustomHelpers
 
   set :help, <<-HELP
 down/up <url>
@@ -11,7 +12,11 @@ down/up <url>
   match /(?:down|up) (.+)/i
 
   def execute(m,url)
-    m.reply "Looks like #{url} is #{check(url)}.", true
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply "Looks like #{url} is #{check(url)}.", true
+    else
+      m.user.send BLMSG
+    end
   end
 
   def check(url)

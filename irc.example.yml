@@ -1,4 +1,6 @@
 server: irc.freenode.net
+port: 6697
+ssl: true #Enables SSL
 nick: BOTNICKHERE
 password: PASSWORDHERE
 commandprefix: !
@@ -18,12 +20,19 @@ channels:
 - '#cinch-bots'
 superadmin:
 - 'SUPERADMINNICKHERE'
+blacklist:
+  channel:
+    '#CHANNELHERE':
+    - 'NICKHERE'
+    '#CHANNEL2HERE':
+    - 'OTHERNICKHERE'
 notadmin: You don't have permissions to do that. Stop it. #Non-Admin deny reply can be modified.
 notopbot: I don't have power to do that stupid. #Same as above except for bot's lack of power.
+blacklistmsg: You have been blacklisted. #PM to users who try to use commands when they're blacklisted.
 
-#World Weather API key
+#World Weather API key (Requires the WorldWeather plugin)
 wweatherapikey: APIKEYHERE
-#Wunderground API key
+#Wunderground API key (Requires the Wunderground plugin)
 wuweatherapikey: APIKEYHERE
-#Google API key
+#Google API key (Requires the Shorten plugin)
 googleapikey: APIKEYHERE
