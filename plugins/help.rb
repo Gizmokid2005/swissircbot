@@ -118,6 +118,7 @@ help search <query>
     response = ""
     response << @intro_message.strip << " Available plugins: "
     response << bot.config.plugins.plugins.map{ |p| format_plugin_name(p) }.join(", ")
+    response << "\n 'help <plugin>' for help on a specific plugin."
 
     m.reply response, true
   end
