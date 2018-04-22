@@ -103,4 +103,14 @@ module DBHelpers
     return result
   end
 
+  def quote_info(qid)
+    db = open_create_db
+
+    if db
+      result = db.execute("SELECT id, quote, user, time FROM quotes WHERE id = ?", qid)
+    end
+    db.close
+    return result
+  end
+
 end

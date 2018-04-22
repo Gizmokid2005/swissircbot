@@ -20,6 +20,7 @@ randquote
   match /(?:deletequote|delquote|rmquote) (.+)/i, method: :delquote
   match /(?:findquote|quote)(?: (.+))?/i, method: :findquote
   match /randquote/i, method: :randquote
+  match /(?:quoteinfo|qinfo) (.+)/i, method: :quoteinfo
 
   def addquote(m, quote)
     if !is_blacklisted?(m.channel, m.user.nick)
@@ -93,6 +94,19 @@ randquote
       end
     else
       m.user.send BLMSG
+    end
+  end
+
+  def quoteinfo(m, qid)
+    if is_supadmin?(m.user.nick) || is_admin?(m.user.nick) || is_chanadmin?(m.channel, m.user.nick) || is_mod?(m.user.nick)
+      quote = quote_info(qid)
+      if quote.any?
+        m.reply "Quote ##{quote[0][0]}, \"#{quote[0][1]}\" was saved by #{quote[0][2]} on #{quote[0][3]}."
+      else
+        m.reply "That quote doesn't exist, sorry.", true
+      end
+    else
+      m.reply NOTADMIN, true
     end
   end
 
