@@ -98,10 +98,10 @@ randquote
   end
 
   def quoteinfo(m, qid)
-    if is_supadmin?(m.user.nick) || is_admin?(m.user.nick) || is_chanadmin?(m.channel, m.user.nick) || is_mod?(m.user.nick)
+    if is_supadmin?(m.user) || is_admin?(m.user) || is_mod?(m.user)
       quote = quote_info(qid)
       if quote.any?
-        m.reply "Quote ##{quote[0][0]}, \"#{quote[0][1]}\" was saved by #{quote[0][2]} on #{quote[0][3]}."
+        m.reply "Quote ##{quote[0][0]}, \"#{quote[0][1]}\" was saved by #{quote[0][2]} on #{quote[0][3]}.", true
       else
         m.reply "That quote doesn't exist, sorry.", true
       end

@@ -43,7 +43,11 @@ module CustomHelpers
   # Is the user blacklisted?
   def is_blacklisted?(channel, user)
     reload_blacklist
-    $blhash[channel].include?(user) unless $blhash[channel].nil?
+    if $blhash.nil?
+      return false
+    else
+      $blhash[channel].include?(user) unless $blhash[channel].nil?
+    end
   end
 
   # Is the bot powerful (opped)?
