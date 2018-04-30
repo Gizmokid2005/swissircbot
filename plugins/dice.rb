@@ -18,7 +18,7 @@ dice/roll <numberofdice>d<sides> [2d6 for 2 d6]
         total += rand(sides.to_i) + 1
       end
 
-      m.reply "Your roll was #{total}", true
+      m.reply total, true
     else
       m.user.send BLMSG
     end

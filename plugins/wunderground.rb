@@ -10,9 +10,18 @@ wu <location>
   This will return the weather for location from WeatherUnderground.
   HELP
 
-  match /wu (.+)$/i
+  match /wu (.+)$/i, method: :current
+  match /wuf (.+)$/i, method: :forecast
 
-  def execute(m, location)
+  def current(m, location)
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply curweather(location), true
+    else
+      m.user.send BLMSG
+    end
+  end
+
+  def forecast(m,location)
     if !is_blacklisted?(m.channel, m.user.nick)
       m.reply weather(location), true
     else
@@ -23,30 +32,22 @@ wu <location>
   private
 
   def weather(location)
-
     # Wunderground doesn't seem to have a search within the conditions API so we have to get it first...
     uri = URI.parse("http://autocomplete.wunderground.com/aq?query=#{URI.encode(location)}")
     Net::HTTP.start(uri.host, uri.port) do |h|
-
       resp = Net::HTTP.get_response(uri)
       @loc = JSON.parse(resp.body)
-      #@latlong = loc['RESULTS'][0]['ll']
-
     end
 
     if !@loc['RESULTS'][0].nil?
-
       @latlong = @loc['RESULTS'][0]['ll']
-
       # http://api.wunderground.com/api/APIKEY/features/settings/q/query.format
       uri = URI.parse("http://api.wunderground.com/api/#{WUWEATHERAPIKEY}/conditions/forecast/q/#{@latlong.gsub(" ",",")}.json")
       Net::HTTP.start(uri.host, uri.port) do |http|
-
         resp        = Net::HTTP.get_response(uri)
         data        = JSON.parse(resp.body)
 
         if data.include?('current_observation')
-
           weather     = data['current_observation']
           forecast    = data['forecast']
           location    = weather['display_location']['full']
@@ -73,27 +74,66 @@ wu <location>
           return Format(:bold,"Current:: #{location}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) | " + Format(:bold,"#{fcday1}") + ": #{fcday1txt} " + Format(:bold,"#{fcday2}") + ": #{fcday2txt} - #{link}"
 
         elsif data.include?('response')
-
           error       = data['response']['error']
           details     = error['description']
           type        = error['type']
-
           return "Sorry, the API returned error type: '#{type}' with a description of: '#{details}'."
-
         else
-
           return "Well...this was unexpected. No weather data for you, sorry."
-
         end
-
       end
-
     else
-
       return "That doesn't appear to be a valid location."
+    end
+  end
+
+  def curweather(location)
+
+    # Wunderground doesn't seem to have a search within the conditions API so we have to get it first...
+    uri = URI.parse("http://autocomplete.wunderground.com/aq?query=#{URI.encode(location)}")
+    Net::HTTP.start(uri.host, uri.port) do |h|
+
+      resp = Net::HTTP.get_response(uri)
+      @loc = JSON.parse(resp.body)
+      #@latlong = loc['RESULTS'][0]['ll']
 
     end
 
+    if !@loc['RESULTS'][0].nil?
+      @latlong = @loc['RESULTS'][0]['ll']
+      # http://api.wunderground.com/api/APIKEY/features/settings/q/query.format
+      uri = URI.parse("http://api.wunderground.com/api/#{WUWEATHERAPIKEY}/conditions/forecast/q/#{@latlong.gsub(" ",",")}.json")
+      Net::HTTP.start(uri.host, uri.port) do |http|
+        resp        = Net::HTTP.get_response(uri)
+        data        = JSON.parse(resp.body)
+
+        if data.include?('current_observation')
+          weather     = data['current_observation']
+          location    = weather['display_location']['full']
+          time        = weather['observation_time'].partition(", ").last
+          wxdesc      = weather['weather']
+          temp        = weather['temperature_string']
+          feelslike   = weather['feelslike_string']
+          humidity    = weather['relative_humidity']
+          winddir     = weather['wind_dir']
+          windmph     = weather['wind_mph']
+          windkph     = weather['wind_kph']
+          link        = weather['ob_url']
+
+          return Format(:bold,"Currently in #{location}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph)"
+
+        elsif data.include?('response')
+          error       = data['response']['error']
+          details     = error['description']
+          type        = error['type']
+          return "Sorry, the API returned error type: '#{type}' with a description of: '#{details}'."
+        else
+          return "Well...this was unexpected. No weather data for you, sorry."
+        end
+      end
+    else
+      return "That doesn't appear to be a valid location."
+    end
   end
 
 end
