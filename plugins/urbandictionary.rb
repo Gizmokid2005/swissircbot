@@ -31,7 +31,7 @@ urban/ud <word>
       else
         defn = obj['list'][0]['definition'].gsub(/(\r\n)+/, ' ')
         permlnk = obj['list'][0]['permalink']
-        "#{defn} - #{permlnk}"
+        "#{defn[0..150]} - #{permlnk}"
       end
     end
   rescue => e
