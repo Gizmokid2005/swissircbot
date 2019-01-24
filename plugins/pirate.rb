@@ -13,7 +13,7 @@ pirate <text>
   match /pirate (.+)/i
 
   def execute(m, text)
-    if !is_blacklisted(m.channel, m.user.nick)
+    if !is_blacklisted?(m.channel, m.user.nick)
       uri = URI.parse("http://isithackday.com/arrpi.php?text=#{CGI.escape(text)}&format=json")
       Net::HTTP.start(uri.host, uri.port) do |h|
         resp = Net::HTTP.get_response(uri)
