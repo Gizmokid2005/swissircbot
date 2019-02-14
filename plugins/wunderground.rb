@@ -83,7 +83,7 @@ wu <location>
             return "Well...this was unexpected. No weather data for you, sorry."
           end
         rescue JSON::ParserError
-          return "Well...this was unexpected. No weather data for you, sorry."
+          return "Sorry, the API returned an invalid/missing JSON."
         end
       end
     else
@@ -136,7 +136,7 @@ wu <location>
             return "Well...this was unexpected. No weather data for you, sorry."
           end
         rescue JSON::ParserError
-          return "Well...this was unexpected. No weather data for you, sorry."
+          return "Sorry, the API returned an invalid/missing JSON."
         end
 
       end
