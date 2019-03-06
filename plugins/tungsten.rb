@@ -22,13 +22,12 @@ tungsten
         resp = Net::HTTP.get_response(uri)
         begin
           data = JSON.parse(resp.body)
-          names = data.map { |p| p['owner'] }
-          names.reject { |k| k == ""}.each { |n| counts[n] +=1 }
-          total = names.size
-          empty = names.select {|k| k == ""}.size
-          list = counts.sort_by {|k,v| v}.reverse.map.with_index(1) {|k,v| ["\##{v}| #{k[0]}(#{(k[1].to_f / total *100).round(2)}%/#{k[1]})"]}.join(", ")
+          complete = data.select { |p| p['state'] == "complete"}.size
+          data.select { |p| p['state'] == "complete"}.map { |p| p['owner'] }.each { |n| counts[n] +=1 }
+          total = data.size
+          list = counts.sort_by {|k,v| v}.reverse.map.with_index(1) {|k,v| ["\##{v}|#{k[0].slice(0..2)}(#{(k[1].to_f / total *100).round(2)}%/#{k[1]})"]}.join(", ")
 
-          m.reply "Current Results: (#{((total-empty).to_f / total * 100).round(2)}% complete (#{total-empty}/#{total})) #{list}"
+          m.reply "Current Results: (#{(complete.to_f / total * 100).round(2)}% complete (#{complete}/#{total})) #{list}"
         rescue JSON::ParserError
 
           m.reply "I'm unable to parse that boss.", true
