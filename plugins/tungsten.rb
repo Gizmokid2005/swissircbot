@@ -10,14 +10,14 @@ tungsten
   This will return the ranking of tungsten renders by user.
   HELP
 
-  match /tungsten(?: (.+))?/i
+  match /rf(?: (.+))?/i
 
   def execute(m, text)
     if !is_blacklisted?(m.channel, m.user.nick)
 
       counts = Hash.new(0)
 
-      uri = URI.parse("https://benedikt-bitterli.me/renderfarm/scenes/instancing/frames")
+      uri = URI.parse("https://benedikt-bitterli.me/renderfarm/scenes/yellojello/frames")
       Net::HTTP.start(uri.host, uri.port) do |h|
         resp = Net::HTTP.get_response(uri)
         begin
