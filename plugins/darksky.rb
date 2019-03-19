@@ -1,5 +1,6 @@
 require 'net/http'
 require 'json'
+require_relative 'shorten'
 
 class Darksky
   include Cinch::Plugin
@@ -106,7 +107,7 @@ wf <location>
             windkph     = (weather['windSpeed'].round * 1.609344).round
             link        = "https://darksky.net/forecast/#{coords[1]},#{coords[0]}/"
 
-            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) -- #{link}"
+            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) -- #{Shorten.shorten(link)}"
 
           else
             return "I've run into an unexpected error."

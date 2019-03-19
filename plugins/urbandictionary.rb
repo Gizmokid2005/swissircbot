@@ -1,6 +1,7 @@
 require 'cgi'
 require 'json'
 require 'open-uri'
+require_relative 'shorten'
 
 class Urbandictionary
   include Cinch::Plugin
@@ -31,7 +32,7 @@ urban/ud <word>
       else
         defn = obj['list'][0]['definition'].gsub(/(\r\n)+/, ' ')
         permlnk = obj['list'][0]['permalink']
-        "#{defn[0..150]} - #{permlnk}"
+        "#{defn[0..150]} - #{Shorten.shorten(permlnk)}"
       end
     end
   rescue => e

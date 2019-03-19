@@ -20,21 +20,22 @@ shorten <url>
     end
   end
 
-  private
-  def shorten(url)
+  def self.shorten(url)
 
-    uri = URI.parse("https://www.googleapis.com/urlshortener/v1/url?key=#{GOOGLEAPIKEY}")
-    data = {longUrl: "#{url}"}
-    res = Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
-      req = Net::HTTP::Post.new(uri)
-      req['Content-Type'] = 'application/json'
-      req.body = data.to_json
-      http.request(req)
+    uri = URI.parse("#{YOURLSURL}?signature=#{YOURLSTOKEN}&action=shorturl&format=json&url=#{url}")
+    Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+      resp = Net::HTTP.get_response(uri)
+      begin
+        data = JSON.parse(resp.body)
+        if data.include?('shorturl')
+          return data['shorturl']
+        else
+          return "I've run into an unexpected error."
+        end
+      rescue JSON::ParserError
+        return "Sorry, the API returned an invalid/missing JSON."
+      end
     end
-
-    short = JSON.parse(res.body)
-    return short['id']
-
   end
 
 end

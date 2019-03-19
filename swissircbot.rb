@@ -76,6 +76,8 @@ WUWEATHERAPIKEY  = $config['wuweatherapikey']
 GOOGLEAPIKEY     = $config['googleapikey']
 DARKSKYAPIKEY    = $config['darkskyapikey']
 MAPBOXAPIKEY     = $config['mapboxapikey']
+YOURLSURL        = $config['yourlsapiurl']
+YOURLSTOKEN      = $config['yourlstoken']
 
 bot = Cinch::Bot.new do
   configure do |c|
