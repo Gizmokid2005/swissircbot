@@ -36,3 +36,7 @@ wweatherapikey: APIKEYHERE
 wuweatherapikey: APIKEYHERE
 #Google API key (Requires the Shorten plugin)
 googleapikey: APIKEYHERE
+#DarkSky Weather API Key (Requires the DarkSky plugin)
+darkskyapikey: APIKEYHERE
+#MapBox API Key (Used by the DarkSky plugin to gather coordinates for weather, requires the DarkSky plugin)
+mapboxapikey: APIKEYHERE

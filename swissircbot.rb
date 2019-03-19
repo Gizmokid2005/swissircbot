@@ -74,6 +74,8 @@ PREFIX           = $config['commandprefix']
 WWEATHERAPIKEY   = $config['wweatherapikey']
 WUWEATHERAPIKEY  = $config['wuweatherapikey']
 GOOGLEAPIKEY     = $config['googleapikey']
+DARKSKYAPIKEY    = $config['darkskyapikey']
+MAPBOXAPIKEY     = $config['mapboxapikey']
 
 bot = Cinch::Bot.new do
   configure do |c|

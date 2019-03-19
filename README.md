@@ -43,6 +43,10 @@ channels:
 
 `googleapikey` -- The API key for Google for URL shortening (not required).
 
+`darkskyapikey` -- The API key for DarkSky for `w` commands.
+
+`mapboxapikey` -- The API key for MapBox for the `DarkSky` plugin and commands.
+
 Options
 -------
 You can run `swissircbot.rb` with the following options:
