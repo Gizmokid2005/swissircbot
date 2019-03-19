@@ -47,6 +47,10 @@ channels:
 
 `mapboxapikey` -- The API key for MapBox for the `DarkSky` plugin and commands.
 
+`yourlsapiurl` -- The URL for the YOURLS instance you're going to use for short URLs.
+
+`yourlstoken` -- The secret token to use with the YOURLS instance, we're avoiding UN/PW support.
+
 Options
 -------
 You can run `swissircbot.rb` with the following options:
