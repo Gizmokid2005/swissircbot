@@ -3,7 +3,7 @@ class Blacklist
   include CustomHelpers
 
   set :help, <<-HELP
-
+No help set yet.
   HELP
 
   match /bl add (\S+)(?: (.+))?/i, method: :add_entry
