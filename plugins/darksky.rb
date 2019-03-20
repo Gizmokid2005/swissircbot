@@ -1,5 +1,5 @@
-        require 'net/http'
-        require 'json'
+require 'net/http'
+require 'json'
 require_relative 'shorten'
 
 class Darksky
@@ -88,11 +88,10 @@ wf <location>
     coords, locname = getcoords(location)
 
     if !coords.nil?
-      uri = URI.parse("https://api.darksky.net/forecast/#{DARKSKYAPIKEY}/#{coords[1]},#{coords[0]}?exclude=minutely,hourly,daily,flags")
-      Net::HTTP.start(uri.host, uri.port) do |http|
-        resp = Net::HTTP.get_response(uri)
+      uri = URI.parse("https://api.darksky.net/forecast/#{DARKSKYAPIKEY}/#{coords[1]},#{coords[0]}?exclude=minutely,hourly,flags")
+      Net::HTTP.start(uri.host, uri.port) do
         begin
-          data = JSON.parse(resp.body)
+          data = JSON.parse(Net::HTTP.get_response(uri).body)
 
           if data.include?('currently')
             dirs = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
@@ -105,6 +104,7 @@ wf <location>
             winddir     = dirs[((weather['windBearing']/22.5 + 0.5).floor % 16)]
             windmph     = weather['windSpeed'].round
             windkph     = (weather['windSpeed'].round * 1.609344).round
+            summary     = data['daily']['summary']
             alerts      = if data['alerts'].nil?
                             nil
                           elsif data['alerts'].count == 1
@@ -114,7 +114,7 @@ wf <location>
                           end
             link        = "https://darksky.net/forecast/#{coords[1]},#{coords[0]}/"
 
-            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
+            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
 
           else
             return "I've run into an unexpected error."
@@ -122,7 +122,6 @@ wf <location>
         rescue JSON::ParserError
           return "Sorry, the API returned an invalid/missing JSON."
         end
-
       end
     else
       return "That doesn't appear to be a valid location."
@@ -131,22 +130,24 @@ wf <location>
 
   def getcoords(location)
     uri = URI.parse("https://api.mapbox.com/geocoding/v5/mapbox.places/#{CGI::escape(location)}.json?fuzzymatch=true?limit=1?routing=false&access_token=#{MAPBOXAPIKEY}")
-    Net::HTTP.start(uri.host, uri.port) do |h|
-      resp = Net::HTTP.get_response(uri)
+    Net::HTTP.start(uri.host, uri.port) do
       begin
-        data = JSON.parse(resp.body)
-        city = if data['features'][0]['id'].include?('place') || data['features'][0]['id'].include?('district')
-                 "#{data['features'][0]['text']},"
-               elsif data['features'][0]['context'].select { |p| p['id'].include?('place') }
-                 "#{data['features'][0]['context'].select { |p| p['id'].include?('place') }[0]['text']},"
-               end
-        state = data['features'][0]['context'].select { |p| p['id'].include?('region')}[0]['text']
-        return data['features'][0]['center'], "#{city} #{state}"
+        data = JSON.parse(Net::HTTP.get_response(uri).body)
+        if !(data['features'].empty? || data['features'].nil?)
+          city = if data['features'][0]['id'].include?('place') || data['features'][0]['id'].include?('district')
+                   "#{data['features'][0]['text']},"
+                 elsif data['features'][0]['context'].select { |p| p['id'].include?('place') }
+                   "#{data['features'][0]['context'].select { |p| p['id'].include?('place') }[0]['text']},"
+                 end
+          state = data['features'][0]['context'].select { |p| p['id'].include?('region')}[0]['text'] unless (data['features'].empty? || data['features'].nil?)
+          return data['features'][0]['center'], "#{city} #{state}"
+        else
+          return nil
+        end
       rescue JSON::ParserError
-        return
+        return nil
       end
     end
-
   end
 
 end
