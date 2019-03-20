@@ -1,5 +1,5 @@
-require 'net/http'
-require 'json'
+        require 'net/http'
+        require 'json'
 require_relative 'shorten'
 
 class Darksky
@@ -105,9 +105,16 @@ wf <location>
             winddir     = dirs[((weather['windBearing']/22.5 + 0.5).floor % 16)]
             windmph     = weather['windSpeed'].round
             windkph     = (weather['windSpeed'].round * 1.609344).round
+            alerts      = if data['alerts'].nil?
+                            nil
+                          elsif data['alerts'].count == 1
+                            data['alerts'][0]['title']
+                          else
+                            data['alerts'].count
+                          end
             link        = "https://darksky.net/forecast/#{coords[1]},#{coords[0]}/"
 
-            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) -- #{Shorten.shorten(link)}"
+            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
 
           else
             return "I've run into an unexpected error."
@@ -123,12 +130,18 @@ wf <location>
   end
 
   def getcoords(location)
-    uri = URI.parse("https://api.mapbox.com/geocoding/v5/mapbox.places/#{location}.json?fuzzymatch=true?limit=1?routing=false&access_token=#{MAPBOXAPIKEY}")
+    uri = URI.parse("https://api.mapbox.com/geocoding/v5/mapbox.places/#{CGI::escape(location)}.json?fuzzymatch=true?limit=1?routing=false&access_token=#{MAPBOXAPIKEY}")
     Net::HTTP.start(uri.host, uri.port) do |h|
       resp = Net::HTTP.get_response(uri)
       begin
         data = JSON.parse(resp.body)
-        return data['features'][0]['center'], "#{data['features'][0]['context'].select { |p| p['id'].include?('place') || p['id'].include?('district')}[0]['text']}, #{data['features'][0]['context'].select { |p| p['id'].include?('region')}[0]['text']}" unless data['features'].empty?
+        city = if data['features'][0]['id'].include?('place') || data['features'][0]['id'].include?('district')
+                 "#{data['features'][0]['text']},"
+               elsif data['features'][0]['context'].select { |p| p['id'].include?('place') }
+                 "#{data['features'][0]['context'].select { |p| p['id'].include?('place') }[0]['text']},"
+               end
+        state = data['features'][0]['context'].select { |p| p['id'].include?('region')}[0]['text']
+        return data['features'][0]['center'], "#{city} #{state}"
       rescue JSON::ParserError
         return
       end
