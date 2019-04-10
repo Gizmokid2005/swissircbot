@@ -14,7 +14,7 @@ shorten <url>
 
   def execute(m, url)
     if !is_blacklisted?(m.channel, m.user.nick)
-      m.reply shorten(url), true
+      m.reply Shorten.shorten(url), true
     else
       m.user.send BLMSG
     end

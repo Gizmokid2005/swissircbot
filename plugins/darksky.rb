@@ -101,6 +101,7 @@ wf <location>
             temp        = "#{weather['temperature'].round(1)}°F (#{((weather['temperature'] - 32) * (5.0/9)).round(1)}°C)"
             feelslike   = "#{weather['apparentTemperature'].round(1)}°F (#{((weather['apparentTemperature'] - 32) * (5.0/9)).round(1)}°C)"
             humidity    = "#{(weather['humidity']*100).round}%"
+            dewpt       = "#{weather['dewPoint'].round(1)}°F (#{((weather['dewPoint'] - 32) * (5.0/9)).round(1)}°C)"
             winddir     = dirs[((weather['windBearing']/22.5 + 0.5).floor % 16)]
             windmph     = weather['windSpeed'].round
             windkph     = (weather['windSpeed'].round * 1.609344).round
@@ -114,7 +115,7 @@ wf <location>
                           end
             link        = "https://darksky.net/forecast/#{coords[1]},#{coords[0]}/"
 
-            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
+            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
 
           else
             return "I've run into an unexpected error."
