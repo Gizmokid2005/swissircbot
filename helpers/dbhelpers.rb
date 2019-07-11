@@ -20,6 +20,7 @@ module DBHelpers
     return db
   end
 
+  # Start Memos
   def save_memo(nick, origin, location, mtype, message, time)
     db = open_create_db
     if db
@@ -54,7 +55,9 @@ module DBHelpers
     db.close
     return result
   end
+  # End Memos
 
+  #Start Quotes
   def add_quote(nick, quote, time)
     db = open_create_db
     if db
@@ -112,5 +115,6 @@ module DBHelpers
     db.close
     return result
   end
+  #End Quotes
 
 end
