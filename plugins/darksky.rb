@@ -9,9 +9,9 @@ class Darksky
   set :help, <<-HELP
 w <location>
   This will return the weather for location from DarkSky.
-wf <location>
-  This will return the weather and forecast for location from DarkSky.
   HELP
+  # wf <location>
+  #     This will return the weather and forecast for location from DarkSky.
 
   match /w (.+)$/i, method: :current
   # match /wf (.+)$/i, method: :forecast

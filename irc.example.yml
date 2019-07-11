@@ -44,3 +44,5 @@ mapboxapikey: APIKEYHERE
 yourlsapiurl: https://your-domain.com/yourls-api.php
 #YOURLS Secret token (we don't want to send UN/PW)
 yourlstoken: TOKENHERE
+#EasyPost API Key (Requires the Packagetracking plugin)
+epapikey: APIKEYHERE

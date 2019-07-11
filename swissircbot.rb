@@ -78,6 +78,7 @@ DARKSKYAPIKEY    = $config['darkskyapikey']
 MAPBOXAPIKEY     = $config['mapboxapikey']
 YOURLSURL        = $config['yourlsapiurl']
 YOURLSTOKEN      = $config['yourlstoken']
+EPAPIKEY         = $config['epapikey']
 
 bot = Cinch::Bot.new do
   configure do |c|
