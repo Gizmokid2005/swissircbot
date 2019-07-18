@@ -1,0 +1,116 @@
+Carrier	String Representation
+ABF	ABF
+Associated Global Systems	AGSystems
+AmazonMws	AmazonMws
+APC	APC
+Aramex	Aramex
+ArrowXL	ArrowXL
+Asendia	Asendia
+Asendia HK	AsendiaHK
+Australia Post	AustraliaPost
+AxlehireV3	AxlehireV3
+Bluedart	BlueDart
+Boxberry	Boxberry
+Cainiao	Cainiao
+Canada Post	CanadaPost
+Canpar	Canpar
+CDL Last Mile Solutions	ColumbusLastMile
+China Post	ChinaPost
+Chronopost	Chronopost
+Colis Privé	ColisPrive
+Colissimo	Colissimo
+Correios	Correios
+Correos Chile	CorreosChile
+Correos Costa Rica	CorreosCostaRica
+CouriersPlease	CouriersPlease
+Dai Post	DaiPost
+Delhivery	Delhivery
+Deliv	Deliv
+Deutsche Post	DeutschePost
+DHL eCommerce Asia	DHLEcommerceAsia
+DHL Express	DHLExpress
+DHL Freight	DHLFreight
+DHL Germany	DHLGermany
+DHL eCommerce	DHLGlobalMail
+DHL eCommerce International	DHLGlobalmailInternational
+Dicom	Dicom
+Direct Link	DirectLink
+Dominos	Dominos
+Doorman	Doorman
+DPD	DPD
+DPD UK	DPDUK
+EC Firstclass	ECFirstclass
+Ecom Express	EcomExpress
+EMS	ChinaEMS
+Estafeta	Estafeta
+Estes	Estes
+Fastway	Fastway
+FedEx	FedEx
+FedEx Mailview	FedExMailview
+FedEx SameDay City	FedExSameDayCity
+FedEx UK	FedExUK
+FedEx SmartPost	FedexSmartPost
+FirstMile	FirstMile
+Flyt Express	FlytExpress
+Freipost	Freipost
+Globegistics	Globegistics
+GLS	GLS
+GSO	GSO
+Hermes	Hermes
+Hong Kong Post	HongKongPost
+India Post	IndiaPost
+Interlink Express	InterlinkExpress
+International Bridge	InternationalBridge
+Israel Post	IsraelPost
+Janco Freight	JancoFreight
+JP Post	JPPost
+Kuroneko Yamato	KuronekoYamato
+La Poste	LaPoste
+LaserShip	LaserShip
+Latvijas Pasts	LatvijasPasts
+Liefery	Liefery
+Loomis Express	LoomisExpress
+LSO	LSO
+Nanjing Woyuan	NanjingWoyuan
+Network4	Network4
+Newgistics	Newgistics
+Ninja Van	NinjaVan
+Norco	Norco
+Nova Poshta	NovaPoshta
+OnTrac	OnTrac
+OnTrac DirectPost	OnTracDirectPost
+Orange DS	OrangeDS
+Osm Worldwide	OsmWorldwide
+Parcelforce	Parcelforce
+Passport	Passport
+Pilot	Pilot
+POS Malaysia	POSMalaysia
+Postmates	Postmates
+PostNL	PostNL
+Posten	Posten
+PostNord	PostNord
+Purolator	Purolator
+R+L Carriers	RLCarriers
+Royal Mail	RoyalMail
+RR Donnelley	RRDonnelley
+Seko	Seko
+Singapore Post	SingaporePost
+SMSA Express	SMSAExpress
+Spee-Dee	SpeeDee
+SprintShip	SprintShip
+StarTrack	StarTrack
+Taiwan Post	TaiwanPost
+Toll	Toll
+TForce	TForce
+UDS	UDS
+Ukrposhta	Ukrposhta
+UPS	UPS
+UPS i-parcel	UPSIparcel
+UPS Mail Innovations	UPSMailInnovations
+USF Holland	USFHolland
+USPS	USPS
+Watkins & Shepard	WatkinsAndShepard
+wnDirect	wnDirect
+Yanwen	Yanwen
+Yodel	Yodel
+Yun Express	YunExpress

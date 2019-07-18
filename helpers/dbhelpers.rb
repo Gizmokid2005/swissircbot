@@ -16,6 +16,9 @@ module DBHelpers
                   , location VARCHAR(10), mtype VARCHAR(5), message TEXT, time VARCHAR(50));")
       db.execute("CREATE TABLE IF NOT EXISTS seen(id INTEGER PRIMARY KEY, nick VARCHAR(50), location VARCHAR(10), time VARCHAR(50));")
       db.execute("CREATE TABLE IF NOT EXISTS quotes(id INTEGER PRIMARY KEY, quote VARCHAR(800), user VARCHAR(50), time VARCHAR(50));")
+      db.execute("CREATE TABLE IF NOT EXISTS packages(id INTEGER PRIMARY KEY, tracknum VARCHAR(100)
+                  , courier VARCHAR(20), name VARCHAR(200), nick VARCHAR(50), updated_at VARCHAR(50), status VARCHAR(200), location VARCHAR(150)
+                  , delivered INTEGER);")
     end
     return db
   end
@@ -116,5 +119,63 @@ module DBHelpers
     return result
   end
   #End Quotes
+
+  #Start PackageTracking
+  def db_save_new_package(nick, tracknum, courier, name, status, location, delivered)
+    time = DateTime.now
+    db = open_create_db
+
+    if db
+      db.execute("INSERT INTO packages(nick, tracknum, courier, name, status, location, delivered, updated_at) VALUES(?,?,?,?,?,?,?,?)", nick.downcase, tracknum.upcase, courier, name, status, location, delivered, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
+      result = db.changes
+    end
+    db.close
+    return result
+  end
+
+  def db_update_package_status(nick, tracknum, status, location, delivered)
+    time = DateTime.now
+    db = open_create_db
+
+    if db
+      db.execute("UPDATE packages SET status = ?, location = ?, delivered = ?, updated_at = ? WHERE tracknum = ? AND nick = ?", status, location, delivered, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s, tracknum.upcase, nick.downcase)
+      result = db.execute("SELECT name FROM packages WHERE tracknum = ? and nick = ?", tracknum.upcase, nick.downcase)
+      # result = db.changes
+    end
+    db.close
+    return result
+  end
+
+  def db_get_all_packages(nick)
+    db = open_create_db
+
+    if db
+      result = db.execute("SELECT tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND delivered = 0;", nick.downcase)
+    end
+    db.close
+    return result
+  end
+
+  def db_find_package(nick, tracknum)
+    db = open_create_db
+
+    if db
+      result = db.execute("SELECT * FROM packages WHERE nick = ? AND tracknum = ?", nick.downcase, tracknum.upcase)
+    end
+    db.close
+    return result
+  end
+
+  def db_remove_package(nick, tracknum)
+    db = open_create_db
+
+    if db
+      db.execute("DELETE FROM packages WHERE nick = ? AND tracknum = ?", nick.downcase, tracknum.upcase)
+      result = db.changes
+    end
+    db.close
+    return result
+  end
+  #End PackageTracking
 
 end
