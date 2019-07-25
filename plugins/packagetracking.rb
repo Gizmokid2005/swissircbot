@@ -6,6 +6,7 @@ require_relative 'shorten'
 class Packagetracking
   include Cinch::Plugin
   include CustomHelpers
+  extend Httpserver::Verbs
 
   set :help, <<-HELP
 ptrack [optcarrier:]<trackingnumber> [optname]
@@ -97,6 +98,12 @@ psearch <carrier>
         m.reply "Sorry, no carriers found.", true
       end
     end
+  end
+
+  # Process Webhooks
+  get "/ptracking" do
+    body "Hello World from the Package Tracking plugin!!!!"
+    200
   end
 
   private

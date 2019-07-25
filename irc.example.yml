@@ -46,3 +46,7 @@ yourlsapiurl: https://your-domain.com/yourls-api.php
 yourlstoken: TOKENHERE
 #EasyPost API Key (Requires the Packagetracking plugin)
 epapikey: APIKEYHERE
+#HTTP Server settings for webhooks
+httphost: 0.0.0.0
+httpport: 1234
+httplog: "cinch_http_server.log"

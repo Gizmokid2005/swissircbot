@@ -79,6 +79,9 @@ MAPBOXAPIKEY     = $config['mapboxapikey']
 YOURLSURL        = $config['yourlsapiurl']
 YOURLSTOKEN      = $config['yourlstoken']
 EPAPIKEY         = $config['epapikey']
+HTTPHOST         = $config['httphost']
+HTTPPORT         = $config['httpport']
+HTTPLOG          = $config['httplog']
 
 bot = Cinch::Bot.new do
   configure do |c|
