@@ -32,7 +32,7 @@ module PackageTrackingHelpers
         delivered   = json['status'] == 'delivered' ? 1 : 0
 
         nick = db_push_update_package(trk_id, tracknum, status, location, updated_at, delivered)
-        Channel(PTRACKCHAN).send("#{nick}: #{string_pkg_moved(name, json)}")
+        bot.channel(PTRACKCHAN).send("#{nick}: #{string_pkg_moved(name, json)}")
       end
     else
       bot.warn("I received an update for #{json['id']} with trackno #{json['tracking_code']} but I'm not currently watching this package.")
