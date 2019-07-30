@@ -160,7 +160,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND delivered = 0 AND deleted = 0;", nick.downcase)
+      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND delivered = 0 AND COALESCE(deleted,0) = 0;", nick.downcase)
     end
     db.close
     return result
@@ -170,7 +170,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE trk_id = ? AND delivered = 0 AND deleted = 0;", trk_id)
+      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE trk_id = ? AND delivered = 0 AND COALESCE(deleted,0) = 0;", trk_id)
     end
     db.close
     return result
@@ -180,7 +180,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT nick, tracknum FROM packages WHERE nick = ? AND tracknum = ? AND deleted = 0", nick.downcase, tracknum.upcase)
+      result = db.execute("SELECT nick, tracknum FROM packages WHERE nick = ? AND tracknum = ? AND COALESCE(deleted,0) = 0", nick.downcase, tracknum.upcase)
     end
     db.close
     return result
