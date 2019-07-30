@@ -18,7 +18,7 @@ module DBHelpers
       db.execute("CREATE TABLE IF NOT EXISTS quotes(id INTEGER PRIMARY KEY, quote VARCHAR(800), user VARCHAR(50), time VARCHAR(50));")
       db.execute("CREATE TABLE IF NOT EXISTS packages(id INTEGER PRIMARY KEY, trk_id VARCHAR(150), tracknum VARCHAR(100)
                   , courier VARCHAR(20), name VARCHAR(200), nick VARCHAR(50), updated_at VARCHAR(50), status VARCHAR(200), location VARCHAR(150)
-                  , delivered INTEGER);")
+                  , delivered INTEGER, deleted INTEGER);")
     end
     return db
   end
@@ -137,7 +137,19 @@ module DBHelpers
 
     if db
       db.execute("UPDATE packages SET status = ?, location = ?, delivered = ?, updated_at = ? WHERE tracknum = ? AND nick = ? AND trk_id = ?", status, location, delivered, updated_at.to_s, tracknum.upcase, nick.downcase, trk_id)
-      result = db.execute("SELECT name FROM packages WHERE tracknum = ? and nick = ?", tracknum.upcase, nick.downcase)
+      result = db.execute("SELECT name FROM packages WHERE tracknum = ? AND nick = ? AND trk_id = ?", tracknum.upcase, nick.downcase, trk_id)
+      # result = db.changes
+    end
+    db.close
+    return result
+  end
+
+  def db_push_update_package(trk_id, tracknum, status, location, updated_at, delivered)
+    db = open_create_db
+
+    if db
+      db.execute("UPDATE packages SET status = ?, location = ?, delivered = ?, updated_at = ? WHERE tracknum = ? AND trk_id = ?", status, location, delivered, updated_at.to_s, tracknum.upcase, nick.downcase, trk_id)
+      result = db.execute("SELECT nick FROM packages WHERE tracknum = ? AND trk_id = ?", tracknum.upcase, trk_id)
       # result = db.changes
     end
     db.close
@@ -148,7 +160,17 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND delivered = 0;", nick.downcase)
+      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND delivered = 0 AND deleted = 0;", nick.downcase)
+    end
+    db.close
+    return result
+  end
+
+  def db_package_by_id(trk_id)
+    db = open_create_db
+
+    if db
+      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND delivered = 0 AND deleted = 0;", trk_id)
     end
     db.close
     return result
@@ -158,7 +180,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT * FROM packages WHERE nick = ? AND tracknum = ?", nick.downcase, tracknum.upcase)
+      result = db.execute("SELECT nick, tracknum FROM packages WHERE nick = ? AND tracknum = ?", nick.downcase, tracknum.upcase)
     end
     db.close
     return result
@@ -168,7 +190,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      db.execute("DELETE FROM packages WHERE nick = ? AND tracknum = ?", nick.downcase, tracknum.upcase)
+      db.execute("UPDATE packages SET deleted = 1 WHERE nick = ? AND tracknum = ?", nick.downcase, tracknum.upcase)
       result = db.changes
     end
     db.close

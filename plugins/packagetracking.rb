@@ -1,5 +1,6 @@
 require 'easypost'
 require 'ffaker'
+require 'json'
 require_relative 'shorten'
 
 class Packagetracking
@@ -25,7 +26,6 @@ psearch <carrier>
 
     if tracknum.nil?
       #If we didn't get a tracking number, return the status for all packages we're tracking for the user.
-      #
       pkgs = track_all_existing_packages(m.user.nick)
       if pkgs.present?
         pkgs.each do |pkg|
@@ -54,11 +54,9 @@ psearch <carrier>
         end
 
         #Track the package
-        pkg = track_new_package(m.user.nick, courier, tracknum, name)
-
+        pkg = track_new_package(courier, tracknum)
         if pkg.present?
           m.reply string_new_package(name, pkg), true
-
           #Save the package
           m.reply "Sorry, I couldn't save that package", true unless save_package(m.user.nick, name, pkg) == 1
         else
@@ -75,8 +73,7 @@ psearch <carrier>
       #We can't give the status of nothing.
       m.reply "What do you want the status of boss?", true
     else
-      pkg = track_new_package(m.user.nick, courier, tracknum, tracknum)
-
+      pkg = track_new_package(courier, tracknum)
       m.reply string_status(pkg), true
     end
   end
@@ -100,21 +97,10 @@ psearch <carrier>
   end
 
   # Process Webhooks
-  get "/ptracking" do
-    body "Hello World from the Package Tracking plugin!!!!"
-
-    200
-  end
-
   post "/ircbot/webhooks/ptracking" do
     json = JSON.parse(request.body.read)
-
-    pp "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
-    pp "~~~~~~~~~~~~~ I GOT A WEB REQUEST ~~~~~~~~~~~~~~"
-    pp json
-    pp "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
-
     200
+    push_update(json)
   end
 
   private
@@ -132,7 +118,23 @@ psearch <carrier>
     hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
     shorturl  = Shorten.shorten(json['public_url'])
     
-    return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} and will be delivered in #{hours} hours. I'll let you know when it changes -- #{shorturl}"
+    return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered in #{hours} hours. I'll let you know when it changes -- #{shorturl}"
+  end
+
+  def string_existing_package(name, json)
+    #Formats the json to a consistently formatted string for new packages
+
+    location  = String.new
+    location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+    location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
+    location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+    location  << "\"" unless location.empty?
+    carrier   = json['carrier']
+    status    = json['tracking_details'][-1]['message'].presence || json['status']
+    hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
+    shorturl  = Shorten.shorten(json['public_url'])
+
+    return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered in #{hours} hours -- #{shorturl}"
   end
 
   def string_status(json)
@@ -172,10 +174,14 @@ psearch <carrier>
     locationold << "\"" unless location.empty?
     statusold    = json['tracking_details'][-2]['message'].presence || json['status']
 
-    return "#{carrier} moved \"#{name}\" from \"#{statusold}\"#{locationold} to \"#{status}\"#{location} and delivery is in T-#{hours} hours -- #{shorturl}"
+    if status == 'delivered'
+      return "#{carrier} has delivered \"#{name}\" -- #{shorturl}"
+    else
+      return "#{carrier} moved \"#{name}\" from \"#{statusold}\"#{locationold} to \"#{status}\"#{location} with delivery in T-#{hours} hours -- #{shorturl}"
+    end
   end
 
-  def track_new_package(nick, courier, tracknum, name)
+  def track_new_package(courier, tracknum)
     setup_api
 
     if courier.nil?
@@ -203,15 +209,31 @@ psearch <carrier>
   def get_package_status(trk_id, nick, courier, tracknum)
     setup_api
 
-    if courier.nil?
-      json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum}).to_json)
+    if trk_id.present?
+      json = JSON.parse(EasyPost::Tracker.retrieve(trk_id).to_json)
     else
-      json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
+      if courier.nil?
+        begin
+          #If the courier isn't provided, we need to grab it and provide it to the API to get accurate information.
+          tmpjson = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum}).to_json)
+          courier = tmpjson['carrier']
+          json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
+          trkid = json['id']
+          json = JSON.parse(EasyPost::Tracker.retrieve(trkid).to_json)
+        rescue EasyPost::Error
+          json = nil
+        end
+      else
+        begin
+          json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
+        rescue EasyPost::Error
+          json = nil
+        end
+      end
     end
 
     tracknum    = json['tracking_code']
     trk_id      = json['id']
-    carrier     = json['carrier']
     status      = json['tracking_details'][-1]['status']
     location    = String.new
     location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
@@ -245,7 +267,7 @@ psearch <carrier>
         # location = p[7]
 
         pkg = get_package_status(trk_id, nick, carrier, tracknum)
-        @pkg << string_new_package(name, pkg[0])
+        @pkg << string_existing_package(name, pkg[0])
       end
     end
     return @pkg
@@ -279,21 +301,43 @@ psearch <carrier>
     return db_save_new_package(nick, trk_id, tracknum, courier, name, status, location, updated_at, delivered)
   end
 
-  def update_package(nick,json)
+  def push_update(raw)
+    #This handles all packages that get a webhook update
 
-    tracknum    = json['tracking_code']
-    trk_id      = json['id']
-    courier     = json['carrier']
-    status      = json['tracking_details'][-1]['message'].presence || json['status']
-    location    = String.new
-    location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
-    location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-    location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-    location    << "\"" unless location.empty?
-    delivered   = json['status'] == 'delivered' ? 1 : 0
+    json = raw['result']
+    trk_id = json['id']
 
-    return db_update_package_status(nick, trk_id, tracknum, status, location, delivered)
+    pkgs = db_package_by_id(trk_id)
+    if pkgs.any?
+      @pkg = Array.new
+      pkgs.each do |p|
 
+        # trk_id = [0]
+        # tracknum = p[1]
+        name = p[2]
+        # carrier = p[3]
+        # nick = p[4]
+        # updated_at = p[5]
+        # status = p[6]
+        # location = p[7]
+
+        tracknum    = json['tracking_code']
+        trk_id      = json['id']
+        status      = json['tracking_details'][-1]['status']
+        location    = String.new
+        location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+        location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
+        location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+        location    << "\"" unless location.empty?
+        updated_at  = Time.parse(json['updated_at'])
+        delivered   = json['status'] == 'delivered' ? 1 : 0
+
+        nick = db_push_update_package(trk_id, tracknum, status, location, updated_at, delivered)
+        Channel(PTRACKCHAN).send("#{nick}: #{string_pkg_moved(name, json)}")
+      end
+    else
+      bot.warn("I received an update for #{json['id']} with trackno #{json['tracking_code']} but I'm not currently watching this package.")
+    end
   end
 
   def setup_api

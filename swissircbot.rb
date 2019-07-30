@@ -82,6 +82,7 @@ EPAPIKEY         = $config['epapikey']
 HTTPHOST         = $config['httphost']
 HTTPPORT         = $config['httpport']
 HTTPLOG          = $config['httplog']
+PTRACKCHAN       = $config['packagetrackingchannel']
 
 bot = Cinch::Bot.new do
   configure do |c|
