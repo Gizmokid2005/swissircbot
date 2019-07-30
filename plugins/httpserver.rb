@@ -4,6 +4,7 @@ require 'thin'
 
 class Httpserver
   include Cinch::Plugin
+  include PackageTrackingHelpers
 
   class CinchHttpServer < Sinatra::Base
 
