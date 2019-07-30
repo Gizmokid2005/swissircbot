@@ -148,7 +148,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      db.execute("UPDATE packages SET status = ?, location = ?, delivered = ?, updated_at = ? WHERE tracknum = ? AND trk_id = ?", status, location, delivered, updated_at.to_s, tracknum.upcase, nick.downcase, trk_id)
+      db.execute("UPDATE packages SET status = ?, location = ?, delivered = ?, updated_at = ? WHERE tracknum = ? AND trk_id = ?", status, location, delivered, updated_at.to_s, tracknum.upcase, trk_id)
       result = db.execute("SELECT nick FROM packages WHERE tracknum = ? AND trk_id = ?", tracknum.upcase, trk_id)
       # result = db.changes
     end
