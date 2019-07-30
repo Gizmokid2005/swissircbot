@@ -18,3 +18,4 @@ irc.yml
 Gemfile.lock
 keep-alive
 *.log
+test/

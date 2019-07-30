@@ -12,29 +12,34 @@ module PackageTrackingHelpers
     if pkgs.any?
       @pkg = Array.new
       pkgs.each do |p|
-
-        # trk_id = [0]
-        # tracknum = p[1]
-        name = p[2]
-        # carrier = p[3]
-        # nick = p[4]
-        # updated_at = p[5]
-        # status = p[6]
-        # location = p[7]
-
-        tracknum    = json['tracking_code']
-        trk_id      = json['id']
-        status      = json['tracking_details'][-1]['status']
-        location    = String.new
-        location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
-        location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-        location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-        location    << "\"" unless location.empty?
         updated_at  = Time.parse(json['updated_at'])
-        delivered   = json['status'] == 'delivered' ? 1 : 0
+        last_upd    = Time.parse(p[5])
 
-        nick = db_push_update_package(trk_id, tracknum, status, location, updated_at, delivered)[0][0]
-        bot.Channel(PTRACKCHAN).send("#{nick}: #{string_pkg_moved(name, json)}")
+        if updated_at != last_upd
+
+          # trk_id = [0]
+          # tracknum = p[1]
+          name = p[2]
+          # carrier = p[3]
+          # nick = p[4]
+          # updated_at = p[5]
+          # status = p[6]
+          # location = p[7]
+
+          tracknum    = json['tracking_code']
+          trk_id      = json['id']
+          status      = json['tracking_details'][-1]['status']
+          location    = String.new
+          location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+          location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
+          location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+          location    << "\"" unless location.empty?
+          # updated_at  = Time.parse(json['updated_at'])
+          delivered   = json['status'] == 'delivered' ? 1 : 0
+
+          nick = db_push_update_package(trk_id, tracknum, status, location, updated_at, delivered)[0][0]
+          bot.Channel(PTRACKCHAN).send("#{nick}: #{string_pkg_moved(name, json)}")
+        end
       end
     else
       bot.warn("I received an update for #{json['id']} with trackno #{json['tracking_code']} but I'm not currently watching this package.")

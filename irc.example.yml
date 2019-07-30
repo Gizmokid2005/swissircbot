@@ -51,4 +51,4 @@ httphost: 0.0.0.0
 httpport: 1234
 httplog: "cinch_http_server.log"
 #Channel to send all package updates too
-packagetrackingchannel: #channame
+packagetrackingchannel: '#channame'
