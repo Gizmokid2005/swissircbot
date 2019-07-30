@@ -170,7 +170,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND delivered = 0 AND deleted = 0;", trk_id)
+      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE trk_id = ? AND delivered = 0 AND deleted = 0;", trk_id)
     end
     db.close
     return result
