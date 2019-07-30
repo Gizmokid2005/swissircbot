@@ -109,18 +109,22 @@ psearch <carrier>
   
   def string_new_package(name, json)
     #Formats the json to a consistently formatted string for new packages
+    if json['description'] == 'tracker.created'
+      shorturl  = Shorten.shorten(json['result']['public_url'])
+      return "\"#{name}\" is currently unknown, but I\"ll keep an eye on it for you -- #{shorturl}", true
+    else
+      location  = String.new
+      location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+      location  << "\"" unless location.empty?
+      carrier   = json['carrier']
+      status    = json['tracking_details'][-1]['message'].presence || json['status']
+      hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
+      shorturl  = Shorten.shorten(json['public_url'])
 
-    location  = String.new
-    location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
-    location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-    location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-    location  << "\"" unless location.empty?
-    carrier   = json['carrier']
-    status    = json['tracking_details'][-1]['message'].presence || json['status']
-    hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
-    shorturl  = Shorten.shorten(json['public_url'])
-    
-    return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered in #{hours} hours. I'll let you know when it changes -- #{shorturl}"
+      return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered in #{hours} hours. I'll let you know when it changes -- #{shorturl}"
+    end
   end
 
   def string_existing_package(name, json)
