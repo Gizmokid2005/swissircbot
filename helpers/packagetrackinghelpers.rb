@@ -1,3 +1,5 @@
+include CustomHelpers
+
 module PackageTrackingHelpers
 
   def push_update(raw)
@@ -31,8 +33,8 @@ module PackageTrackingHelpers
         updated_at  = Time.parse(json['updated_at'])
         delivered   = json['status'] == 'delivered' ? 1 : 0
 
-        nick = db_push_update_package(trk_id, tracknum, status, location, updated_at, delivered)
-        bot.channel(PTRACKCHAN).send("#{nick}: #{string_pkg_moved(name, json)}")
+        nick = db_push_update_package(trk_id, tracknum, status, location, updated_at, delivered)[0][0]
+        bot.Channel(PTRACKCHAN).send("#{nick}: #{string_pkg_moved(name, json)}")
       end
     else
       bot.warn("I received an update for #{json['id']} with trackno #{json['tracking_code']} but I'm not currently watching this package.")

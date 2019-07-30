@@ -100,8 +100,9 @@ psearch <carrier>
   # Process Webhooks
   post "/ircbot/webhooks/ptracking" do
     json = JSON.parse(request.body.read)
-    200
     push_update(json)
+
+    204
   end
 
   private
