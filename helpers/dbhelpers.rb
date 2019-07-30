@@ -180,7 +180,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT nick, tracknum FROM packages WHERE nick = ? AND tracknum = ?", nick.downcase, tracknum.upcase)
+      result = db.execute("SELECT nick, tracknum FROM packages WHERE nick = ? AND tracknum = ? AND deleted = 0", nick.downcase, tracknum.upcase)
     end
     db.close
     return result
