@@ -39,7 +39,7 @@ class Httpserver
     port    = HTTPPORT    || 1234
     logfile = HTTPLOG     || :cinch
 
-    bot.info "Starting HTTP server on #{host} port #{port}"
+    bot.info "Starting HTTP server on #{host} port #{port} -- I'm logging to #{logfile}"
 
     # Set up thin with our Rack endpoint
     @httpserver = Thin::Server.new(host,

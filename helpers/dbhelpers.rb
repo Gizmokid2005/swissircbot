@@ -16,7 +16,7 @@ module DBHelpers
                   , location VARCHAR(10), mtype VARCHAR(5), message TEXT, time VARCHAR(50));")
       db.execute("CREATE TABLE IF NOT EXISTS seen(id INTEGER PRIMARY KEY, nick VARCHAR(50), location VARCHAR(10), time VARCHAR(50));")
       db.execute("CREATE TABLE IF NOT EXISTS quotes(id INTEGER PRIMARY KEY, quote VARCHAR(800), user VARCHAR(50), time VARCHAR(50));")
-      db.execute("CREATE TABLE IF NOT EXISTS packages(id INTEGER PRIMARY KEY, tracknum VARCHAR(100)
+      db.execute("CREATE TABLE IF NOT EXISTS packages(id INTEGER PRIMARY KEY, trk_id VARCHAR(150), tracknum VARCHAR(100)
                   , courier VARCHAR(20), name VARCHAR(200), nick VARCHAR(50), updated_at VARCHAR(50), status VARCHAR(200), location VARCHAR(150)
                   , delivered INTEGER);")
     end
@@ -121,24 +121,22 @@ module DBHelpers
   #End Quotes
 
   #Start PackageTracking
-  def db_save_new_package(nick, tracknum, courier, name, status, location, delivered)
-    time = DateTime.now
+  def db_save_new_package(nick, trk_id, tracknum, courier, name, status, location, updated_at, delivered)
     db = open_create_db
 
     if db
-      db.execute("INSERT INTO packages(nick, tracknum, courier, name, status, location, delivered, updated_at) VALUES(?,?,?,?,?,?,?,?)", nick.downcase, tracknum.upcase, courier, name, status, location, delivered, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
+      db.execute("INSERT INTO packages(nick, trk_id, tracknum, courier, name, status, location, delivered, updated_at) VALUES(?,?,?,?,?,?,?,?,?)", nick.downcase, trk_id, tracknum.upcase, courier, name, status, location, delivered, updated_at.to_s)
       result = db.changes
     end
     db.close
     return result
   end
 
-  def db_update_package_status(nick, tracknum, status, location, delivered)
-    time = DateTime.now
+  def db_update_package_status(nick, trk_id, tracknum, status, location, updated_at, delivered)
     db = open_create_db
 
     if db
-      db.execute("UPDATE packages SET status = ?, location = ?, delivered = ?, updated_at = ? WHERE tracknum = ? AND nick = ?", status, location, delivered, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s, tracknum.upcase, nick.downcase)
+      db.execute("UPDATE packages SET status = ?, location = ?, delivered = ?, updated_at = ? WHERE tracknum = ? AND nick = ? AND trk_id = ?", status, location, delivered, updated_at.to_s, tracknum.upcase, nick.downcase, trk_id)
       result = db.execute("SELECT name FROM packages WHERE tracknum = ? and nick = ?", tracknum.upcase, nick.downcase)
       # result = db.changes
     end
@@ -150,7 +148,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND delivered = 0;", nick.downcase)
+      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND delivered = 0;", nick.downcase)
     end
     db.close
     return result
