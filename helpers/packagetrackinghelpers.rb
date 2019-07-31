@@ -49,27 +49,32 @@ module PackageTrackingHelpers
   def string_pkg_moved(name, json)
     #Formats the json to a consistently formatted string for package moves.
 
-    location  = String.new
-    location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
-    location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-    location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-    location  << "\"" unless location.empty?
     carrier   = json['carrier']
-    status    = json['tracking_details'][-1]['message'].presence || json['status']
-    hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
     shorturl  = Shorten.shorten(json['public_url'])
-
-    locationold = String.new
-    locationold << ("@\"" + json['tracking_details'][-2]['tracking_location']['city'].presence || '') unless json['tracking_details'][-2]['tracking_location']['city'].nil?
-    locationold << (", " + json['tracking_details'][-2]['tracking_location']['state'].presence) unless json['tracking_details'][-2]['tracking_location']['state'].nil?
-    locationold << (", " + json['tracking_details'][-2]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-2]['tracking_location']['country'].nil?
-    locationold << "\"" unless location.empty?
-    statusold    = json['tracking_details'][-2]['message'].presence || json['status']
 
     if status == 'delivered'
       return "#{carrier} has delivered \"#{name}\" -- #{shorturl}"
     else
-      return "#{carrier} moved \"#{name}\" from \"#{statusold}\"#{locationold} to \"#{status}\"#{location} with delivery in T-#{hours} hours -- #{shorturl}"
+      location  = String.new
+      location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+      location  << "\"" unless location.empty?
+      status    = json['tracking_details'][-1]['message'].presence || json['status']
+      hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
+
+      if json['tracking_details'][-2].present?
+        locationold = String.new
+        locationold << ("@\"" + json['tracking_details'][-2]['tracking_location']['city'].presence || '') unless json['tracking_details'][-2]['tracking_location']['city'].nil?
+        locationold << (", " + json['tracking_details'][-2]['tracking_location']['state'].presence) unless json['tracking_details'][-2]['tracking_location']['state'].nil?
+        locationold << (", " + json['tracking_details'][-2]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-2]['tracking_location']['country'].nil?
+        locationold << "\"" unless location.empty?
+        statusold    = json['tracking_details'][-2]['message'].presence || json['status']
+
+        return "#{carrier} moved \"#{name}\" from \"#{statusold}\"#{locationold} to \"#{status}\"#{location} with delivery in T-#{hours} hours -- #{shorturl}"
+      else
+        return "#{carrier} moved \"#{name}\" to \"#{status}\"#{location} with delivery in T-#{hours} hours -- #{shorturl}"
+      end
     end
   end
 
