@@ -1,6 +1,7 @@
 require 'easypost'
 require 'ffaker'
 require 'json'
+require 'csv'
 require_relative 'shorten'
 
 class Packagetracking
