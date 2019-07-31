@@ -76,7 +76,11 @@ psearch <carrier>
       m.reply "What do you want the status of boss?", true
     else
       pkg = track_new_package(courier, tracknum)
-      m.reply string_status(pkg), true
+      if pkg.nil?
+        m.reply "Sorry, I couldn't find that package", true
+      else
+        m.reply string_status(pkg), true
+      end
     end
   end
 
@@ -146,18 +150,33 @@ psearch <carrier>
   def string_status(json)
     #Formats the json to a consistently formatted string for package statuses
 
-    location  = String.new
-    location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
-    location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-    location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-    location  << "\"" unless location.empty?
+    # This is just temporary for debugging as I finish things up. FIXME
+    pp"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
+    pp json
+    pp "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
+
     tracknum  = json['tracking_code']
     carrier   = json['carrier']
-    status    = json['tracking_details'][-1]['message'].presence || json['status']
-    hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
     shorturl  = Shorten.shorten(json['public_url'])
 
-    return "\"#{tracknum}\" is currently with #{carrier} at \"#{status}\"#{location} and will be delivered in #{hours} hours -- #{shorturl}"
+    if json['status'] == 'unknown'
+      return "\"#{tracknum}\" is currently unknown, but I'll keep an eye on it for you -- #{shorturl}"
+    else
+      status    = json['tracking_details'][-1]['message'].presence || json['status']
+
+      if json['status'] == 'delivered'
+        return "#{carrier} has delivered \"#{tracknum}\" at #{Time.parse(json['tracking_details'][-1]['datetime'])} -- #{shorturl}"
+      end
+
+      location  = String.new
+      location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+      location  << "\"" unless location.empty?
+      hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
+
+      return "\"#{tracknum}\" is currently with #{carrier} at \"#{status}\"#{location} and will be delivered in #{hours} hours -- #{shorturl}"
+    end
   end
 
   def track_new_package(courier, tracknum)
