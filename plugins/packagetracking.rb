@@ -120,7 +120,7 @@ psearch <carrier>
       location  << "\"" unless location.empty?
       carrier   = json['carrier']
       status    = json['tracking_details'][-1]['message'].presence || json['status']
-      hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
+      hours     = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
       shorturl  = Shorten.shorten(json['public_url'])
 
       return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered in #{hours} hours. I'll let you know when it changes -- #{shorturl}"
