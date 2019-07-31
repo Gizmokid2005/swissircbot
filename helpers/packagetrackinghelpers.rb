@@ -5,6 +5,10 @@ module PackageTrackingHelpers
   def push_update(raw)
     #This handles all packages that get a webhook update
 
+    pp "******************* THIS IS A PUSH UPDATE JSON ************************"
+    pp raw
+    pp "**********************END JSON**************************"
+
     json = raw['result']
     trk_id = json['id']
 
