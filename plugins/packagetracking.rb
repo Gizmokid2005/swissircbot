@@ -109,8 +109,8 @@ psearch <carrier>
   
   def string_new_package(name, json)
     #Formats the json to a consistently formatted string for new packages
-    if json['description'] == 'tracker.created'
-      shorturl  = Shorten.shorten(json['result']['public_url'])
+    if json['status'] == 'unknown'
+      shorturl  = Shorten.shorten(json['public_url'])
       return "\"#{name}\" is currently unknown, but I\"ll keep an eye on it for you -- #{shorturl}", true
     else
       location  = String.new
