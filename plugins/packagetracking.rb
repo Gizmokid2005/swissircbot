@@ -111,7 +111,7 @@ psearch <carrier>
     #Formats the json to a consistently formatted string for new packages
     if json['status'] == 'unknown'
       shorturl  = Shorten.shorten(json['public_url'])
-      return "\"#{name}\" is currently unknown, but I\"ll keep an eye on it for you -- #{shorturl}", true
+      return "\"#{name}\" is currently unknown, but I\"ll keep an eye on it for you -- #{shorturl}"
     else
       location  = String.new
       location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
@@ -268,12 +268,18 @@ psearch <carrier>
     tracknum    = json['tracking_code']
     trk_id      = json['id']
     courier     = json['carrier']
-    status      = json['tracking_details'][-1]['message'].presence || json['status']
-    location    = String.new
-    location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
-    location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-    location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-    location    << "\"" unless location.empty?
+    if json['tracking_details'].present?
+      status      = json['tracking_details'][-1]['message'].presence || json['status']
+      location    = String.new
+      location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+      location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
+      location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+      location    << "\"" unless location.empty?
+    else
+      status      = json['status']
+      location    = 'unknown'
+    end
+
     updated_at  = Time.parse(json['updated_at'])
     delivered   = json['status'] == 'delivered' ? 1 : 0
 
