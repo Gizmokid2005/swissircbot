@@ -10,8 +10,8 @@ class Packagetracking
   extend Httpserver::Verbs
 
   set :help, <<-HELP
-ptrack [optcarrier:]<trackingnumber> [optname]
-  This will track your package with the [optcarrier] if given, otherwise we'll try to lookup the carrier and track <trackingnumber> with [optname] (or we'll randomly generate one) and watch it until it's delivered.
+ptrack [optcarrier:]<opttrackingnumber> [optname]
+  This will track your package with the [optcarrier] if given, otherwise we'll try to lookup the carrier and track <trackingnumber> with [optname] (or we'll randomly generate one) and watch it until it's delivered. If you don't provide a tracking number we'll give you the status of all packages currently being watched.
 pstatus <trackingnumber>
   If given, this will return the status of the given package without watching it.
 psearch <carrier>
@@ -101,7 +101,6 @@ psearch <carrier>
   post "/ircbot/webhooks/ptracking" do
     json = JSON.parse(request.body.read)
     push_update(json)
-
     204
   end
 
@@ -285,45 +284,6 @@ psearch <carrier>
 
     return db_save_new_package(nick, trk_id, tracknum, courier, name, status, location, updated_at, delivered)
   end
-
-  # def push_update(raw)
-  #   #This handles all packages that get a webhook update
-  #
-  #   json = raw['result']
-  #   trk_id = json['id']
-  #
-  #   pkgs = db_package_by_id(trk_id)
-  #   if pkgs.any?
-  #     @pkg = Array.new
-  #     pkgs.each do |p|
-  #
-  #       # trk_id = [0]
-  #       # tracknum = p[1]
-  #       name = p[2]
-  #       # carrier = p[3]
-  #       # nick = p[4]
-  #       # updated_at = p[5]
-  #       # status = p[6]
-  #       # location = p[7]
-  #
-  #       tracknum    = json['tracking_code']
-  #       trk_id      = json['id']
-  #       status      = json['tracking_details'][-1]['status']
-  #       location    = String.new
-  #       location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
-  #       location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-  #       location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-  #       location    << "\"" unless location.empty?
-  #       updated_at  = Time.parse(json['updated_at'])
-  #       delivered   = json['status'] == 'delivered' ? 1 : 0
-  #
-  #       nick = db_push_update_package(trk_id, tracknum, status, location, updated_at, delivered)
-  #       Channel(PTRACKCHAN).send("#{nick}: #{string_pkg_moved(name, json)}")
-  #     end
-  #   else
-  #     bot.warn("I received an update for #{json['id']} with trackno #{json['tracking_code']} but I'm not currently watching this package.")
-  #   end
-  # end
 
   def setup_api
     EasyPost.api_key = EPAPIKEY #FIXME: Maybe try to find a new place for this?
