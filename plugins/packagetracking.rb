@@ -111,7 +111,7 @@ psearch <carrier>
     #Formats the json to a consistently formatted string for new packages
     if json['status'] == 'unknown'
       shorturl  = Shorten.shorten(json['public_url'])
-      return "\"#{name}\" is currently unknown, but I\"ll keep an eye on it for you -- #{shorturl}"
+      return "\"#{name}\" is currently unknown, but I'll keep an eye on it for you -- #{shorturl}"
     else
       location  = String.new
       location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
