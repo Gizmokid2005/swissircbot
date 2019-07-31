@@ -94,7 +94,7 @@ psearch <carrier>
       carriers = find_carrier(search)
       if carriers.present?
         carriers.each do |c|
-          m.user.msg c, false
+          m.user.send c, false
         end
       else
         m.reply "Sorry, no carriers found.", true
