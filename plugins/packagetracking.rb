@@ -168,8 +168,8 @@ psearch <carrier>
         #If the courier isn't provided, we need to grab it and provide it to the API to get accurate information.
         tmpjson = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum}).to_json)
         courier = tmpjson['carrier']
-        json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
-        trkid = json['id']
+        tmpjson2 = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
+        trkid = tmpjson2['id']
         json = JSON.parse(EasyPost::Tracker.retrieve(trkid).to_json)
       rescue EasyPost::Error
         json = nil
