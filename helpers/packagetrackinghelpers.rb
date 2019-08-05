@@ -5,9 +5,9 @@ module PackageTrackingHelpers
   def push_update(raw)
     #This handles all packages that get a webhook update
 
-    pp "******************* THIS IS A PUSH UPDATE JSON ************************"
-    pp raw
-    pp "**********************END JSON**************************"
+    bot.warn "******************* THIS IS A PUSH UPDATE JSON ************************"
+    bot.warn raw
+    bot.warn "**********************END JSON**************************"
 
     json = raw['result']
     trk_id = json['id']
@@ -56,7 +56,7 @@ module PackageTrackingHelpers
     carrier   = json['carrier']
     shorturl  = Shorten.shorten(json['public_url'])
 
-    if status == 'delivered'
+    if json['status'] == 'delivered'
       return "#{carrier} has delivered \"#{name}\" -- #{shorturl}"
     else
       location  = String.new
