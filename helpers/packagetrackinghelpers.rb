@@ -6,7 +6,7 @@ module PackageTrackingHelpers
     #This handles all packages that get a webhook update
 
     bot.warn "******************* THIS IS A PUSH UPDATE JSON ************************"
-    bot.warn raw
+    pp raw
     bot.warn "**********************END JSON**************************"
 
     json = raw['result']
