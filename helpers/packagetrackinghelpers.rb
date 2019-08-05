@@ -65,7 +65,7 @@ module PackageTrackingHelpers
       # location  << "\"" unless location.empty?
       status    = json['tracking_details'][-1]['message'].presence || json['status']
       # hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
-      days      = ((Time.parse(json['est_delivery_date']) - Time.now + 25200) / 3600 / 24).ceil
+      days      = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now + 25200) / 3600 / 24).ceil
 
       if json['tracking_details'][-2].present?
         locationold = String.new
@@ -75,9 +75,9 @@ module PackageTrackingHelpers
         # locationold << "\"" unless location.empty?
         statusold    = json['tracking_details'][-2]['message'].presence || json['status']
 
-        return "#{carrier} moved \"#{name}\" from \"#{statusold}\"#{locationold} to \"#{status}\"#{location} with delivery in #{pluralize(days, "day", "days")} -- #{shorturl}"
+        return "#{carrier} moved \"#{name}\" from \"#{statusold}\"#{locationold} to \"#{status}\"#{location} with delivery #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
       else
-        return "#{carrier} moved \"#{name}\" to \"#{status}\"#{location} with delivery in #{pluralize(days, "day", "days")} -- #{shorturl}"
+        return "#{carrier} moved \"#{name}\" to \"#{status}\"#{location} with delivery #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
       end
     end
   end

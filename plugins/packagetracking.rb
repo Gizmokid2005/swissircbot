@@ -128,7 +128,7 @@ psearch <carrier>
       days      = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now + 25200) / 3600 / 24).ceil
       shorturl  = Shorten.shorten(json['public_url'])
 
-      return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered in #{pluralize(days, "day", "days")}. I'll let you know when it changes -- #{shorturl}"
+      return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"}. I'll let you know when it changes -- #{shorturl}"
     end
   end
 
@@ -146,7 +146,7 @@ psearch <carrier>
     days      = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now + 25200) / 3600 / 24).ceil
     shorturl  = Shorten.shorten(json['public_url'])
 
-    return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered in #{pluralize(days, "day", "days")} -- #{shorturl}"
+    return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
   end
 
   def string_status(json)
@@ -178,7 +178,7 @@ psearch <carrier>
       # hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
       days      = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now + 25200) / 3600 / 24).ceil
 
-      return "\"#{tracknum}\" is currently with #{carrier} at \"#{status}\"#{location} and will be delivered in #{pluralize(days, "day", "days")} -- #{shorturl}"
+      return "\"#{tracknum}\" is currently with #{carrier} at \"#{status}\"#{location} and will be delivered #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
     end
   end
 
