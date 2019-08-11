@@ -88,7 +88,7 @@ w <location>
     coords, locname = getcoords(location)
 
     if !coords.nil?
-      uri = URI.parse("https://api.darksky.net/forecast/#{DARKSKYAPIKEY}/#{coords[1]},#{coords[0]}?exclude=minutely,hourly,flags")
+      uri = URI.parse("https://api.darksky.net/forecast/#{DARKSKYAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
       Net::HTTP.start(uri.host, uri.port) do
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
@@ -130,18 +130,13 @@ w <location>
   end
 
   def getcoords(location)
-    uri = URI.parse("https://api.mapbox.com/geocoding/v5/mapbox.places/#{CGI::escape(location)}.json?fuzzymatch=true?limit=1?routing=false&access_token=#{MAPBOXAPIKEY}")
+    uri = URI.parse("https://maps.googleapis.com/maps/api/geocode/json?address=#{CGI::escape(location)}&key=#{GOOGLEAPIKEY}")
+
     Net::HTTP.start(uri.host, uri.port) do
       begin
         data = JSON.parse(Net::HTTP.get_response(uri).body)
-        if !(data['features'].empty? || data['features'].nil?)
-          city = if data['features'][0]['id'].include?('place') || data['features'][0]['id'].include?('district')
-                   "#{data['features'][0]['text']},"
-                 elsif data['features'][0]['context'].select { |p| p['id'].include?('place') }
-                   "#{data['features'][0]['context'].select { |p| p['id'].include?('place') }[0]['text']},"
-                 end
-          state = data['features'][0]['context'].select { |p| p['id'].include?('region')}[0]['text'] unless (data['features'].empty? || data['features'].nil?)
-          return data['features'][0]['center'], "#{city} #{state}"
+        if !(data['results'].empty? || data['results'].nil?)
+          return data['results'][0]['geometry']['location'], "#{data['results'][0]['formatted_address']}"
         else
           return nil
         end
