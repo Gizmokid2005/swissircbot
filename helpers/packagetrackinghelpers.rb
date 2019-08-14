@@ -34,9 +34,9 @@ module PackageTrackingHelpers
           trk_id      = json['id']
           status      = json['tracking_details'][-1]['status']
           location    = String.new
-          location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+          location    << ("@" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
           location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-          location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+          location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence) unless json['tracking_details'][-1]['tracking_location']['country'].nil?
           # location    << "\"" unless location.empty?
           delivered   = json['status'] == 'delivered' ? 1 : 0
 
@@ -59,9 +59,9 @@ module PackageTrackingHelpers
       return "#{carrier} has delivered \"#{name}\" -- #{shorturl}"
     else
       location  = String.new
-      location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+      location  << ("@" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
       location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-      location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence) unless json['tracking_details'][-1]['tracking_location']['country'].nil?
       # location  << "\"" unless location.empty?
       status    = json['tracking_details'][-1]['message'].presence || json['status']
       # hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
@@ -69,15 +69,15 @@ module PackageTrackingHelpers
 
       if json['tracking_details'][-2].present?
         locationold = String.new
-        locationold << ("@\"" + json['tracking_details'][-2]['tracking_location']['city'].presence || '') unless json['tracking_details'][-2]['tracking_location']['city'].nil?
+        locationold << ("@" + json['tracking_details'][-2]['tracking_location']['city'].presence || '') unless json['tracking_details'][-2]['tracking_location']['city'].nil?
         locationold << (", " + json['tracking_details'][-2]['tracking_location']['state'].presence) unless json['tracking_details'][-2]['tracking_location']['state'].nil?
-        locationold << (", " + json['tracking_details'][-2]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-2]['tracking_location']['country'].nil?
+        locationold << (", " + json['tracking_details'][-2]['tracking_location']['country'].presence) unless json['tracking_details'][-2]['tracking_location']['country'].nil?
         # locationold << "\"" unless location.empty?
         statusold    = json['tracking_details'][-2]['message'].presence || json['status']
 
-        return "#{carrier} moved \"#{name}\" from \"#{statusold}\"#{locationold} to \"#{status}\"#{location} with delivery #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
+        return "#{carrier} moved \"#{name}\" from #{statusold}#{locationold} to \"#{status}\"#{location} with delivery #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
       else
-        return "#{carrier} moved \"#{name}\" to \"#{status}\"#{location} with delivery #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
+        return "#{carrier} moved \"#{name}\" to #{status}#{location} with delivery #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
       end
     end
   end

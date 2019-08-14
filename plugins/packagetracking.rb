@@ -171,14 +171,14 @@ psearch <carrier>
       end
 
       location  = String.new
-      location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+      location  << ("@" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
       location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-      location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence) unless json['tracking_details'][-1]['tracking_location']['country'].nil?
       # location  << "\"" unless location.empty?
       # hours     = ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
       days      = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now + 25200) / 3600 / 24).ceil
 
-      return "\"#{tracknum}\" is currently with #{carrier} at \"#{status}\"#{location} and will be delivered #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
+      return "\"#{tracknum}\" is currently with #{carrier} at #{status}#{location} and will be delivered #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
     end
   end
 
@@ -237,10 +237,10 @@ psearch <carrier>
     trk_id      = json['id']
     status      = json['tracking_details'][-1]['status']
     location    = String.new
-    location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+    location    << ("@" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
     location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-    location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-    location    << "\"" unless location.empty?
+    location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence) unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+    # location    << "\"" unless location.empty?
     updated_at  = Time.parse(json['updated_at'])
     delivered   = json['status'] == 'delivered' ? 1 : 0
 
@@ -293,9 +293,9 @@ psearch <carrier>
     if json['tracking_details'].present?
       status      = json['tracking_details'][-1]['message'].presence || json['status']
       location    = String.new
-      location    << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+      location    << ("@" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
       location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-      location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+      location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence) unless json['tracking_details'][-1]['tracking_location']['country'].nil?
       # location    << "\"" unless location.empty?
     else
       status      = json['status']
