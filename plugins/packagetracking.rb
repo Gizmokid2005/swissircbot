@@ -62,7 +62,7 @@ psearch <carrier>
           #Save the package
           m.reply "Sorry, I couldn't save that package", true unless save_package(m.user.nick, name, pkg) == 1
         else
-          m.reply "Sorry, I ran into an unexpected error.", true
+          m.reply "Sorry, I ran into an unexpected error. Maybe try using the carrier too? Use .psearch <carrier> to find it and then use <carrier>:<trackingnum> to track it.", true
         end
       end
     end
