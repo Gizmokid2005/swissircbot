@@ -113,7 +113,7 @@ w <location>
                           else
                             data['alerts'].count
                           end
-            link        = "https://darksky.net/forecast/#{coords[1]},#{coords[0]}/"
+            link        = "https://darksky.net/forecast/#{coords['lat']},#{coords['lng']}/"
 
             return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
 
