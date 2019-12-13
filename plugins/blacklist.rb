@@ -16,7 +16,7 @@ No help set yet.
     if !is_blacklisted?(m.channel, m.user.nick)
       channel = m.channel if channel.nil?
       if is_chanadmin?(channel, m.user) || is_supadmin?(m.user)
-        if $blhash[channel].nil?
+        if $blhash.nil? || $blhash[channel].nil?
           $blhash[channel] = []
         end
         $blhash[channel] << nick
@@ -53,7 +53,7 @@ No help set yet.
     if !is_blacklisted?(m.channel, m.user.nick)
       channel = m.channel if channel.nil?
       if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(channel, m.user)
-        if $blhash[channel].nil?
+        if  $blhash.nil?|| $blhash[channel].nil?
           m.reply "There is no current blacklist for #{channel}.", true
         elsif $blhash[channel].empty?
           m.reply "There is no current blacklist for #{channel}.", true

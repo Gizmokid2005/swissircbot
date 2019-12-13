@@ -19,7 +19,7 @@ module CustomHelpers
 
   # Is this user an admin for this channel?
   def is_chanadmin?(channel, user)
-    $adminhash[channel].include?(user.authname.to_s) && user.authed? == true
+    $adminhash[channel].include?(user.authname.to_s) && user.authed? == true unless $adminhash[channel].nil?
   end
 
   # What are the users roles?
