@@ -12,7 +12,7 @@ n/a
 
   def pahelp(m)
     if m.channel.name == "#portableapps"
-      m.reply "Welcome to the PortableApps.com official chatroom. Ask your question and someone should be able to help you shortly. If you still don't get an answer, try posting on the forums: http://portableapps.com/forums", true
+      m.reply "Welcome to the PortableApps.com official chatroom. This chatroom is mostly unused now. Your best bet is to create a post on the forums: http://portableapps.com/forums", true
     end
   end
 end
