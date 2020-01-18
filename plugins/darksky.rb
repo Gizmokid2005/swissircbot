@@ -13,7 +13,7 @@ w <location>
   # wf <location>
   #     This will return the weather and forecast for location from DarkSky.
 
-  match /w (.+)$/i, method: :current
+  match /(?:w|wu|wf) (.+)$/i, method: :current
   # match /wf (.+)$/i, method: :forecast
 
   def current(m, location)
