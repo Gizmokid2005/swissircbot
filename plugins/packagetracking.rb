@@ -136,26 +136,25 @@ psearch <carrier>
     #Formats the json to a consistently formatted string for new packages
 
     location  = String.new
-    location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
-    location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-    location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-    # location  << "\"" unless location.empty?
-    carrier   = json['carrier']
-    status    = json['tracking_details'][-1]['message'].presence || json['status']
-    # hours     = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
-    days      = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now + 25200) / 3600 / 24).ceil
-    shorturl  = Shorten.shorten(json['public_url'])
+    if json['status'] == 'unknown'
+      shorturl  = Shorten.shorten(json['public_url'])
+      return "\"#{name}\" is currently unknown, but I'll keep an eye on it for you -- #{shorturl}"
+    else
+      status    = json['tracking_details'][-1]['message'].presence || json['status']
+      location  << ("@\"" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
+      location  << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence + "\"") unless json['tracking_details'][-1]['tracking_location']['country'].nil?    # location  << "\"" unless location.empty?
+      carrier   = json['carrier']
+      # hours     = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now) / 3600).to_i
+      days      = json['est_delivery_date'].nil? ? 'unknown' : ((Time.parse(json['est_delivery_date']) - Time.now + 25200) / 3600 / 24).ceil
+      shorturl  = Shorten.shorten(json['public_url'])
 
-    return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
+      return "#{carrier} has \"#{name}\" at \"#{status}\"#{location} which will be delivered #{days == 0 ? "today" : "in #{pluralize(days, "day", "days")}"} -- #{shorturl}"
+    end
   end
 
   def string_status(json)
     #Formats the json to a consistently formatted string for package statuses
-
-    # This is just temporary for debugging as I finish things up. FIXME
-    bot.warn"&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&"
-    pp json
-    bot.warn "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@"
 
     tracknum  = json['tracking_code']
     carrier   = json['carrier']
@@ -235,14 +234,20 @@ psearch <carrier>
 
     tracknum    = json['tracking_code']
     trk_id      = json['id']
-    status      = json['tracking_details'][-1]['status']
-    location    = String.new
-    location    << ("@" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
-    location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
-    location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence) unless json['tracking_details'][-1]['tracking_location']['country'].nil?
-    # location    << "\"" unless location.empty?
     updated_at  = Time.parse(json['updated_at'])
-    delivered   = json['status'] == 'delivered' ? 1 : 0
+
+    if json['tracking_details'].nil? || json['tracking_details'].empty?
+      status      = json['status']
+      location    = 'unknown'
+      delivered   = json['status'] == 'delivered' ? 1 : 0
+    else
+      status      = json['tracking_details'][-1]['status']
+      location    = String.new
+      location    << ("@" + json['tracking_details'][-1]['tracking_location']['city'].presence || '') unless json['tracking_details'][-1]['tracking_location']['city'].nil?
+      location    << (", " + json['tracking_details'][-1]['tracking_location']['state'].presence) unless json['tracking_details'][-1]['tracking_location']['state'].nil?
+      location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence) unless json['tracking_details'][-1]['tracking_location']['country'].nil?
+      # location    << "\"" unless location.empty?
+    end
 
     name = db_update_package_status(nick, trk_id, tracknum, status, location, updated_at, delivered)
 
@@ -254,6 +259,7 @@ psearch <carrier>
     #Track all of the existing packages for this user
 
     pkgs = db_get_all_packages(nick)
+
     if pkgs.any?
       @pkg = Array.new
       pkgs.each do |p|
@@ -271,6 +277,7 @@ psearch <carrier>
         @pkg << string_existing_package(name, pkg[0])
       end
     end
+
     return @pkg
   end
 
