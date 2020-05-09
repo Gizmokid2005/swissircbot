@@ -239,7 +239,6 @@ psearch <carrier>
     if json['tracking_details'].nil? || json['tracking_details'].empty?
       status      = json['status']
       location    = 'unknown'
-      delivered   = json['status'] == 'delivered' ? 1 : 0
     else
       status      = json['tracking_details'][-1]['status']
       location    = String.new
@@ -248,6 +247,8 @@ psearch <carrier>
       location    << (", " + json['tracking_details'][-1]['tracking_location']['country'].presence) unless json['tracking_details'][-1]['tracking_location']['country'].nil?
       # location    << "\"" unless location.empty?
     end
+
+    delivered   = json['status'] == 'delivered' ? 1 : 0
 
     name = db_update_package_status(nick, trk_id, tracknum, status, location, updated_at, delivered)
 
