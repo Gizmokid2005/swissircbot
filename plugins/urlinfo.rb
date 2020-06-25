@@ -1,5 +1,6 @@
 require 'open-uri'
-require 'mechanize'
+require 'nokogiri'
+require 'cgi'
 
 class Urlinfo
   include Cinch::Plugin
@@ -16,15 +17,10 @@ title <fullurl>
   def execute(m, url)
     if !is_blacklisted?(m.channel, m.user.nick)
 
-      #return if m.message.to_s.start_with?(PREFIX)
+      @res = Nokogiri.parse(open(url.to_s).read).at("title")
 
-      agent = Mechanize.new
-      agent.user_agent_alias = 'Linux Firefox'
-
-      if title = agent.get(url).title.gsub(/(\r)?(\n)+/, ' ').lstrip.first(200)
+      if (title = @res.text.gsub(/(\r)?(\n)+/, ' ').lstrip.first(200))
         m.reply "Title: #{title}"
-      else
-        #m.reply "I don't know what to do with this.", true #Do we really need a reply?
       end
 
     else
