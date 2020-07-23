@@ -28,8 +28,8 @@ end
     else
       User("ChanServ").send("op #{m.channel} #{m.bot.nick}")
       sleep 0.25
-      m.reply "msg chanserv kick #overviewer #{m.user.nick}"
-      m.channel.kick(m.user, "It is not Wednesday my dude.")
+      m.user.notice "It is #{Date.today.strftime("%A")} my dude."
+      m.channel.kick(m.user, "It is #{Date.today.strftime("%A")} my dude.")
       User("ChanServ").send("deop #{m.channel} #{m.bot.nick}")
     end
   end
