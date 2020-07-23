@@ -5,7 +5,7 @@ class Wednesday
   include CustomHelpers
 
   set :help, <<-HELP
-case wednesday
+wednesday
   This will return a random Wednesday URL, only on Wednesday. Don't test this theory.
 addwednesday <url>
   This will add the <url> to the rotation for the wednesday command.
