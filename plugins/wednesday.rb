@@ -19,10 +19,18 @@ end
   match /remwednesday (.+)/i, method: :cremwednesday
 
   def cwednesday(m)
-    if !is_blacklisted?(m.channel, m.user.nick)
-      m.reply geturl
+    if Date.today.cwday == 2
+      if !is_blacklisted?(m.channel, m.user.nick)
+        m.reply geturl
+      else
+        m.user.send BLMSG
+      end
     else
-      m.user.send BLMSG
+      User("ChanServ").send("op #{m.channel} #{m.bot.nick}")
+      sleep 0.25
+      m.reply "msg chanserv kick #overviewer #{m.user.nick}"
+      m.channel.kick(m.user, "It is not Wednesday my dude.")
+      User("ChanServ").send("deop #{m.channel} #{m.bot.nick}")
     end
   end
 
