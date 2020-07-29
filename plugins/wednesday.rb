@@ -19,9 +19,9 @@ end
   match /remwednesday (.+)/i, method: :cremwednesday
 
   def cwednesday(m)
-    if Date.today.cwday == 2
+    if Date.today.cwday == 3
       if !is_blacklisted?(m.channel, m.user.nick)
-        m.reply geturl
+        m.reply geturl, true
       else
         m.user.send BLMSG
       end
@@ -36,10 +36,14 @@ end
 
   def caddwednesday(m, url)
     if !is_blacklisted?(m.channel, m.user.nick)
-      if addurl(url)
-        m.reply "URL added", true
+      if File.readlines('wednesdayurls.txt').map(&:chomp).include?(url)
+        m.reply "I already have that one.", true
       else
-        m.reply "Sorry, couldn't add that URL.", true
+        if addurl(url)
+          m.reply "URL added", true
+        else
+          m.reply "Sorry, couldn't add that URL.", true
+        end
       end
     else
       m.user.send BLMSG
@@ -48,7 +52,7 @@ end
 
   def cremwednesday(m, url)
     if !is_blacklisted?(m.channel, m.user.nick)
-      if remurl(url)
+      if File.readlines('wednesdayurls.txt').map(&:chomp).include?(url) && remurl(url)
         m.reply "URL removed", true
       else
         m.reply "Sorry, couldn't remove that URL.", true
@@ -62,7 +66,12 @@ end
 
   def geturl()
     urls = File.readlines('wednesdayurls.txt').map(&:chomp)
-    return urls.sample
+    newurl = @lastwedurl
+    while @lastwedurl == newurl
+      newurl = urls.sample
+    end
+    @lastwedurl = newurl
+    return @lastwedurl
   end
 
   def addurl(url)
