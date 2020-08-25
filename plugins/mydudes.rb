@@ -1,22 +1,32 @@
 require 'date'
 
-class Wednesday
+class Mydudes
   include Cinch::Plugin
   include CustomHelpers
 
   set :help, <<-HELP
+today
+  This will tell you what day it is.
 wednesday
   This will return a random Wednesday URL, only on Wednesday. Don't test this theory.
 addwednesday <url>
   This will add the <url> to the rotation for the wednesday command.
 remwednesday <url>
   This will remove the <url> from the rotation for the wednesday command.
-end
   HELP
 
+  match /today/i, method: :ctoday
   match /wednesday/i, method: :cwednesday
   match /addwednesday (.+)/i, method: :caddwednesday
   match /remwednesday (.+)/i, method: :cremwednesday
+
+  def today(m)
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply "It is #{Date.today.strftime("%A")} my dude.", true
+    else
+      m.user.send BLMSG
+    end
+  end
 
   def cwednesday(m)
     if Date.today.cwday == 3
