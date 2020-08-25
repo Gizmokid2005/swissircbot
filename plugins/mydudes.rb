@@ -20,7 +20,7 @@ remwednesday <url>
   match /addwednesday (.+)/i, method: :caddwednesday
   match /remwednesday (.+)/i, method: :cremwednesday
 
-  def today(m)
+  def ctoday(m)
     if !is_blacklisted?(m.channel, m.user.nick)
       m.reply "It is #{Date.today.strftime("%A")} my dude.", true
     else
