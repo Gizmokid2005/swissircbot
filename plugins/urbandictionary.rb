@@ -9,7 +9,7 @@ class Urbandictionary
 
   set :help, <<-HELP
 urban/ud <word>
-  This will return the definion of word from urbandictionary.
+  This will return the definition of <word> from urbandictionary.
   HELP
 
   match /(?:urban|ud) (.*)/i
