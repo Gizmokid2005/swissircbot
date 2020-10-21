@@ -9,16 +9,24 @@ class Darksky
   set :help, <<-HELP
 w <location>
   This will return the weather for location from DarkSky.
+wf <location>
+    This will return the next 3 days' forecast for location from DarkSky.
   HELP
-  # wf <location>
-  #     This will return the weather and forecast for location from DarkSky.
 
-  match /(?:w|wu|wf) (.+)$/i, method: :current
-  # match /wf (.+)$/i, method: :forecast
+  match /(?:w|wu) (.+)$/i, method: :current
+  match /wf (.+)$/i, method: :cforecast
 
   def current(m, location)
     if !is_blacklisted?(m.channel, m.user.nick)
       m.reply curweather(location), true
+    else
+      m.user.send BLMSG
+    end
+  end
+
+  def cforecast(m, location)
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply curforecast(location), true
     else
       m.user.send BLMSG
     end
@@ -36,6 +44,7 @@ w <location>
       Net::HTTP.start(uri.host, uri.port) do
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
+          fc = data['daily']['data']
 
           if data.include?('currently')
             dirs = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
@@ -50,6 +59,8 @@ w <location>
             windmph     = weather['windSpeed'].round
             windkph     = (weather['windSpeed'].round * 1.609344).round
             summary     = data['daily']['summary']
+            fchigh      = "#{fc[0]['temperatureHigh'].round(1)}°F (#{((fc[0]['temperatureHigh'] - 32) * (5.0/9)).round(1)}°C)"
+            fcsum       = fc[0]['summary']
             alerts      = if data['alerts'].nil?
                             nil
                           elsif data['alerts'].count == 1
@@ -59,7 +70,7 @@ w <location>
                           end
             link        = "https://darksky.net/forecast/#{coords['lat']},#{coords['lng']}/"
 
-            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}::") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
+            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}:") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) " + Format(:bold, "Today: ") + "#{fcsum} High of #{fchigh}" + " | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
 
           else
             return "I've run into an unexpected error."
@@ -70,6 +81,53 @@ w <location>
       end
     else
       return "That doesn't appear to be a valid location."
+    end
+  end
+
+  def curforecast(location)
+    # DarkSky doesn't provide a coordinate lookup. Grab it from Mapbox first:
+    coords, locname = getcoords(location)
+
+    if !coords.nil?
+      uri = URI.parse("https://api.darksky.net/forecast/#{DARKSKYAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
+      Net::HTTP.start(uri.host, uri.port) do
+        begin
+          data = JSON.parse(Net::HTTP.get_response(uri).body)
+          if data.include?('daily')
+            dirs = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
+            fc          = data['daily']['data']
+            day1        = Time.at(fc[1]['time']).strftime("%A")
+            day1sum     = fc[1]['summary']
+            day1high    = "#{fc[1]['temperatureHigh'].round(1)}°F (#{((fc[1]['temperatureHigh'] - 32) * (5.0/9)).round(1)}°C)"
+            day1low     = "#{fc[1]['temperatureLow'].round(1)}°F (#{((fc[1]['temperatureLow'] - 32) * (5.0/9)).round(1)}°C)"
+            day1windmph = fc[1]['windSpeed'].round
+            day1windkph = (fc[1]['windSpeed'].round * 1.609344).round
+            day1winddir = dirs[((fc[1]['windBearing']/22.5 + 0.5).floor % 16)]
+            day2        = Time.at(fc[2]['time']).strftime("%A")
+            day2sum     = fc[2]['summary']
+            day2high    = "#{fc[2]['temperatureHigh'].round(1)}°F (#{((fc[2]['temperatureHigh'] - 32) * (5.0/9)).round(1)}°C)"
+            day2low     = "#{fc[2]['temperatureLow'].round(1)}°F (#{((fc[2]['temperatureLow'] - 32) * (5.0/9)).round(1)}°C)"
+            day2windmph = fc[2]['windSpeed'].round
+            day2windkph = (fc[2]['windSpeed'].round * 1.609344).round
+            day2winddir = dirs[((fc[2]['windBearing']/22.5 + 0.5).floor % 16)]
+            day3        = Time.at(fc[3]['time']).strftime("%A")
+            day3sum     = fc[3]['summary']
+            day3high    = "#{fc[3]['temperatureHigh'].round(1)}°F (#{((fc[3]['temperatureHigh'] - 32) * (5.0/9)).round(1)}°C)"
+            day3low     = "#{fc[3]['temperatureLow'].round(1)}°F (#{((fc[3]['temperatureLow'] - 32) * (5.0/9)).round(1)}°C)"
+            day3windmph = fc[3]['windSpeed'].round
+            day3windkph = (fc[3]['windSpeed'].round * 1.609344).round
+            day3winddir = dirs[((fc[3]['windBearing']/22.5 + 0.5).floor % 16)]
+
+            link        = "https://darksky.net/forecast/#{coords['lat']},#{coords['lng']}/"
+
+            return "Forecast for " + Format(:bold, locname) + ": On " + Format(:bold, "#{day1}: ") + "#{day1sum}:  #{day1high} / #{day1low}, " + Format(:bold, "Wind: ") + "#{day1winddir} #{day1windmph}mph (#{day1windkph}kph); " + Format(:bold, "#{day2}: ") + "#{day2sum}:  #{day2high} / #{day2low}, " + Format(:bold, "Wind: ") + "#{day2winddir} #{day2windmph}mph (#{day2windkph}kph); " + Format(:bold, "#{day3}: ") + "#{day3sum}:  #{day3high} / #{day3low}, " + Format(:bold, "Wind: ") + "#{day3winddir} #{day3windmph}mph (#{day3windkph}kph); " + " -- #{Shorten.shorten(link)}"
+          else
+            return "I've run into an unexpected error."
+          end
+        rescue JSON::ParserError
+          return "Sorry, the API returned an invalid/missing JSON."
+        end
+      end
     end
   end
 
