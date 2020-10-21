@@ -120,7 +120,7 @@ wf <location>
 
             link        = "https://darksky.net/forecast/#{coords['lat']},#{coords['lng']}/"
 
-            return "Forecast for " + Format(:bold, locname) + ": On " + Format(:bold, "#{day1}: ") + "#{day1sum}:  #{day1high} / #{day1low}, " + Format(:bold, "Wind: ") + "#{day1winddir} #{day1windmph}mph (#{day1windkph}kph); " + Format(:bold, "#{day2}: ") + "#{day2sum}:  #{day2high} / #{day2low}, " + Format(:bold, "Wind: ") + "#{day2winddir} #{day2windmph}mph (#{day2windkph}kph); " + Format(:bold, "#{day3}: ") + "#{day3sum}:  #{day3high} / #{day3low}, " + Format(:bold, "Wind: ") + "#{day3winddir} #{day3windmph}mph (#{day3windkph}kph); " + " -- #{Shorten.shorten(link)}"
+            return "Forecast for " + Format(:bold, locname) + ": On " + Format(:bold, "#{day1}: ") + "#{day1sum}:  #{day1high} / #{day1low}, " + Format(:bold, "Wind: ") + "#{day1winddir} #{day1windmph}mph (#{day1windkph}kph); " + Format(:bold, "#{day2}: ") + "#{day2sum}:  #{day2high} / #{day2low}, " + Format(:bold, "Wind: ") + "#{day2winddir} #{day2windmph}mph (#{day2windkph}kph); " + Format(:bold, "#{day3}: ") + "#{day3sum}:  #{day3high} / #{day3low}, " + Format(:bold, "Wind: ") + "#{day3winddir} #{day3windmph}mph (#{day3windkph}kph)" + " -- #{Shorten.shorten(link)}"
           else
             return "I've run into an unexpected error."
           end
