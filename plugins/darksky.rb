@@ -14,7 +14,8 @@ wf <location>
   HELP
 
   match /(?:w|wu) (.+)$/i, method: :current
-  match /wf (.+)$/i, method: :cforecast
+  match /(?:wf|fc) (.+)$/i, method: :cforecast
+  # match /w \+set (.+)/i, method: :csetoptions
 
   def current(m, location)
     if !is_blacklisted?(m.channel, m.user.nick)
@@ -47,7 +48,7 @@ wf <location>
           fc = data['daily']['data']
 
           if data.include?('currently')
-            dirs = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
+            dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
             weather     = data['currently']
             time        = Time.at(weather['time']).utc.getlocal(('%+.2d:00' % data['offset'])).strftime("%b %d at %H:%M")
             wxdesc      = weather['summary']
@@ -70,7 +71,7 @@ wf <location>
                           end
             link        = "https://darksky.net/forecast/#{coords['lat']},#{coords['lng']}/"
 
-            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}:") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) " + Format(:bold, "Today: ") + "#{fcsum} High of #{fchigh}" + " | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
+            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}:") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) " + Format(:bold, "Today: ") + "#{fcsum} " + Format(:bold, "High:") + " of #{fchigh}" + " | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
 
           else
             return "I've run into an unexpected error."
@@ -94,7 +95,7 @@ wf <location>
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
           if data.include?('daily')
-            dirs = ["N","NNE","NE","ENE","E","ESE", "SE", "SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
+            dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
             fc          = data['daily']['data']
             day1        = Time.at(fc[1]['time']).strftime("%A")
             day1sum     = fc[1]['summary']
@@ -120,7 +121,7 @@ wf <location>
 
             link        = "https://darksky.net/forecast/#{coords['lat']},#{coords['lng']}/"
 
-            return "Forecast for " + Format(:bold, locname) + ": On " + Format(:bold, "#{day1}: ") + "#{day1sum}:  #{day1high} / #{day1low}, " + Format(:bold, "Wind: ") + "#{day1winddir} #{day1windmph}mph (#{day1windkph}kph); " + Format(:bold, "#{day2}: ") + "#{day2sum}:  #{day2high} / #{day2low}, " + Format(:bold, "Wind: ") + "#{day2winddir} #{day2windmph}mph (#{day2windkph}kph); " + Format(:bold, "#{day3}: ") + "#{day3sum}:  #{day3high} / #{day3low}, " + Format(:bold, "Wind: ") + "#{day3winddir} #{day3windmph}mph (#{day3windkph}kph)" + " -- #{Shorten.shorten(link)}"
+            return "Forecast for " + Format(:bold, locname) + ": On " + Format(:bold, "#{day1}: ") + "#{day1sum}: #{day1high} / #{day1low}, " + "Wind: #{day1winddir} #{day1windmph}mph (#{day1windkph}kph); " + Format(:bold, "#{day2}: ") + "#{day2sum}: #{day2high} / #{day2low}, " + "Wind: #{day2winddir} #{day2windmph}mph (#{day2windkph}kph); " + Format(:bold, "#{day3}: ") + "#{day3sum}: #{day3high} / #{day3low}, " + "Wind: #{day3winddir} #{day3windmph}mph (#{day3windkph}kph)" + " -- #{Shorten.shorten(link)}"
           else
             return "I've run into an unexpected error."
           end
