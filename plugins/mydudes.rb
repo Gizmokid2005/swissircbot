@@ -45,6 +45,7 @@ remwednesday <url>
   end
 
   def caddwednesday(m, url)
+    url = url.strip
     if !is_blacklisted?(m.channel, m.user.nick)
       if File.readlines('wednesdayurls.txt').map(&:chomp).include?(url)
         m.reply "I already have that one.", true
@@ -61,6 +62,7 @@ remwednesday <url>
   end
 
   def cremwednesday(m, url)
+    url = url.strip
     if !is_blacklisted?(m.channel, m.user.nick)
       if File.readlines('wednesdayurls.txt').map(&:chomp).include?(url) && remurl(url)
         m.reply "URL removed", true

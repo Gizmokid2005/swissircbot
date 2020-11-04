@@ -19,3 +19,4 @@ Gemfile.lock
 keep-alive
 *.log
 test/
+wednesdayurls.txt
