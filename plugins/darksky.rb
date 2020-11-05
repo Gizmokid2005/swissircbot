@@ -7,13 +7,13 @@ class Darksky
   include CustomHelpers
 
   set :help, <<-HELP
-w <location>
+w/wu/wg <location>
   This will return the weather for location from DarkSky.
-wf <location>
+wf/fc <location>
     This will return the next 3 days' forecast for location from DarkSky.
   HELP
 
-  match /(?:w|wu) (.+)$/i, method: :current
+  match /(?:w|wu|wg) (.+)$/i, method: :current
   match /(?:wf|fc) (.+)$/i, method: :cforecast
   # match /w \+set (.+)/i, method: :csetoptions
 

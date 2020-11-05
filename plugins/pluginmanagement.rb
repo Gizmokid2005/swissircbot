@@ -10,7 +10,7 @@ plugin unload <name>
   This will unload the given plugin.
 plugin reload <name>
   This will unload and then load the given plugin.
-plugin list
+plugin(s) list
   This will list all the plugins.
 plugin set <name> <option> <value>
   This will set the plugin's option's value.

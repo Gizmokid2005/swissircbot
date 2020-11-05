@@ -37,6 +37,8 @@ topic <topic>
   This sets the topic for this channel.
 whoami
   This returns who the bot sees you as with all of your roles given to the bot.
+whois <user>
+  This returns who the bot sees <user> as with all of their roles given to the bot.
   HELP
 
   match /kick (\S+)(?: (.+))?/i, method: :ckick

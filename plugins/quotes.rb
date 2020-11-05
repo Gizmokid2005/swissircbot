@@ -13,6 +13,8 @@ getquote <id>
   This will return the quote with the given id.
 randquote
   This will return a random quote.
+quiteinfo/qinfo <quote>
+  This will return info about the quote (who saved it and when).
   HELP
 
   match /addquote (.+)/i, method: :addquote
