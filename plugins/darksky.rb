@@ -15,6 +15,7 @@ wf/fc <location>
 
   match /(?:w|wu|wg) (.+)$/i, method: :current
   match /(?:wf|fc) (.+)$/i, method: :cforecast
+  match /w\+f (.+)$/i, method: :cboth
   # match /w \+set (.+)/i, method: :csetoptions
 
   def current(m, location)
@@ -27,6 +28,15 @@ wf/fc <location>
 
   def cforecast(m, location)
     if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply curforecast(location), true
+    else
+      m.user.send BLMSG
+    end
+  end
+
+  def cboth(m, location)
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply curweather(location), true
       m.reply curforecast(location), true
     else
       m.user.send BLMSG
