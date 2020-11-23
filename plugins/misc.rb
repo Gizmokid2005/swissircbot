@@ -14,7 +14,7 @@ yo [optionaluser]
   match /4d3d3d3(?: (.+))?/i, method: :c4d3d3d3
   match /yo(?: (.+))?/i, method: :cyo
   match /numa(?: (.+))?/i, method: :cnuma
-  match /recorder?: (.+))?/i, method: :crecorder
+  match /recorder(?: (.+))?/i, method: :crecorder
 
   def c4d3d3d3(m, nick) #OhGodWhy
     if !is_blacklisted?(m.channel, m.user.nick)
