@@ -59,6 +59,7 @@ whois <user>
   match /topic (.+)$/i, method: :ctopic
   match /whoami/i, method: :cwhoami
   match /whois (.+)/i, method: :cwhois
+  match /db (.+)/i, method: :cdbquery
 
   # Kick a user from a channel for a specific reason (or no reason)
   def ckick(m, nick, reason)
@@ -266,6 +267,16 @@ whois <user>
       else
         m.reply "That's #{nick}, with the following roles #{userroles(m.channel,nick)}.", true
       end
+    else
+      m.reply NOTADMIN, true
+    end
+  end
+
+  # Run a query against the database
+  def cdbquery(m, query)
+    if is_supadmin?(m.user)
+      queryresult = db_custom_query(query)
+      m.reply "DB Says: #{queryresult}"
     else
       m.reply NOTADMIN, true
     end

@@ -198,4 +198,13 @@ module DBHelpers
   end
   #End PackageTracking
 
+  def db_custom_query(query)
+    db = open_create_db
+
+    if db
+      result = db.execute(query)
+    end
+    db.close
+    return result
+  end
 end
