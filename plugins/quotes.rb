@@ -67,7 +67,12 @@ quiteinfo/qinfo <quote>
   def findquote(m, text)
     if !is_blacklisted?(m.channel, m.user.nick)
       if text.nil?
-        quote = rand_quote()
+        newqid = @lastqid
+        while @lastqid == newqid
+          quote = rand_quote()
+          newqid = quote[0][0]
+        end
+        @lastqid = newqid
         if quote.any?
           m.reply "[#{quote[0][0]}] #{quote[0][1]}", true
         else
@@ -88,7 +93,13 @@ quiteinfo/qinfo <quote>
 
   def randquote(m)
     if !is_blacklisted?(m.channel, m.user.nick)
-      quote = rand_quote()
+      newqid = @lastqid
+      while @lastqid == newqid
+        quote = rand_quote()
+        newqid = quote[0][0]
+      end
+      @lastqid = newqid
+
       if quote.any?
         m.reply "[#{quote[0][0]}] #{quote[0][1]}", true
       else
