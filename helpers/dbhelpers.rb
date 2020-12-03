@@ -95,7 +95,7 @@ module DBHelpers
     db = open_create_db
     if db
       quotecount = db.execute("SELECT COUNT(*) FROM quotes")[0]
-      offset = Math.sqrt(rand(0..(quotecount[0] * quotecount[0]))).floor
+      offset = Math.sqrt(rand(0.0...(quotecount[0] * quotecount[0]))).floor
       result = db.execute("SELECT id, quote FROM quotes ORDER BY lastused DESC LIMIT 1 OFFSET #{offset};")
       db.execute("UPDATE quotes SET lastused = ? WHERE id = #{result[0][0]}", DateTime.now.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
     end
