@@ -15,7 +15,8 @@ module DBHelpers
       db.execute("CREATE TABLE IF NOT EXISTS memos(id INTEGER PRIMARY KEY, nick VARCHAR(50), origin VARCHAR(50)
                   , location VARCHAR(10), mtype VARCHAR(5), message TEXT, time VARCHAR(50));")
       db.execute("CREATE TABLE IF NOT EXISTS seen(id INTEGER PRIMARY KEY, nick VARCHAR(50), location VARCHAR(10), time VARCHAR(50));")
-      db.execute("CREATE TABLE IF NOT EXISTS quotes(id INTEGER PRIMARY KEY, quote VARCHAR(800), user VARCHAR(50), time VARCHAR(50));")
+      db.execute("CREATE TABLE IF NOT EXISTS quotes(id INTEGER PRIMARY KEY, quote VARCHAR(800), user VARCHAR(50), time VARCHAR(50)
+                  , lastused VARCHAR(50));")
       db.execute("CREATE TABLE IF NOT EXISTS packages(id INTEGER PRIMARY KEY, trk_id VARCHAR(150), tracknum VARCHAR(100)
                   , courier VARCHAR(20), name VARCHAR(200), nick VARCHAR(50), updated_at VARCHAR(50), status VARCHAR(200), location VARCHAR(150)
                   , delivered INTEGER, deleted INTEGER);")
@@ -93,7 +94,10 @@ module DBHelpers
   def rand_quote()
     db = open_create_db
     if db
-      result = db.execute("SELECT id, quote FROM quotes ORDER BY RANDOM() LIMIT 1;")
+      quotecount = db.execute("SELECT COUNT(*) FROM quotes")[0]
+      offset = Math.sqrt(rand(1..(quotecount[0] * quotecount[0]))).floor
+      result = db.execute("SELECT id, quote FROM quotes ORDER BY lastused DESC LIMIT 1 OFFSET #{offset};")
+      db.execute("UPDATE quotes SET lastused = ? WHERE id = #{result[0][0]}", DateTime.now.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
     end
     db.close
     return result
