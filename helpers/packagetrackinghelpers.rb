@@ -5,10 +5,6 @@ module PackageTrackingHelpers
   def push_update(raw)
     #This handles all packages that get a webhook update
 
-    bot.warn "******************* THIS IS A PUSH UPDATE JSON ************************"
-    pp raw
-    bot.warn "**********************END JSON**************************"
-
     json = raw['result']
     trk_id = json['id']
 
