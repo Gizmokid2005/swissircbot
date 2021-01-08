@@ -134,7 +134,7 @@ remfriday <url>
   def geturl()
     urls = File.readlines('wednesdayurls.txt').map(&:chomp)
     newurl = @lastwedurl
-    while @lastwedurl == newurl
+    while @lastwedurl == newurl || newurl.empty?
       newurl = urls.sample
     end
     @lastwedurl = newurl
@@ -154,7 +154,7 @@ remfriday <url>
   def getfriurl()
     urls = File.readlines('fridayurls.txt').map(&:chomp)
     newurl = @lastfriurl
-    while @lastfriurl == newurl
+    while @lastfriurl == newurl || newurl.empty?
       newurl = urls.sample
     end
     @lastfriurl = newurl
