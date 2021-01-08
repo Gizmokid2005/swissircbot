@@ -13,12 +13,21 @@ addwednesday <url>
   This will add the <url> to the rotation for the wednesday command.
 remwednesday <url>
   This will remove the <url> from the rotation for the wednesday command.
+friday
+  This will return a random Friday URL, only on Friday. Don't test this theory.
+addfriday <url>
+  This will add the <url> to the rotation for the friday command.
+remfriday <url>
+  This will remove the <url> from the rotation for the friday command.
   HELP
 
   match /today/i, method: :ctoday
   match /wednesday/i, method: :cwednesday
   match /addwednesday (.+)/i, method: :caddwednesday
   match /remwednesday (.+)/i, method: :cremwednesday
+  match /friday/i, method: :cfriday
+  match /addfriday (.+)/i, method: :caddfriday
+  match /remfriday (.+)/i, method: :cremfriday
 
   def ctoday(m)
     if !is_blacklisted?(m.channel, m.user.nick)
@@ -74,6 +83,52 @@ remwednesday <url>
     end
   end
 
+  def cfriday(m)
+    if Date.today.cwday == 5
+      if !is_blacklisted?(m.channel, m.user.nick)
+        m.reply getfriurl, true
+      else
+        m.user.send BLMSG
+      end
+    else
+      User("ChanServ").send("op #{m.channel} #{m.bot.nick}")
+      sleep 0.25
+      m.user.notice "It is #{Date.today.strftime("%A")} my dude."
+      m.channel.kick(m.user, "It is #{Date.today.strftime("%A")} my dude.")
+      User("ChanServ").send("deop #{m.channel} #{m.bot.nick}")
+    end
+  end
+
+  def caddfriday(m, url)
+    url = url.strip
+    if !is_blacklisted?(m.channel, m.user.nick)
+      if File.readlines('fridayurls.txt').map(&:chomp).include?(url)
+        m.reply "I already have that one.", true
+      else
+        if addfriurl(url)
+          m.reply "URL added", true
+        else
+          m.reply "Sorry, couldn't add that URL.", true
+        end
+      end
+    else
+      m.user.send BLMSG
+    end
+  end
+
+  def cremfriday(m, url)
+    url = url.strip
+    if !is_blacklisted?(m.channel, m.user.nick)
+      if File.readlines('fridayurls.txt').map(&:chomp).include?(url) && remfriurl(url)
+        m.reply "URL removed", true
+      else
+        m.reply "Sorry, couldn't remove that URL.", true
+      end
+    else
+      m.user.send BLMSG
+    end
+  end
+
   private
 
   def geturl()
@@ -94,6 +149,26 @@ remwednesday <url>
     urls = File.readlines('wednesdayurls.txt').map(&:chomp)
     urls.delete("#{url}")
     File.write('wednesdayurls.txt', urls.join("\n"), mode: "w+")
+  end
+
+  def getfriurl()
+    urls = File.readlines('fridayurls.txt').map(&:chomp)
+    newurl = @lastfriurl
+    while @lastfriurl == newurl
+      newurl = urls.sample
+    end
+    @lastfriurl = newurl
+    return @lastfriurl
+  end
+
+  def addfriurl(url)
+    File.write('fridayurls.txt', "\n#{url}", mode: "a")
+  end
+
+  def remfriurl(url)
+    urls = File.readlines('fridayurls.txt').map(&:chomp)
+    urls.delete("#{url}")
+    File.write('fridayurls.txt', urls.join("\n"), mode: "w+")
   end
 
 end
