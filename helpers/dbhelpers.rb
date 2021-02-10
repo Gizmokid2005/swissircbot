@@ -107,7 +107,16 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT id, quote FROM quotes WHERE quote LIKE ? ORDER BY RANDOM() LIMIT 1;", "%#{text}%")
+      quotecount = db.execute("SELECT COUNT(*) FROM quotes WHERE quote LIKE ? ORDER BY RANDOM() LIMIT 1;", "%#{text}%")
+      if quotecount[0][0] > 1
+        result = @lastquote
+        while @lastquote == result || result.empty?
+          result = db.execute("SELECT id, quote FROM quotes WHERE quote LIKE ? ORDER BY RANDOM() LIMIT 1;", "%#{text}%")
+        end
+        @lastquote = result
+      else
+        result = db.execute("SELECT id, quote FROM quotes WHERE quote LIKE ? ORDER BY RANDOM() LIMIT 1;", "%#{text}%")
+      end
     end
     db.close
     return result
