@@ -13,7 +13,7 @@ tuna
   match /addtuna (.+)/i, method: :caddtuna
 
   def ctuna(m)
-    if m.user.nick.downcase == 'gizmokid2005' && m.message.downcase.starts_with?("https://i.imgur.com/")
+    if m.user.nick.downcase == 'tunabrain' && m.message.downcase.starts_with?("https://i.imgur.com/")
       if !db_tuna_check(m.message.strip).any?
         db_tuna_add(m.message.strip)
       end
