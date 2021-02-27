@@ -33,7 +33,7 @@ tuna
 
   def caddtuna(m, url)
     if !is_blacklisted?(m.channel, m.user.nick)
-      if db_tuna_check(url.strip).nil?
+      if !db_tuna_check(url.strip).any?
         m.reply "I already have that URL.", true
       else
         if db_tuna_add(url.strip) == 1
