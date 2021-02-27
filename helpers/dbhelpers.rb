@@ -20,6 +20,7 @@ module DBHelpers
       db.execute("CREATE TABLE IF NOT EXISTS packages(id INTEGER PRIMARY KEY, trk_id VARCHAR(150), tracknum VARCHAR(100)
                   , courier VARCHAR(20), name VARCHAR(200), nick VARCHAR(50), updated_at VARCHAR(50), status VARCHAR(200), location VARCHAR(150)
                   , delivered INTEGER, deleted INTEGER);")
+      db.execute("CREATE TABLE IF NOT EXISTS tunaimgur(id INTEGER PRIMARY KEY, url VARCHAR(150), time VARCHAR(50), lastused VARCHAR(50));")
     end
     return db
   end
@@ -210,6 +211,40 @@ module DBHelpers
     return result
   end
   #End PackageTracking
+
+
+  #Start TunaImgur
+  def db_tuna_add(url)
+    db = open_create_db
+    if db
+      db.execute("INSERT INTO tunaimgur(url, time) VALUES(?,?)", url, DateTime.now.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s )
+    end
+    result = db.execute("SELECT 1 FROM tunaimgur WHERE url = ?", url)
+    return result[0][0]
+    db.close
+  end
+
+  def db_tuna_geturl()
+    db = open_create_db
+    if db
+      urlcount = db.execute("SELECT COUNT(*) FROM tunaimgur")[0]
+      offset = Math.sqrt(rand(0.0...(urlcount[0] * urlcount[0]))).floor
+      result = db.execute("SELECT id, url FROM tunaimgur ORDER BY lastused DESC LIMIT 1 OFFSET ?;", offset)
+      db.execute("UPDATE tunaimgur SET lastused = ? WHERE id = ?", DateTime.now.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s, result[0][0])
+    end
+    db.close
+    return result
+  end
+
+  def db_tuna_check(url)
+    db = open_create_db
+    if db
+      result = db.execute("SELECT 1 FROM tunaimgur WHERE url = ?", url)
+    end
+    db.close
+    return result
+  end
+  # End TunaImgur
 
   def db_custom_query(query)
     db = open_create_db
