@@ -52,7 +52,7 @@ wf/fc <location>
 
     if !coords.nil?
       uri = URI.parse("https://api.darksky.net/forecast/#{DARKSKYAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
-      Net::HTTP.start(uri.host, uri.port) do
+      Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
           fc = data['daily']['data']
@@ -101,7 +101,7 @@ wf/fc <location>
 
     if !coords.nil?
       uri = URI.parse("https://api.darksky.net/forecast/#{DARKSKYAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
-      Net::HTTP.start(uri.host, uri.port) do
+      Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
           if data.include?('daily')
@@ -145,7 +145,7 @@ wf/fc <location>
   def getcoords(location)
     uri = URI.parse("https://maps.googleapis.com/maps/api/geocode/json?address=#{CGI::escape(location)}&key=#{GOOGLEAPIKEY}")
 
-    Net::HTTP.start(uri.host, uri.port) do
+    Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
       begin
         data = JSON.parse(Net::HTTP.get_response(uri).body)
         if !(data['results'].empty? || data['results'].nil?)
