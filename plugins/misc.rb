@@ -15,6 +15,7 @@ yo [optionaluser]
   match /yo(?: (.+))?/i, method: :cyo
   match /numa(?: (.+))?/i, method: :cnuma
   match /recorder(?: (.+))?/i, method: :crecorder
+  match /spacecowboy(?: (.+))?/i, method: :cspacecowboy
 
   def c4d3d3d3(m, nick) #OhGodWhy
     if !is_blacklisted?(m.channel, m.user.nick)
@@ -61,6 +62,16 @@ yo [optionaluser]
       end
     else
       m.user.send BLMSG
+    end
+  end
+
+  def cspacecowboy(m, nick)
+    if !is_blacklisted?(m.channel, m.user.nick)
+      if nick.nil?
+        m.reply "The modes are here: https://github.com/agrif/space-cowboy/blob/master/space-cowboy.js#L1441-L1472", true
+      else
+        m.reply "#{nick}: The modes are here: https://github.com/agrif/space-cowboy/blob/master/space-cowboy.js#L1441-L1472"
+      end
     end
   end
 
