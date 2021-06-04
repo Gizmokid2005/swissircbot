@@ -39,7 +39,7 @@ n/a
 
   def pong(m)
     if !is_blacklisted?(m.channel, m.user.nick)
-      m.reply "Yes, I'm alive! Pong! Also, this took #{((Time.now - m.time) * 1000.to_i).round(2)} ms.", true
+      m.reply "Yes, I'm alive! Pong! Also, this took #{((Time.now - m.time) * 1000).round(2)} ms.", true
     else
       m.user.send BLMSG
     end
