@@ -78,10 +78,12 @@ psearch <carrier>
       m.reply "What do you want the status of boss?", true
     else
       pkg = track_new_package(courier, tracknum)
-      if pkg.nil?
-        m.reply "Sorry, I couldn't find that package", true
-      else
+      if !pkg.nil?
         m.reply string_status(pkg), true
+      elsif !@EPError.nil?
+        m.reply "Sorry, I ran into error: #{@EPError.code} - #{@EPError.message}", true
+      else
+        m.reply "Sorry, I couldn't find that package", true
       end
     end
   end
