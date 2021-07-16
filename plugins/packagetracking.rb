@@ -62,7 +62,7 @@ psearch <carrier>
           #Save the package
           m.reply "Sorry, I couldn't save that package", true unless save_package(m.user.nick, name, pkg) == 1
         elsif !@EPError.nil?
-          m.reply "Sorry, I ran into error #{@EPError}.", true
+          m.reply "Sorry, I ran into error: #{@EPError.code} - #{@EPError.message}", true
         else
           m.reply "Sorry, I ran into an unexpected error. Maybe try using the carrier too? Use .psearch <carrier> to find it and then use <carrier>:<trackingnum> to track it.", true
         end
