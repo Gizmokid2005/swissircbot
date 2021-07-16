@@ -61,6 +61,8 @@ psearch <carrier>
           m.reply string_new_package(name, pkg), true
           #Save the package
           m.reply "Sorry, I couldn't save that package", true unless save_package(m.user.nick, name, pkg) == 1
+        elsif !@EPError.nil?
+          m.reply "Sorry, I ran into error #{@EPError}.", true
         else
           m.reply "Sorry, I ran into an unexpected error. Maybe try using the carrier too? Use .psearch <carrier> to find it and then use <carrier>:<trackingnum> to track it.", true
         end
@@ -192,13 +194,15 @@ psearch <carrier>
         tmpjson2 = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
         trkid = tmpjson2['id']
         json = JSON.parse(EasyPost::Tracker.retrieve(trkid).to_json)
-      rescue EasyPost::Error
+      rescue EasyPost::Error => @EPError
+        pp @EPError
         json = nil
       end
     else
       begin
         json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
-      rescue EasyPost::Error
+      rescue EasyPost::Error => @EPError
+        pp @EPError
         json = nil
       end
     end
@@ -220,13 +224,15 @@ psearch <carrier>
           json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
           trkid = json['id']
           json = JSON.parse(EasyPost::Tracker.retrieve(trkid).to_json)
-        rescue EasyPost::Error
+        rescue EasyPost::Error => @EPError
+          pp @EPError
           json = nil
         end
       else
         begin
           json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
-        rescue EasyPost::Error
+        rescue EasyPost::Error => @EPError
+          pp @EPError
           json = nil
         end
       end
@@ -318,6 +324,7 @@ psearch <carrier>
 
   def setup_api
     EasyPost.api_key = EPAPIKEY #FIXME: Maybe try to find a new place for this?
+    @EPError = nil
   end
 
 end
