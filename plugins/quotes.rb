@@ -66,7 +66,14 @@ quiteinfo/qinfo <quote>
 
   def findquote(m, text)
     if !is_blacklisted?(m.channel, m.user.nick)
-      if text.strip.nil?
+      if text.nil?
+        quote = rand_quote()
+        if quote.any?
+          m.reply "[#{quote[0][0]}] #{quote[0][1]}", true
+        else
+          m.reply "Sorry, there are no quotes to find.", true
+        end
+      elsif text.strip.empty?
         quote = rand_quote()
         if quote.any?
           m.reply "[#{quote[0][0]}] #{quote[0][1]}", true
