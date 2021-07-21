@@ -20,7 +20,7 @@ quiteinfo/qinfo <quote>
   match /addquote (.+)/i, method: :addquote
   match /getquote (.+)/i, method: :getquote
   match /(?:deletequote|delquote|rmquote) (.+)/i, method: :delquote
-  match /(?:findquote|quote)(?: (.+))?/i, method: :findquote
+  match /(?:findquote|quote)\b(?: (.+))?/i, method: :findquote
   match /randquote/i, method: :randquote
   match /(?:quoteinfo|qinfo) (.+)/i, method: :quoteinfo
 
