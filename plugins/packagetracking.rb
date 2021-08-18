@@ -19,9 +19,9 @@ psearch <carrier>
   This will return the carrier string to use if you need to manually specify which carrier to track with. (Always sends results in PM).
   HELP
 
-  match /ptrack ?((\w+):)?(\w+)? ?(.+)?/i, method: :ptrack
-  match /pstatus ?((\w+):)?(\w+)? ?/i, method: :pstatus
-  match /psearch(?: (.+))?/i, method: :psearch
+  match /ptrack\b ?((\w+):)?(\w+)? ?(.+)?/i, method: :ptrack
+  match /pstatus\b ?((\w+):)?(\w+)? ?/i, method: :pstatus
+  match /psearch\b(?: (.+))?/i, method: :psearch
 
   def ptrack(m, xx, courier, tracknum, name)
     #Track the given package
