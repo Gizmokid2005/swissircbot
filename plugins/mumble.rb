@@ -7,7 +7,7 @@ mumble
   This will provide you with the mumble server information
   HELP
 
-  match /mumble(?: (.+))?/i, method: :cmumble
+  match /mumble\b(?: (.+))?/i, method: :cmumble
 
   def cmumble(m, nick)
     if !is_blacklisted?(m.channel, m.user.nick)
