@@ -28,7 +28,7 @@ remfriday <url>
   match /friday\b/i, method: :cfriday
   match /addfriday (.+)/i, method: :caddfriday
   match /remfriday (.+)/i, method: :cremfriday
-  match /mydudes\b/i, method: :cmydudes
+  match /mydudes?\b/i, method: :cmydudes
 
   def ctoday(m)
     if !is_blacklisted?(m.channel, m.user.nick)
@@ -127,6 +127,14 @@ remfriday <url>
       end
     else
       m.user.send BLMSG
+    end
+  end
+
+  def cmydudes(m)
+    if Date.today.cwday == 3
+      cwednesday(m)
+    else
+      ctoday(m)
     end
   end
 
