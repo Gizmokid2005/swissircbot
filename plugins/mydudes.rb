@@ -21,13 +21,14 @@ remfriday <url>
   This will remove the <url> from the rotation for the friday command.
   HELP
 
-  match /today/i, method: :ctoday
-  match /wednesday/i, method: :cwednesday
+  match /today\b/i, method: :ctoday
+  match /wednesday\b/i, method: :cwednesday
   match /addwednesday (.+)/i, method: :caddwednesday
   match /remwednesday (.+)/i, method: :cremwednesday
-  match /friday/i, method: :cfriday
+  match /friday\b/i, method: :cfriday
   match /addfriday (.+)/i, method: :caddfriday
   match /remfriday (.+)/i, method: :cremfriday
+  match /mydudes\b/i, method: :cmydudes
 
   def ctoday(m)
     if !is_blacklisted?(m.channel, m.user.nick)

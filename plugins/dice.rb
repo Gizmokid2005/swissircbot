@@ -7,7 +7,7 @@ dice/roll <numberofdice>d<sides> [2d6 for 2 d6]
   Rolls the number of size dice. Assumes 1 if no quantity is given.
   HELP
 
-  match /(?:dice|roll) (\d+)?[d](\d+)/i, method: :roll
+  match /(?:dice|roll)\b(\d+)?[d](\d+)/i, method: :roll
 
   def roll(m,dice,sides)
     if !is_blacklisted?(m.channel, m.user.nick)
