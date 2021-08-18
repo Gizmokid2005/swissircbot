@@ -16,7 +16,7 @@ defsource <word>
   match /(?:define|def)$/i, method: :cblankdef
   match /(?:define|def) (\S+)(?: (.+))?/i, method: :cdef
   match /forget (.+)/i, method: :cforget
-  match /forgetme/i, method: :cforgetme
+  match /forgetme$/i, method: :cforgetme
   match /defsource (.+)/i, method: :cblame
 
   def cblankdef(m)
