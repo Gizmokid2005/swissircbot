@@ -21,7 +21,7 @@ quiteinfo/qinfo <quote>
   match /getquote (.+)/i, method: :getquote
   match /(?:deletequote|delquote|rmquote) (.+)/i, method: :delquote
   match /(?:findquote|quote)\b(?: (.+))?/i, method: :findquote
-  match /randquote/i, method: :randquote
+  match /randquote\b/i, method: :randquote
   match /(?:quoteinfo|qinfo) (.+)/i, method: :quoteinfo
 
   def addquote(m, quote)
