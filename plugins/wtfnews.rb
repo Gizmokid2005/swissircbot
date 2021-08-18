@@ -11,7 +11,7 @@ news <optnum>
   Returns the "today in one sentence" for the given <optnum> (today is 0 and default, yesterday is 1...) from WTFJustHappenedToday.
   HELP
 
-  match /news(?: (.+))?/i, method: :cnews
+  match /news\b(?: (.+))?/i, method: :cnews
 
   def cnews(m, num)
     if !is_blacklisted?(m.channel, m.user.nick)
