@@ -11,11 +11,11 @@ yo [optionaluser]
   This will reply to you with "Yo!", optionaluser will get the highlight instead if provided.
   HELP
 
-  match /4d3d3d3(?: (.+))?/i, method: :c4d3d3d3
-  match /yo(?: (.+))?/i, method: :cyo
-  match /numa(?: (.+))?/i, method: :cnuma
-  match /recorder(?: (.+))?/i, method: :crecorder
-  match /spacecowboy(?: (.+))?/i, method: :cspacecowboy
+  match /4d3d3d3\b(?: (.+))?/i, method: :c4d3d3d3
+  match /yo\b(?: (.+))?/i, method: :cyo
+  match /numa\b(?: (.+))?/i, method: :cnuma
+  match /recorder\b(?: (.+))?/i, method: :crecorder
+  match /spacecowboy\b(?: (.+))?/i, method: :cspacecowboy
 
   def c4d3d3d3(m, nick) #OhGodWhy
     if !is_blacklisted?(m.channel, m.user.nick)
