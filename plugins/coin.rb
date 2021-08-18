@@ -7,7 +7,7 @@ coin/flip <optnumberofcoins>
   Rolls the number of size dice. Assumes 1 if no quantity is given.
   HELP
 
-  match /(?:coin|flip)(?: (.+))?/i, method: :flip
+  match /(?:coin|flip)\b(?: (.+))?/i, method: :flip
 
   def flip(m,coins)
     if !is_blacklisted?(m.channel, m.user.nick)
