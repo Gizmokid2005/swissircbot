@@ -7,7 +7,7 @@ class Eightball
   Returns a classic 8ball response.
   HELP
 
-  match /8ball/i, method: :eightball
+  match /8ball\b/i, method: :eightball
 
   def eightball(m)
     if !is_blacklisted?(m.channel, m.user.nick)
