@@ -10,7 +10,7 @@ swanson
   This will return a random Ron Swanson quote.
   HELP
 
-  match /swanson(?: (.+))?/i, method: :cswanson
+  match /swanson\b(?: (.+))?/i, method: :cswanson
 
   def cswanson(m)
     if !is_blacklisted?(m.channel, m.user.nick)
