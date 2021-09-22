@@ -27,7 +27,7 @@ quiteinfo/qinfo <quote>
   def addquote(m, quote)
     if !is_blacklisted?(m.channel, m.user.nick)
       sq = add_quote(m.user.nick, quote, DateTime.now)
-      m.reply "Quote #{sq[0][0]} saved", true
+      m.reply "Quote #{sq} saved", true
     else
       m.user.send BLMSG
     end

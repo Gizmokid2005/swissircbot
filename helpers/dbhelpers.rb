@@ -68,7 +68,7 @@ module DBHelpers
     if db
       db.execute("INSERT INTO quotes(quote, user, time) VALUES(?,?,?);", quote, nick, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
     end
-    result = db.execute("SELECT id FROM quotes WHERE time = ?", time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s)
+    result = db.last_insert_row_id
     db.close
     return result
   end
