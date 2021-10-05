@@ -263,9 +263,9 @@ whois <user>
     nick = User(nick)
     if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.channel, m.user) || is_mod?(m.user)
       if userroles(m.channel,nick).empty?
-        m.reply "That's #{nick}, with no roles."
+        m.reply "That's #{nick}, authenticated as #{User(nick).authname}, with no roles."
       else
-        m.reply "That's #{nick}, with the following roles #{userroles(m.channel,nick)}.", true
+        m.reply "That's #{nick}, authenticated as #{User(nick).authname}, with the following roles #{userroles(m.channel,nick)}.", true
       end
     else
       m.reply NOTADMIN, true
