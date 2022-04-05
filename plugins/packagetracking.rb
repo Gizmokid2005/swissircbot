@@ -28,7 +28,7 @@ psearch <carrier>
 
     if tracknum.nil?
       #If we didn't get a tracking number, return the status for all packages we're tracking for the user.
-      pkgs = track_all_existing_packages(m.user.authname)
+      pkgs = track_all_existing_packages(m.user.authname.presence || m.user.nick)
       if pkgs.present?
         pkgs.each do |pkg|
           m.reply pkg, true
@@ -40,9 +40,9 @@ psearch <carrier>
       #Track only the given package
 
       #Do we already have this package?
-      if db_find_package(m.user.authname, tracknum).present?
+      if db_find_package(m.user.authname.presence || m.user.nick, tracknum).present?
         #If we do, remove it from the database to track
-        if db_remove_package(m.user.authname, tracknum)
+        if db_remove_package(m.user.authname.presence || m.user.nick, tracknum)
           m.reply "You got it boss, I'll stop watching that for you.", true
         else
           m.reply "I'm already tracking this package but couldn't remove it, sorry.", true
@@ -60,7 +60,7 @@ psearch <carrier>
         if pkg.present?
           m.reply string_new_package(name, pkg), true
           #Save the package
-          m.reply "Sorry, I couldn't save that package", true unless save_package(m.user.authname, name, pkg) == 1
+          m.reply "Sorry, I couldn't save that package", true unless save_package(m.user.authname.presence || m.user.nick, name, pkg) == 1
         elsif !@EPError.nil?
           m.reply "Sorry, I ran into error: #{@EPError.code} - #{@EPError.message}", true
         else
