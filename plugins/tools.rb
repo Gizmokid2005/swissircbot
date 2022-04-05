@@ -252,9 +252,9 @@ whois <user>
   # Tell a user what I know about them
   def cwhoami(m)
     if userroles(m.channel,m.user).empty?
-      m.reply "You're #{m.user.nick}, with no roles."
+      m.reply "You're #{m.user.nick}," + (!m.user.authname.nil? ? " authenticated as #{User(m.user).authname}," : " unauthenticated,") + " with no roles."
     else
-      m.reply "You're #{m.user.nick}, with the following roles #{userroles(m.channel,m.user)}.", true
+      m.reply "You're #{m.user.nick}," + (!m.user.authname.nil? ? " authenticated as #{User(m.user).authname}," : " unauthenticated,") + " with the following roles #{userroles(m.channel,m.user)}.", true
     end
   end
 
@@ -263,9 +263,9 @@ whois <user>
     nick = User(nick)
     if is_supadmin?(m.user) || is_admin?(m.user) || is_chanadmin?(m.channel, m.user) || is_mod?(m.user)
       if userroles(m.channel,nick).empty?
-        m.reply "That's #{nick}, authenticated as #{User(nick).authname}, with no roles."
+        m.reply "That's #{nick}," + (!User(nick).authname.nil? ? " authenticated as #{User(nick).authname}," : " unauthenticated,") + " with no roles."
       else
-        m.reply "That's #{nick}, authenticated as #{User(nick).authname}, with the following roles #{userroles(m.channel,nick)}.", true
+        m.reply "That's #{nick}, " + (!User(nick).authname.nil? ? " authenticated as #{User(nick).authname}," : " unauthenticated,") + " with the following roles #{userroles(m.channel,nick)}.", true
       end
     else
       m.reply NOTADMIN, true
