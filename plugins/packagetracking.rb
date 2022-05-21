@@ -29,7 +29,14 @@ psearch <carrier>
     if tracknum.nil?
       #If we didn't get a tracking number, return the status for all packages we're tracking for the user.
       pkgs = track_all_existing_packages(m.user.authname.presence || m.user.nick)
+      pp "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+      pp "The user is #{m.user.authname.presence || m.user.nick}"
+      pp "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
+
       if pkgs.present?
+        pp "#############################################################################################################"
+        pp pkgs
+        pp "#############################################################################################################"
         pkgs.each do |pkg|
           m.reply pkg, true
         end
@@ -268,6 +275,11 @@ psearch <carrier>
     #Track all of the existing packages for this user
 
     pkgs = db_get_all_packages(nick)
+
+    pp "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
+    pp "track_all_existing_packages returns:"
+    pp pkgs
+    pp "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
 
     if pkgs.any?
       @pkg = Array.new
