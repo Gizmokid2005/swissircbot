@@ -28,15 +28,24 @@ psearch <carrier>
 
     if tracknum.nil?
       #If we didn't get a tracking number, return the status for all packages we're tracking for the user.
-      pkgs = track_all_existing_packages(m.user.authname.presence || m.user.nick)
       pp "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
       pp "The user is #{m.user.authname.presence || m.user.nick}"
       pp "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%"
 
+      pkgs = track_all_existing_packages(m.user.authname.presence || m.user.nick)
+
+      pp "_____________________________________________________________________________________________________________"
+      pp "pkgs from track_all_existing_packages has returned"
+      pp pkgs
+      pp "pkgs.present? returns: #{pkgs.present?}"
+      pp "_____________________________________________________________________________________________________________"
+
       if pkgs.present?
+
         pp "#############################################################################################################"
         pp pkgs
         pp "#############################################################################################################"
+
         pkgs.each do |pkg|
           m.reply pkg, true
         end
@@ -277,11 +286,18 @@ psearch <carrier>
     pkgs = db_get_all_packages(nick)
 
     pp "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
-    pp "track_all_existing_packages returns:"
+    pp "track_all_existing_packages returns from db_get_all_packages:"
     pp pkgs
     pp "^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^"
 
     if pkgs.any?
+
+      pp "--------------------------------------------------------------------------------------------------------------"
+      pp "I have made it into track_all_existing_packages pkgs.any? loop somehow."
+      pp "pkgs.any? returns #{pkgs.any?}"
+      pp pkgs
+      pp "--------------------------------------------------------------------------------------------------------------"
+
       @pkg = Array.new
       pkgs.each do |p|
 
