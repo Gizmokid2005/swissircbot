@@ -10,6 +10,7 @@ n/a
   match lambda { |m| /^(?:hello|hey|hi) #{m.bot.nick}/i }, use_prefix: false, method: :hello
   match lambda { |m| /^(?:thanks|thank you) #{m.bot.nick}/i }, use_prefix: false, method: :thanks
   match lambda { |m| /^#{m.bot.nick}!/i }, use_prefix: false, method: :exclaim
+  match lambda { |m| /^#{m.bot.nick}: dance/i }, use_prefix: false, method: :cdance
   match lambda { |m| /^#{m.bot.nick}: ping/i }, use_prefix: false, method: :pong
   match /ping/i, method: :pong
 
@@ -40,6 +41,24 @@ n/a
   def pong(m)
     if !is_blacklisted?(m.channel, m.user.nick)
       m.reply "Yes, I'm alive! Pong! Also, this took #{((Time.now - m.time) * 1000).round(2)} ms.", true
+    else
+      m.user.send BLMSG
+    end
+  end
+
+  def cdance(m)
+    if !is_blacklisted?(m.channel, m.user.nick)
+      m.reply "<(^.^<)"
+      sleep(1)
+      m.reply "<(^.^)>"
+      sleep(1)
+      m.reply "(>^.^)>"
+      sleep(1)
+      m.reply "(7^.^)7"
+      sleep(1)
+      m.reply "(>^.^<)"
+      sleep(1)
+      m.reply "╰(*°▽°*)╯"
     else
       m.user.send BLMSG
     end

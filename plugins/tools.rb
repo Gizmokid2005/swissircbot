@@ -39,6 +39,8 @@ whoami
   This returns who the bot sees you as with all of your roles given to the bot.
 whois <user>
   This returns who the bot sees <user> as with all of their roles given to the bot.
+db <query>
+  Runs the given query against the database and returns the results.
   HELP
 
   match /kick (\S+)(?: (.+))?/i, method: :ckick
