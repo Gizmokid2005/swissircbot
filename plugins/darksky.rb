@@ -10,7 +10,9 @@ class Darksky
 w/wu/wg <location>
   This will return the weather for location from DarkSky.
 wf/fc <location>
-    This will return the next 3 days' forecast for location from DarkSky.
+  This will return the next 3 days' forecast for location from DarkSky.
+w+f <location>
+  This will return the weather and next 3 days' forecast for location from DarkSky.
   HELP
 
   match /(?:w|wu|wg) (.+)$/i, method: :current
