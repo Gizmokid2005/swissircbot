@@ -111,8 +111,8 @@ quiteinfo/qinfo <quote>
     if !is_blacklisted?(m.channel, m.user.nick)
       quotes = 2.times.flat_map { rand_quote() }
       if quotes.any?
-        ids, contents = quotes.transpose()
-        m.reply "[#{ids.join(",")}] #{contents.join("  ")}", true
+        q1, q2 = quotes
+        m.reply "[#{q1[0]}, " + Format(:italic, "#{q2[0]}") + "] #{q1[1]} " + Format(:italic, "#{q2[1]}")
       else
         m.reply "Sorry, there are no quotes to find.", true
       end
