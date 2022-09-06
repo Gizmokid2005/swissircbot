@@ -87,6 +87,13 @@ quoteinfo/qinfo <quote>
         quote = find_quote(text)
         if quote.any?
           m.reply "[#{quote[0][0]}] #{quote[0][1]}", true
+        elsif get_quote(text)
+          quote = get_quote(text)
+          if quote.any?
+            quote.each do |q|
+              m.reply "That was #{q[0]}", true
+            end
+          end
         else
           m.reply "Sorry, couldn't find a quote matching that.", true
         end
