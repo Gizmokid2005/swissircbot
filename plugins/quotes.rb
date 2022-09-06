@@ -13,7 +13,9 @@ getquote <id>
   This will return the quote with the given id.
 randquote
   This will return a random quote.
-quiteinfo/qinfo <quote>
+quotecombo/qcombo/qombo
+  This will return 2 random quotes parsed together. Potential hilarity will ensue.
+quoteinfo/qinfo <quote>
   This will return info about the quote (who saved it and when).
   HELP
 
@@ -22,7 +24,7 @@ quiteinfo/qinfo <quote>
   match /(?:deletequote|delquote|rmquote) (.+)/i, method: :delquote
   match /(?:findquote|quote)\b(?: (.+))?/i, method: :findquote
   match /randquote\b/i, method: :randquote
-  match /(?:quotecombo|qcombo)\b/i, method: :quotecombo
+  match /(?:quotecombo|qcombo|qombo)\b/i, method: :quotecombo
   match /(?:quoteinfo|qinfo) (.+)/i, method: :quoteinfo
 
   def addquote(m, quote)
