@@ -22,6 +22,7 @@ quiteinfo/qinfo <quote>
   match /(?:deletequote|delquote|rmquote) (.+)/i, method: :delquote
   match /(?:findquote|quote)\b(?: (.+))?/i, method: :findquote
   match /randquote\b/i, method: :randquote
+  match /(?:quotecombo|qcombo)\b/i, method: :quotecombo
   match /(?:quoteinfo|qinfo) (.+)/i, method: :quoteinfo
 
   def addquote(m, quote)
@@ -98,6 +99,20 @@ quiteinfo/qinfo <quote>
       quote = rand_quote()
       if quote.any?
         m.reply "[#{quote[0][0]}] #{quote[0][1]}", true
+      else
+        m.reply "Sorry, there are no quotes to find.", true
+      end
+    else
+      m.user.send BLMSG
+    end
+  end
+
+  def quotecombo(m)
+    if !is_blacklisted?(m.channel, m.user.nick)
+      quotes = 2.times.flat_map { rand_quote() }
+      if quotes.any?
+        ids, contents = quotes.transpose()
+        m.reply "[#{ids.join(",")}] #{contents.join("  ")}", true
       else
         m.reply "Sorry, there are no quotes to find.", true
       end
