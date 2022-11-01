@@ -15,14 +15,23 @@ w+f <location>
   This will return the weather and next 3 days' forecast for location from DarkSky.
   HELP
 
-  match /(?:w|wu|wg) (.+)$/i, method: :current
-  match /(?:wf|fc) (.+)$/i, method: :cforecast
-  match /w\+f (.+)$/i, method: :cboth
-  # match /w \+set (.+)/i, method: :csetoptions
+  match /(?:w|wu|wg)(?=\s|$)(?: (.+))?/i, method: :current
+  match /(?:wf|fc)\b(?: (.+))?/i, method: :cforecast
+  match /w\+f\b(?: (.+))?/i, method: :cboth
 
   def current(m, location)
     if !is_blacklisted?(m.channel, m.user.nick)
-      m.reply curweather(location), true
+      if location.nil?
+        cfg = db_config_get(m.user.authname.presence || m.user.nick, 'weather', 'location')
+        if !cfg[0].nil?
+          location = cfg[0][4]
+          m.reply curweather(location), true
+        else
+          m.reply "Sorry, you need to include or set a location.", true
+        end
+      else
+        m.reply curweather(location), true
+      end
     else
       m.user.send BLMSG
     end
@@ -30,7 +39,17 @@ w+f <location>
 
   def cforecast(m, location)
     if !is_blacklisted?(m.channel, m.user.nick)
-      m.reply curforecast(location), true
+      if location.nil?
+        cfg = db_config_get(m.user.authname.presence || m.user.nick, 'weather', 'location')
+        if !cfg[0].nil?
+          location = cfg[0][4]
+          m.reply curforecast(location), true
+        else
+          m.reply "Sorry, you need to include or set a location.", true
+        end
+      else
+        m.reply curforecast(location), true
+      end
     else
       m.user.send BLMSG
     end
@@ -38,8 +57,19 @@ w+f <location>
 
   def cboth(m, location)
     if !is_blacklisted?(m.channel, m.user.nick)
-      m.reply curweather(location), true
-      m.reply curforecast(location), true
+      if location.nil?
+        cfg = db_config_get(m.user.authname.presence || m.user.nick, 'weather', 'location')
+        if !cfg[0].nil?
+          location = cfg[0][4]
+          m.reply curweather(location), true
+          m.reply curforecast(location), true
+        else
+          m.reply "Sorry, you need to include or set a location.", true
+        end
+      else
+        m.reply curweather(location), true
+        m.reply curforecast(location), true
+      end
     else
       m.user.send BLMSG
     end

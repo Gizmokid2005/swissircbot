@@ -21,6 +21,7 @@ module DBHelpers
                   , courier VARCHAR(20), name VARCHAR(200), nick VARCHAR(50), updated_at VARCHAR(50), status VARCHAR(200), location VARCHAR(150)
                   , delivered INTEGER, deleted INTEGER);")
       db.execute("CREATE TABLE IF NOT EXISTS tunaimgur(id INTEGER PRIMARY KEY, url VARCHAR(150), time VARCHAR(50), lastused VARCHAR(50));")
+      db.execute("CREATE TABLE IF NOT EXISTS userconfigs(id INTEGER PRIMARY KEY, nick VARCHAR(50), plugin VARCHAR(50), configkey VARCHAR(100), configvalue VARCHAR(100));")
     end
     return db
   end
@@ -62,7 +63,7 @@ module DBHelpers
   end
   # End Memos
 
-  #Start Quotes
+  # Start Quotes
   def add_quote(nick, quote, time)
     db = open_create_db
     if db
@@ -132,9 +133,9 @@ module DBHelpers
     db.close
     return result
   end
-  #End Quotes
+  # End Quotes
 
-  #Start PackageTracking
+  # Start PackageTracking
   def db_save_new_package(nick, trk_id, tracknum, courier, name, status, location, updated_at, delivered)
     db = open_create_db
 
@@ -220,12 +221,13 @@ module DBHelpers
     db.close
     return result
   end
-  #End PackageTracking
+  # End PackageTracking
 
 
-  #Start TunaImgur
+  # Start TunaImgur
   def db_tuna_add(url)
     db = open_create_db
+
     if db
       db.execute("INSERT INTO tunaimgur(url, time) VALUES(?,?)", url, DateTime.now.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s )
     end
@@ -236,6 +238,7 @@ module DBHelpers
 
   def db_tuna_geturl()
     db = open_create_db
+
     if db
       urlcount = db.execute("SELECT COUNT(*) FROM tunaimgur")[0]
       offset = Math.sqrt(rand(0.0...(urlcount[0] * urlcount[0]))).floor
@@ -248,6 +251,7 @@ module DBHelpers
 
   def db_tuna_check(url)
     db = open_create_db
+
     if db
       result = db.execute("SELECT 1 FROM tunaimgur WHERE url = ?", url)
     end
@@ -256,6 +260,7 @@ module DBHelpers
   end
   # End TunaImgur
 
+  # Start CustomQuery
   def db_custom_query(query)
     db = open_create_db
 
@@ -265,4 +270,40 @@ module DBHelpers
     db.close
     return result
   end
+  # End CustomQuery
+
+  # Start ConfigValues
+  def db_config_save(nick, plugin, configkey, configvalue)
+    db = open_create_db
+
+    if db
+      db.execute("INSERT INTO userconfigs(nick, plugin, configkey, configvalue) VALUES(?,?,?,?);", nick.downcase, plugin, configkey, configvalue)
+    end
+    result = db.last_insert_row_id
+    db.close
+    return result
+  end
+
+
+  def db_config_get(nick, plugin, configkey)
+    db = open_create_db
+
+    if db
+      result = db.execute("SELECT * FROM userconfigs WHERE nick = ? AND plugin = ? AND configkey = ?", nick.downcase, plugin, configkey)
+    end
+    db.close
+    return result
+  end
+
+  def db_config_clear(nick, plugin, configkey)
+    db = open_create_db
+
+    if db
+      db.execute("DELETE FROM userconfigs WHERE nick = ? AND plugin = ? AND configkey = ?;", nick.downcase, plugin, configkey)
+      result = db.changes
+    end
+    db.close
+    return result
+  end
+  # End ConfigValues
 end
