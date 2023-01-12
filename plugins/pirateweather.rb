@@ -2,17 +2,17 @@ require 'net/http'
 require 'json'
 require_relative 'shorten'
 
-class Darksky
+class Pirateweather
   include Cinch::Plugin
   include CustomHelpers
 
   set :help, <<-HELP
 w/wu/wg <location>
-  This will return the weather for location from DarkSky.
+  This will return the weather for location from PirateWeather.
 wf/fc <location>
-  This will return the next 3 days' forecast for location from DarkSky.
+  This will return the next 3 days' forecast for location from PirateWeather.
 w+f <location>
-  This will return the weather and next 3 days' forecast for location from DarkSky.
+  This will return the weather and next 3 days' forecast for location from PirateWeather.
   HELP
 
   match /(?:w|wu|wg)(?=\s|$)(?: (.+))?/i, method: :current
@@ -79,11 +79,11 @@ w+f <location>
 
 
   def curweather(location)
-    # DarkSky doesn't provide a coordinate lookup. Grab it from Mapbox first:
+    # PirateWeather doesn't provide a coordinate lookup. Grab it from Mapbox first:
     coords, locname = getcoords(location)
 
     if !coords.nil?
-      uri = URI.parse("https://api.darksky.net/forecast/#{DARKSKYAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
+      uri = URI.parse("https://dev.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
       Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
@@ -111,7 +111,7 @@ w+f <location>
                           else
                             data['alerts'].count
                           end
-            link        = "https://darksky.net/forecast/#{coords['lat']},#{coords['lng']}/"
+            link        = "https://merrysky.net/forecast/#{coords['lat']},#{coords['lng']}/"
 
             return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}:") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) " + Format(:bold, "Today: ") + "#{fcsum} " + Format(:bold, "High:") + " of #{fchigh}" + " | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
 
@@ -128,11 +128,11 @@ w+f <location>
   end
 
   def curforecast(location)
-    # DarkSky doesn't provide a coordinate lookup. Grab it from Mapbox first:
+    # PirateWeather doesn't provide a coordinate lookup. Grab it from Mapbox first:
     coords, locname = getcoords(location)
 
     if !coords.nil?
-      uri = URI.parse("https://api.darksky.net/forecast/#{DARKSKYAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
+      uri = URI.parse("https://dev.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
       Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
@@ -161,7 +161,7 @@ w+f <location>
             day3windkph = (fc[3]['windSpeed'].round * 1.609344).round
             day3winddir = dirs[((fc[3]['windBearing']/22.5 + 0.5).floor % 16)]
 
-            link        = "https://darksky.net/forecast/#{coords['lat']},#{coords['lng']}/"
+            link        = "https://merrysky.net/forecast/#{coords['lat']},#{coords['lng']}/"
 
             return "Forecast for " + Format(:bold, locname) + ": On " + Format(:bold, "#{day1}: ") + "#{day1sum}: #{day1high} / #{day1low}, " + "Wind: #{day1winddir} #{day1windmph}mph (#{day1windkph}kph); " + Format(:bold, "#{day2}: ") + "#{day2sum}: #{day2high} / #{day2low}, " + "Wind: #{day2winddir} #{day2windmph}mph (#{day2windkph}kph); " + Format(:bold, "#{day3}: ") + "#{day3sum}: #{day3high} / #{day3low}, " + "Wind: #{day3winddir} #{day3windmph}mph (#{day3windkph}kph)" + " -- #{Shorten.shorten(link)}"
           else

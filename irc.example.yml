@@ -7,7 +7,7 @@ commandprefix: !
 logfile: /path/to/log.log
 dictfile: /path/to/dict.txt
 superadmin:
-- 'Gizmokid2005'
+  - 'SUPERADMINNICKHERE'
 admin:
   channel:
     '#CHANNELHERE':
@@ -18,8 +18,6 @@ moderator:
 - 'MODNICKHERE'
 channels:
 - '#cinch-bots'
-superadmin:
-- 'SUPERADMINNICKHERE'
 blacklist:
   channel:
     '#CHANNELHERE':
@@ -30,14 +28,12 @@ notadmin: You don't have permissions to do that. Stop it. #Non-Admin deny reply 
 notopbot: I don't have power to do that stupid. #Same as above except for bot's lack of power.
 blacklistmsg: You have been blacklisted. #PM to users who try to use commands when they're blacklisted.
 
-#World Weather API key (Requires the WorldWeather plugin)
-wweatherapikey: APIKEYHERE
-#Wunderground API key (Requires the Wunderground plugin)
-wuweatherapikey: APIKEYHERE
 #Google API key (Requires the Shorten plugin)
 googleapikey: APIKEYHERE
-#DarkSky Weather API Key (Requires the DarkSky plugin)
-darkskyapikey: APIKEYHERE
+#PirateWeather Weather API Key (Requires the PirateWeather plugin)
+pirateweatherapikey: APIKEYHERE
+#OpenWeather API Key (Requires the OpenWeather plugin)
+openweatherapikey: APIKEYHERE
 #MapBox API Key (Used by the DarkSky plugin to gather coordinates for weather, requires the DarkSky plugin)
 mapboxapikey: APIKEYHERE
 #YOURLS Short URL service API location

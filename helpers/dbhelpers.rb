@@ -5,7 +5,7 @@ module DBHelpers
   def open_create_db
     db_file = File.join($confdir, "#{SERVER}_#{NICK}_db.sqlite3")
 
-    if File.exists?(db_file)
+    if File.exist?(db_file)
       db = SQLite3::Database.open(db_file)
     else
       db = SQLite3::Database.new(db_file)
