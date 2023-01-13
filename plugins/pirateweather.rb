@@ -113,7 +113,7 @@ w+f <location>
                           end
             link        = "https://merrysky.net/forecast/#{coords['lat']},#{coords['lng']}/"
 
-            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}:") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) " + Format(:bold, "Today: ") + "#{fcsum} " + Format(:bold, "High:") + " of #{fchigh}" + " | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil?}") + "-- #{Shorten.shorten(link)}"
+            return Format(:bold,"Currently in #{locname}") + " (As of #{time}) - " + Format(:bold,"#{wxdesc}:") + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, " + Format(:bold,"Wind:") + " #{winddir} #{windmph}mph (#{windkph}kph) " + Format(:bold, "Today: ") + "#{fcsum} " + Format(:bold, "High:") + " of #{fchigh}" + " | #{summary} " + Format(:bold,"#{"| Alerts: #{alerts} " unless alerts.nil? || alerts == 0}") + "-- #{Shorten.shorten(link)}"
 
           else
             return "I've run into an unexpected error."
