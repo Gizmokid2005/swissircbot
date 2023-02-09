@@ -87,7 +87,7 @@ w+f <location>
       Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
-          fc = data['daily']['data']
+          fc = data['daily']['data'] unless data['daily']['data'].nil?
 
           if data.include?('currently')
             dirs = ["N","NNE","NE","ENE","E","ESE","SE","SSE","S","SSW","SW","WSW","W","WNW","NW","NNW"]
