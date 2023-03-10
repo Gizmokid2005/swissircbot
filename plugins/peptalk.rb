@@ -7,11 +7,11 @@ peptalk/pep
   This will give you a quick pep talk!
   HELP
 
-  match /(peptalk|pep)\b/i, method: :cpeptalk
+  match /(?:peptalk|pep)\b(?: (.+))?/i, method: :cpeptalk
 
-  def cpeptalk (m)
-    if !is_blacklisted?(m.channel, m.user.nick)
+  def cpeptalk (msg, nick)
 
+    if !is_blacklisted?(msg.channel, msg.user.nick)
       part1 = ["Champ,", "Fact:", "Everybody says", "Check it:", "Just saying...", "Superstar,", "Tiger,", "Self,",
                "Know this:", "News alert:", "Girl,", "Ace,", "Excuse me but", "Experts agree:", "In my opinion,", "Hear ye, hear ye:",
                "Okay, listen up:"]
@@ -28,16 +28,20 @@ peptalk/pep
                "now let's dance", "high five!", "say it again!", "according to CNN.", "so get used to it."]
 
       newpeptalk = @lastpeptalk
-
       while @lastpeptalk == newpeptalk || newpeptalk.empty?
         newpeptalk = [part1.sample, part2.sample, part3.sample, part4.sample].join(' ')
       end
-      @lastpeptalk = newpeptalk
-      print @lastpeptalk
 
-      m.reply @lastpeptalk, true
+      @lastpeptalk = newpeptalk
+
+      if nick.nil?
+        msg.reply @lastpeptalk, true
+      else
+        msg.reply "#{nick}: #{@lastpeptalk}"
+      end
+
     else
-      m.user.send BLMSG
+      msg.user.send BLMSG
     end
 
   end

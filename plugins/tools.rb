@@ -1,3 +1,4 @@
+require 'chronic'
 class Tools
   include Cinch::Plugin
   include CustomHelpers
@@ -62,6 +63,20 @@ db <query>
   match /whoami/i, method: :cwhoami
   match /whois (.+)/i, method: :cwhois
   match /db (.+)/i, method: :cdbquery
+  match /timer\b ?(\w+)? ?(.+)?/i, method: :ctimer
+
+  # Create a timer for a given duration
+  def ctimer(m, timername, timemod)
+    if !is_blacklisted?(m.channel, m.user.nick)
+      if timemod.nil? || timername.nil?
+        m.reply "Please specify a name and length for your timer"
+      else
+        Timer(Chronic.parse(timemod)-Time.now, shots: 1) {m.reply "Your timer: \"#{timername}\" is up", true}
+      end
+    else
+      m.user.send BLMSG
+    end
+  end
 
   # Kick a user from a channel for a specific reason (or no reason)
   def ckick(m, nick, reason)
