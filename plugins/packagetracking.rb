@@ -321,7 +321,8 @@ psearch <carrier>
 
   def find_carrier(search)
     carriers = Array.new
-    list = CSV.read("easypostcarriers.txt", { :col_sep => "\t", :headers => true })
+    # list = CSV.read("easypostcarriers.txt", { :col_sep => "\t", :headers => true })
+    list = CSV.read("easypostcarriers.txt", :col_sep => "\t", :headers => true)
     list.find_all {|row| row['Carrier'].downcase.include?(search.downcase) }.each do |c|
       vals = c.to_h
       carriers << "#{vals['Carrier']} can be specified with '#{vals['String Representation']}'"
