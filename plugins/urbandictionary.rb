@@ -24,9 +24,11 @@ urban/ud <word>
 
   private
   def search(query)
-    uri = "http://api.urbandictionary.com/v0/define?term=%s" % [CGI.escape(query)]
-    open(uri) do |f|
-      obj = JSON.parse(f.read)
+
+    uri = URI.parse("https://api.urbandictionary.com/v0/define?term=#{CGI.escape(query)}")
+    Net::HTTP.start(uri.host, uri.port) do |h|
+      resp = Net::HTTP.get_response(uri)
+      obj = JSON.parse(resp.body)
       if obj['list'].empty?
         "No result"
       else
@@ -35,6 +37,7 @@ urban/ud <word>
         "#{defn[0..150]} - #{Shorten.shorten(permlnk)}"
       end
     end
+
   rescue => e
     exception(e)
     "An exception occurred"
