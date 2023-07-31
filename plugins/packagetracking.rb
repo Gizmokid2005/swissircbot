@@ -207,18 +207,18 @@ psearch <carrier>
     if courier.nil?
       begin
         #If the courier isn't provided, we need to grab it and provide it to the API to get accurate information.
-        tmpjson = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum}).to_json)
+        tmpjson = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum}).to_json)
         courier = tmpjson['carrier']
-        tmpjson2 = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
+        tmpjson2 = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
         trkid = tmpjson2['id']
-        json = JSON.parse(EasyPost::Tracker.retrieve(trkid).to_json)
+        json = JSON.parse(@eptrack.tracker.retrieve(trkid).to_json)
       rescue EasyPost::Error => @EPError
         pp @EPError
         json = nil
       end
     else
       begin
-        json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
+        json = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
       rescue EasyPost::Error => @EPError
         pp @EPError
         json = nil
@@ -232,23 +232,23 @@ psearch <carrier>
     setup_api
 
     if trk_id.present?
-      json = JSON.parse(EasyPost::Tracker.retrieve(trk_id).to_json)
+      json = JSON.parse(@eptrack.tracker.retrieve(trk_id).to_json)
     else
       if courier.nil?
         begin
           #If the courier isn't provided, we need to grab it and provide it to the API to get accurate information.
-          tmpjson = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum}).to_json)
+          tmpjson = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum}).to_json)
           courier = tmpjson['carrier']
-          json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
+          json = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
           trkid = json['id']
-          json = JSON.parse(EasyPost::Tracker.retrieve(trkid).to_json)
+          json = JSON.parse(@eptrack.tracker.retrieve(trkid).to_json)
         rescue EasyPost::Error => @EPError
           pp @EPError
           json = nil
         end
       else
         begin
-          json = JSON.parse(EasyPost::Tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
+          json = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
         rescue EasyPost::Error => @EPError
           pp @EPError
           json = nil
@@ -355,7 +355,8 @@ psearch <carrier>
   end
 
   def setup_api
-    EasyPost.api_key = EPAPIKEY #FIXME: Maybe try to find a new place for this?
+    # EasyPost.api_key = EPAPIKEY #FIXME: Maybe try to find a new place for this?
+    @eptrack = EasyPost::Client.new(api_key: EPAPIKEY)
     @EPError = nil
   end
 
