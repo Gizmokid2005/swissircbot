@@ -7,17 +7,21 @@ class Pirateweather
   include CustomHelpers
 
   set :help, <<-HELP
+All <location> are optional if you have set a default location.
 w/wu/wg <location>
   This will return the weather for location from PirateWeather.
 wf/fc <location>
   This will return the next 3 days' forecast for location from PirateWeather.
 w+f <location>
   This will return the weather and next 3 days' forecast for location from PirateWeather.
+wt/temp <location>
+  This will return just temperature/humidity information for location from PirateWeather.
   HELP
 
-  match /(?:w|wu|wg)(?=\s|$)(?: (.+))?/i, method: :current
+  match /(?:w|wu|wg)\b(?: (.+))?/i, method: :current
   match /(?:wf|fc)\b(?: (.+))?/i, method: :cforecast
   match /w\+f\b(?: (.+))?/i, method: :cboth
+  match /(?:wt|temp)\b(?: (.+))?/i, method: :ctemp
 
   def current(m, location)
     if !is_blacklisted?(m.channel, m.user.nick)
@@ -69,6 +73,24 @@ w+f <location>
       else
         m.reply curweather(location), true
         m.reply curforecast(location), true
+      end
+    else
+      m.user.send BLMSG
+    end
+  end
+
+  def ctemp(m, location)
+    if !is_blacklisted?(m.channel, m.user.nick)
+      if location.nil?
+        cfg = db_config_get(m.user.authname.presence || m.user.nick, 'weather', 'location')
+        if !cfg[0].nil?
+          location = cfg[0][4]
+          m.reply curtemp(location), true
+        else
+          m.reply "Sorry, you need to include or set a location.", true
+        end
+      else
+        m.reply curtemp(location), true
       end
     else
       m.user.send BLMSG
@@ -173,6 +195,38 @@ w+f <location>
           return "Sorry, the API returned an invalid/missing JSON."
         end
       end
+    end
+  end
+
+  def curtemp(location)
+    # PirateWeather doesn't provide a coordinate lookup. Grab it from Mapbox first:
+    coords, locname = getcoords(location)
+
+    if !coords.nil?
+      uri = URI.parse("https://dev.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
+      Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
+        begin
+          data = JSON.parse(Net::HTTP.get_response(uri).body)
+
+          if data.include?('currently')
+            weather     = data['currently']
+            time        = Time.at(weather['time']).utc.getlocal(('%+.2d:00' % data['offset'])).strftime("%b %d at %H:%M")
+            temp        = "#{weather['temperature'].round(1)}°F (#{((weather['temperature'] - 32) * (5.0/9)).round(1)}°C)"
+            feelslike   = "#{weather['apparentTemperature'].round(1)}°F (#{((weather['apparentTemperature'] - 32) * (5.0/9)).round(1)}°C)"
+            humidity    = "#{(weather['humidity']*100).round}%"
+            dewpt       = "#{weather['dewPoint'].round(1)}°F (#{((weather['dewPoint'] - 32) * (5.0/9)).round(1)}°C)"
+
+            return Format(:bold,"#{time} in #{locname}")  + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, "
+
+          else
+            return "I've run into an unexpected error."
+          end
+        rescue JSON::ParserError
+          return "Sorry, the API returned an invalid/missing JSON."
+        end
+      end
+    else
+      return "That doesn't appear to be a valid location."
     end
   end
 
