@@ -216,7 +216,7 @@ wt/temp <location>
             humidity    = "#{(weather['humidity']*100).round}%"
             dewpt       = "#{weather['dewPoint'].round(1)}°F (#{((weather['dewPoint'] - 32) * (5.0/9)).round(1)}°C)"
 
-            return Format(:bold,"#{time} in #{locname}")  + " #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, "
+            return Format(:bold,"#{time} in #{locname}")  + ": #{temp} | " + Format(:bold,"FL:") + " #{feelslike}, " + Format(:bold,"Humidity:") + " #{humidity}, " + Format(:bold,"DewPoint:") + " #{dewpt}, "
 
           else
             return "I've run into an unexpected error."
