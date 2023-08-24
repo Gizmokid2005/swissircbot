@@ -18,7 +18,7 @@ wt/temp <location>
   This will return just temperature/humidity information for location from PirateWeather.
   HELP
 
-  match /(?:w|wu|wg)\b(?: (.+))?/i, method: :current
+  match /(?:w|wu|wg)(?=\s|$)(?: (.+))?/i, method: :current
   match /(?:wf|fc)\b(?: (.+))?/i, method: :cforecast
   match /w\+f\b(?: (.+))?/i, method: :cboth
   match /(?:wt|temp)\b(?: (.+))?/i, method: :ctemp
