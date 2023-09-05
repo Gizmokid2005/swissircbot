@@ -22,11 +22,30 @@ module DBHelpers
                   , delivered INTEGER, deleted INTEGER);")
       db.execute("CREATE TABLE IF NOT EXISTS tunaimgur(id INTEGER PRIMARY KEY, url VARCHAR(150), time VARCHAR(50), lastused VARCHAR(50));")
       db.execute("CREATE TABLE IF NOT EXISTS userconfigs(id INTEGER PRIMARY KEY, nick VARCHAR(50), plugin VARCHAR(50), configkey VARCHAR(100), configvalue VARCHAR(100));")
+      db.execute("CREATE TABLE IF NOT EXISTS memosv2(id INTEGER PRIMARY KEY, nick VARCHAR(50), origin VARCHAR(50)
+                  , location VARCHAR(10), message TEXT, savetime VARCHAR(50), remindtime VARCHAR(50));")
     end
     return db
   end
 
   # Start Memos
+  def save_memov2(nick, origin, location, message, savetime, remindtime)
+    db = open_create_db
+    if db
+      db.execute("INSERT INTO memosv2(nick, origin, location, message, savetime, remindtime) VALUES(?,?,?,?,?,?)", nick.downcase, origin, location, message, savetime.to_s, remindtime.to_s)
+    end
+  end
+
+  def get_memosv2(nick)
+    db = open_create_db
+    if db
+      curtime = Time.now.to_s
+      result = db.execute("SELECT nick, origin, location, message, savetime, remindtime FROM memosv2 WHERE nick = ? AND remindtime <= ?", nick.downcase, curtime)
+      db.execute("DELETE FROM memosv2 WHERE nick = ? AND remindtime <= ?", nick.downcase, curtime)
+    end
+    db.close
+    return result
+  end
   def save_memo(nick, origin, location, mtype, message, time)
     db = open_create_db
     if db
