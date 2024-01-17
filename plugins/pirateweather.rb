@@ -106,10 +106,11 @@ wt/temp <location>
 
     if !coords.nil?
       uri = URI.parse("https://dev.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
+      pp uri
       Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
-          if !data['daily']['data'].nil?
+          if !data['daily'].nil?
             fc = data['daily']['data'] unless data['daily']['data'].nil?
           end
 
