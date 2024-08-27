@@ -14,8 +14,10 @@ module PackageTrackingHelpers
       pkgs.each do |p|
         updated_at  = Time.parse(json['updated_at'])
         last_upd    = Time.parse(p[5])
+        new_status  = json['tracking_details'][-1]['status']
+        cur_status  = p[6]
 
-        if updated_at != last_upd
+        if updated_at != last_upd && new_status != cur_status
 
           # trk_id = [0]
           # tracknum = p[1]
