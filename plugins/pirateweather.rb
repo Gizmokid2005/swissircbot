@@ -105,7 +105,7 @@ wt/temp <location>
     coords, locname = getcoords(location)
 
     if !coords.nil?
-      uri = URI.parse("https://dev.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
+      uri = URI.parse("https://api.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
       pp uri
       Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         begin
@@ -157,7 +157,7 @@ wt/temp <location>
     coords, locname = getcoords(location)
 
     if !coords.nil?
-      uri = URI.parse("https://dev.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
+      uri = URI.parse("https://api.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
       Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
@@ -204,7 +204,7 @@ wt/temp <location>
     coords, locname = getcoords(location)
 
     if !coords.nil?
-      uri = URI.parse("https://dev.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
+      uri = URI.parse("https://api.pirateweather.net/forecast/#{PIRATEWEATHERAPIKEY}/#{coords['lat']},#{coords['lng']}?exclude=minutely,hourly,flags")
       Net::HTTP.start(uri.host, uri.port, use_ssl: true) do |http|
         begin
           data = JSON.parse(Net::HTTP.get_response(uri).body)
