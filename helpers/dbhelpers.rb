@@ -32,7 +32,7 @@ module DBHelpers
   def save_memov2(nick, origin, location, message, savetime, remindtime)
     db = open_create_db
     if db
-      db.execute("INSERT INTO memosv2(nick, origin, location, message, savetime, remindtime) VALUES(?,?,?,?,?,?)", [nick, origin, location, message, savetime.to_s, remindtime.to_s] )
+      db.execute("INSERT INTO memosv2(nick, origin, location, message, savetime, remindtime) VALUES(?,?,?,?,?,?)", [nick.downcase, origin, location, message, savetime.to_s, remindtime.to_s] )
     end
   end
 
@@ -40,8 +40,8 @@ module DBHelpers
     db = open_create_db
     if db
       curtime = Time.now.to_s
-      result = db.execute("SELECT nick, origin, location, message, savetime, remindtime FROM memosv2 WHERE nick = ? AND remindtime <= ?", [nick, curtime] )
-      db.execute("DELETE FROM memosv2 WHERE nick = ? AND remindtime <= ?", [nick, curtime] )
+      result = db.execute("SELECT nick, origin, location, message, savetime, remindtime FROM memosv2 WHERE nick = ? AND remindtime <= ?", [nick.downcase, curtime] )
+      db.execute("DELETE FROM memosv2 WHERE nick = ? AND remindtime <= ?", [nick.downcase, curtime] )
     end
     db.close
     return result
@@ -49,7 +49,7 @@ module DBHelpers
   def save_memo(nick, origin, location, mtype, message, time)
     db = open_create_db
     if db
-      db.execute("INSERT INTO memos(nick, origin, location, mtype, message, time) VALUES(?,?,?,?,?,?);", [nick, origin, location, mtype, message, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s] )
+      db.execute("INSERT INTO memos(nick, origin, location, mtype, message, time) VALUES(?,?,?,?,?,?);", [nick.downcase, origin, location, mtype, message, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s] )
     end
     db.close
   end
@@ -57,8 +57,8 @@ module DBHelpers
   def get_memos(nick)
     db = open_create_db
     if db
-      result = db.execute("SELECT nick, origin, location, mtype, message, time FROM memos WHERE nick = ?", [nick] )
-      db.execute("DELETE FROM memos WHERE nick = ?", [nick] )
+      result = db.execute("SELECT nick, origin, location, mtype, message, time FROM memos WHERE nick = ?", [nick.downcase] )
+      db.execute("DELETE FROM memos WHERE nick = ?", [nick.downcase] )
     end
     db.close
     return result
@@ -67,7 +67,7 @@ module DBHelpers
   def i_see(nick, location, time)
     db = open_create_db
     if db
-      db.execute("INSERT OR REPLACE INTO seen(id, nick, location, time) VALUES((SELECT id FROM seen WHERE nick = ?),?,?,?);", [nick, nick, location, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s] )
+      db.execute("INSERT OR REPLACE INTO seen(id, nick, location, time) VALUES((SELECT id FROM seen WHERE nick = ?),?,?,?);", [nick.downcase, nick.downcase, location, time.strftime("%b %d, %Y at %l:%M:%S %p (%Z)").to_s] )
     end
     db.close
   end
@@ -75,7 +75,7 @@ module DBHelpers
   def seen_who(nick)
     db = open_create_db
     if db
-      result = db.execute("SELECT location, time FROM seen WHERE nick = ?", [nick] )
+      result = db.execute("SELECT location, time FROM seen WHERE nick = ?", [nick.downcase] )
     end
     db.close
     return result
@@ -159,7 +159,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      db.execute("INSERT INTO packages(nick, trk_id, tracknum, courier, name, status, location, delivered, updated_at) VALUES(?,?,?,?,?,?,?,?,?)", [nick, trk_id, tracknum.upcase, courier, name, status, location, delivered, updated_at.to_s] )
+      db.execute("INSERT INTO packages(nick, trk_id, tracknum, courier, name, status, location, delivered, updated_at) VALUES(?,?,?,?,?,?,?,?,?)", [nick.downcase, trk_id, tracknum.upcase, courier, name, status, location, delivered, updated_at.to_s] )
       result = db.changes
     end
     db.close
@@ -170,8 +170,8 @@ module DBHelpers
     db = open_create_db
 
     if db
-      db.execute("UPDATE packages SET status = ?, location = ?, delivered = ?, updated_at = ? WHERE tracknum = ? AND nick = ? AND trk_id = ?", [status, location, delivered, updated_at.to_s, tracknum.upcase, nick, trk_id] )
-      result = db.execute("SELECT name FROM packages WHERE tracknum = ? AND nick = ? AND trk_id = ?", [tracknum.upcase, nick, trk_id] )
+      db.execute("UPDATE packages SET status = ?, location = ?, delivered = ?, updated_at = ? WHERE tracknum = ? AND nick = ? AND trk_id = ?", [status, location, delivered, updated_at.to_s, tracknum.upcase, nick.downcase, trk_id] )
+      result = db.execute("SELECT name FROM packages WHERE tracknum = ? AND nick = ? AND trk_id = ?", [tracknum.upcase, nick.downcase, trk_id] )
       # result = db.changes
     end
     db.close
@@ -194,11 +194,11 @@ module DBHelpers
     db = open_create_db
 
     pp "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
-    pp "I'm in db_get_all_packages and I'm looking for packages for #{nick}"
+    pp "I'm in db_get_all_packages and I'm looking for packages for #{nick.downcase}"
     pp "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
 
     if db
-      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND COALESCE(delivered,0) = 0 AND COALESCE(deleted,0) = 0;", [nick] )
+      result = db.execute("SELECT trk_id, tracknum, name, courier, nick, updated_at, status, location FROM packages WHERE nick = ? AND COALESCE(delivered,0) = 0 AND COALESCE(deleted,0) = 0;", [nick.downcase] )
 
       pp "!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!"
       pp "I'm in db_get_all_packages and my result is:"
@@ -224,7 +224,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT nick, tracknum FROM packages WHERE nick = ? AND tracknum = ? AND COALESCE(deleted,0) = 0", [nick, tracknum.upcase] )
+      result = db.execute("SELECT nick, tracknum FROM packages WHERE nick = ? AND tracknum = ? AND COALESCE(deleted,0) = 0", [nick.downcase, tracknum.upcase] )
     end
     db.close
     return result
@@ -234,7 +234,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      db.execute("UPDATE packages SET deleted = 1 WHERE nick = ? AND tracknum = ?", [nick, tracknum.upcase] )
+      db.execute("UPDATE packages SET deleted = 1 WHERE nick = ? AND tracknum = ?", [nick.downcase, tracknum.upcase] )
       result = db.changes
     end
     db.close
@@ -296,7 +296,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      db.execute("INSERT INTO userconfigs(nick, plugin, configkey, configvalue) VALUES(?,?,?,?);", [nick, plugin, configkey, configvalue] )
+      db.execute("INSERT INTO userconfigs(nick, plugin, configkey, configvalue) VALUES(?,?,?,?);", [nick.downcase, plugin, configkey, configvalue] )
     end
     result = db.last_insert_row_id
     db.close
@@ -308,7 +308,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      result = db.execute("SELECT * FROM userconfigs WHERE nick = ? AND plugin = ? AND configkey = ?", [nick, plugin, configkey] )
+      result = db.execute("SELECT * FROM userconfigs WHERE nick = ? AND plugin = ? AND configkey = ?", [nick.downcase, plugin, configkey] )
     end
     db.close
     return result
@@ -318,7 +318,7 @@ module DBHelpers
     db = open_create_db
 
     if db
-      db.execute("DELETE FROM userconfigs WHERE nick = ? AND plugin = ? AND configkey = ?;", [nick, plugin, configkey] )
+      db.execute("DELETE FROM userconfigs WHERE nick = ? AND plugin = ? AND configkey = ?;", [nick.downcase, plugin, configkey] )
       result = db.changes
     end
     db.close
