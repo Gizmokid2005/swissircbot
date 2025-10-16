@@ -212,14 +212,14 @@ psearch <carrier>
         tmpjson2 = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
         trkid = tmpjson2['id']
         json = JSON.parse(@eptrack.tracker.retrieve(trkid).to_json)
-      rescue EasyPost::Error => @EPError
-        pp @EPError
+      rescue StandardError => @EPError
+        puts @EPError
         json = nil
       end
     else
       begin
         json = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
-      rescue EasyPost::Error => @EPError
+      rescue StandardError => @EPError
         pp @EPError
         json = nil
       end
@@ -242,14 +242,14 @@ psearch <carrier>
           json = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
           trkid = json['id']
           json = JSON.parse(@eptrack.tracker.retrieve(trkid).to_json)
-        rescue EasyPost::Error => @EPError
+        rescue StandardError => @EPError
           pp @EPError
           json = nil
         end
       else
         begin
           json = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
-        rescue EasyPost::Error => @EPError
+        rescue StandardError => @EPError
           pp @EPError
           json = nil
         end

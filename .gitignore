@@ -20,3 +20,4 @@ keep-alive
 *.log
 test/
 wednesdayurls.txt
+.gem_rbs_collection/

@@ -11,6 +11,7 @@ gem 'rubocop', group: 'development'
 gem 'sinatra'
 gem 'sqlite3'
 gem 'thin'
+gem 'csv'
 
 # gem 'open-weather-ruby-client'
 # gem 'openweathermap'
