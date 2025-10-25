@@ -8,6 +8,9 @@ class Httpserver
 
   class CinchHttpServer < Sinatra::Base
 
+    # Disable host protection
+    set :host_authorization, { permitted_hosts: [] }
+
     def self.bot=(bot)
       @bot = bot
     end
