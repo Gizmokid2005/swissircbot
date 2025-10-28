@@ -282,7 +282,7 @@ db <query>
       if userroles(m.channel,nick).empty?
         m.reply "That's #{nick}," + (!User(nick).authname.nil? ? " authenticated as #{User(nick).authname}," : " unauthenticated,") + " with no roles."
       else
-        m.reply "That's #{nick}, " + (!User(nick).authname.nil? ? " authenticated as #{User(nick).authname}," : " unauthenticated,") + " with the following roles #{userroles(m.channel,nick)}.", true
+        m.reply "That's #{nick}," + (!User(nick).authname.nil? ? " authenticated as #{User(nick).authname}," : " unauthenticated,") + " with the following roles #{userroles(m.channel,nick)}.", true
       end
     else
       m.reply NOTADMIN, true
