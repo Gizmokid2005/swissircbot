@@ -213,14 +213,12 @@ psearch <carrier>
         trkid = tmpjson2['id']
         json = JSON.parse(@eptrack.tracker.retrieve(trkid).to_json)
       rescue StandardError => @EPError
-        puts @EPError
         json = nil
       end
     else
       begin
         json = JSON.parse(@eptrack.tracker.create({tracking_code: tracknum,carrier: courier}).to_json)
       rescue StandardError => @EPError
-        pp @EPError
         json = nil
       end
     end
